@@ -34,6 +34,7 @@ class gPluginClassCore implements gPluginClassCoreInterface
 	
 	// A dummy constructor to prevent loading more than once.
 	protected function __construct() { /* Do nothing here */ }
+	protected function __distruct() { $this->data = null; }
 	// A dummy magic method to prevent cloning
 	// public function __clone() { _doing_it_wrong( __FUNCTION__, 'Doing it wrong, chief.', GPLUGIN_VERSION ); }
 	// A dummy magic method to prevent unserialization
