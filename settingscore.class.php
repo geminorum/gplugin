@@ -41,8 +41,6 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 	
 	public function setup_globals( $constants = array(), $args = array() ) 
 	{	
-		//gPeoplePluginCore::dump($this); die();
-		
 		$this->current_blog = get_current_blog_id();
 		$this->option_group = isset( $args['option_group'] ) ? $args['option_group'] : 'gpluginsettings';
 		$this->page = ( isset( $args['page'] ) && $args['page'] ? $args['page'] : 'general' );		
@@ -56,29 +54,33 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 		$this->args = array_merge( array(
 			'plugin_class' => false,
 			'plugin_args' => array(),
-			'settings_sanitize' => false,
+			'settings_sanitize' => null, // null for default, false for disable
 			'field_callback' => false,
-			'site_options' => false,
+			'site_options' => false, // site wide or blog option storing
+			'register_hook' => false, // hook that runs on settings page load
 		), $args );
 		
 		$this->options = self::get_options();
 		$this->enabled = isset( $this->options['enabled'] ) ? $this->options['enabled'] : false;
 
+		// for something like old gMember Restricted class
+		// when we have to initiate a plugin module if enabled option
 		$plugin_class = $this->args['plugin_class'];
 		if ( $this->enabled && class_exists( $plugin_class ) ) 
-			//$plugin_instance = & $plugin_class::getInstance( $this->options );
 			gPluginFactory( $plugin_class, $this->constants, $this->args['plugin_args'] );
-			
-		//gPeoplePluginCore::dump($this->options); die();
-		//gPeoplePluginCore::dump($this->args); die();
 	}
 	
 	public function setup_actions() 
 	{ 
-		add_action( 'admin_init', array( $this, 'admin_init' ) );	
+		add_action( 'init', array( & $this, 'init_late' ), 999 );	
+		
+		if ( $this->args['register_hook'] )
+			add_action( $this->args['register_hook'], array( & $this, 'register_hook' ) );	
+		else
+			add_action( 'admin_init', array( & $this, 'register_hook' ) );	
 	}	
     
-	function admin_init()
+	public function init_late()
 	{
 		// giving the plugin a chance to manipulate pre settings args by therir own filter hooks!
 		$key = 'gplugin_settings_args_'.strtolower( get_class( $this ) );
@@ -87,8 +89,14 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 			$this->args = apply_filters( $key, $this->args );
 			if ( isset( $this->args['page'] ) )
 				$this->page = $this->args['page'];
+				
+			// recall for option defaults to avoid undefinded index notices
+			$this->options = self::get_options();
 		}
+	}
 	
+	public function register_hook()
+	{
 		if ( is_array( $this->page ) ) {
 			foreach ( $this->page as $page_name => $sections )
 				$this->register_sections( $page_name, $sections );
@@ -99,14 +107,13 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 			$this->register_sections( $this->page, $this->args['sections'] );
 		}
 		
-		if ( false !== $this->args['settings_sanitize'] && is_callable( $this->args['settings_sanitize'] ) )
-			add_filter( 'sanitize_option_'.$this->option_group, $this->args['settings_sanitize'] );
-		else
-			add_filter( 'sanitize_option_'.$this->option_group, array( $this, 'settings_sanitize' ) );
-    
+		if ( $this->args['settings_sanitize'] && is_callable( $this->args['settings_sanitize'] ) )
+			add_filter( 'sanitize_option_'.$this->option_group, $this->args['settings_sanitize'], 10, 2 );
+		else if ( false !== $this->args['settings_sanitize'] )
+			add_filter( 'sanitize_option_'.$this->option_group, array( $this, 'settings_sanitize' ), 10, 2 );
 	}
 	
-	function register_sections( $page_name, $sections )
+	public function register_sections( $page_name, $sections )
 	{
 		register_setting( $page_name, $this->option_group );  // we added the sanitization manually
 
@@ -133,7 +140,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 		}
 	}
 	
-	function do_settings_field( $r )
+	public function do_settings_field( $r )
 	{
 		$args = shortcode_atts( array( 
 			'type' => 'enabled',
@@ -214,7 +221,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 		
 	}
 
-    function get( $field, $default = false )
+    public function get( $field, $default = false )
 	{
 		if ( isset( $this->options[$field] ) ) 
 			return $this->options[$field];
@@ -222,12 +229,12 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 	}
 	
 	// must dep : use get()
-    function get_option( $field, $default = false )
+    public function get_option( $field, $default = false )
 	{
 		return $this->get( $field, $default );
 	}
 	
-    function get_option_OLD( $field, $default = false )
+    public function get_option_OLD( $field, $default = false )
 	{
 		$options = self::get_options();
 		if ( isset( $options[$field] ) )
@@ -235,7 +242,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 		return $default;
 	}
 	
-    function get_options()
+    public function get_options()
     {
 		if ( $this->args['site_options'] )
 			$options = get_site_option( $this->option_group, array() );
@@ -244,8 +251,19 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 			
 		return gPluginUtils::parse_args_r( $options, self::get_option_defaults() );
     }
+	
+    public function update_options( $options = null )
+    {
+		if ( is_null( $options ) )
+			$options = $this->options;
+	
+		if ( $this->args['site_options'] )
+			return update_site_option( $this->option_group, $options );
+		else
+			return update_option( $this->option_group, $options );
+    }
     
-    function get_option_defaults()
+    public function get_option_defaults()
     {
 		$defaults = array();
 		
@@ -269,28 +287,26 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 		return (array) apply_filters( $this->option_group.'_option_defaults', $defaults );
     }
     
-    function settings_sanitize( $input )
+    public function settings_sanitize( $input )
     {
-		/**
-		if ( false !== $this->args['settings_sanitize'] && is_callable( $this->args['settings_sanitize'] ) )
-			return call_user_func_array( $this->args['settings_sanitize'], array( $input, self::get_option_defaults(), $this->args ) );
-		**/
-		
 		$output = array();
+		
 		if ( is_array( $this->page ) ) {
 			foreach ( $this->page as $page_name => $sections ) {
-				$output = $this->settings_sanitize_section( $sections, $input, $output );
+				$output = $this->settings_sanitize_section( $sections, $input, $output, $this->options );
 			}
 		} else {
-			$output = $this->settings_sanitize_section( $this->args['sections'], $input, $output );
+			$output = $this->settings_sanitize_section( $this->args['sections'], $input, $output, $this->options );
 		}
+		
 		return $output;
 	}	
 	
-	function settings_sanitize_section( $sections, $input, $output ) 
+	public function settings_sanitize_section( $sections, $input, $output, $stored = array() ) 
 	{
 		foreach ( $sections as $section => $section_args ) {
 			foreach ( $section_args['fields'] as $field => $field_args ) {
+				// new value
 				if ( isset( $input[$field] ) ) {
 					
 					// callback
@@ -309,6 +325,10 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 					} else {
 						$output[$field] = $input[$field];
 					}
+				// previously stored value 
+				} else if ( isset( $stored[$field] ) ) {
+					$output[$field] = $stored[$field];
+				// default value
 				} else {
 					$output[$field] = $field_args['default'];
 				}
@@ -317,7 +337,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
         return $output;
     }
     
-    function section_callback( $section )
+    public function section_callback( $section )
     {
         echo '<p>Section Description</p>';
     }

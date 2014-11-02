@@ -1,4 +1,5 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
+
 if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends gPluginClassCore
 {
 	public function setup_globals( $constants = array(), $args = array() ) 
@@ -69,7 +70,6 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 		// init here to help filtering the templates
 		if ( isset( $this->constants['class_mustache'] ) )
 			call_user_func( array( $this->constants['class_mustache'], 'init' ) );
-		
 	}
 	
     function plugins_loaded()
@@ -99,7 +99,6 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 		add_action( 'load-'.$hook, array( $this, 'network_settings_save' ) ); 
     }
     
-	// SEE : https://gist.github.com/chrisguitarguy/4187138
 	function network_settings()
 	{
         $settings_uri = 'settings.php?page='.$this->args['domain'];
@@ -116,10 +115,10 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 			gPluginFormHelper::wpSettingsHeaderNav( $settings_uri, $sub, $subs );
 			
 			if ( isset( $_GET['message'] ) ) { 
-				if ( isset( $messages[$_GET['message']] ) ) {
-					echo $messages[$_GET['message']];
+				if ( isset( $messages[$_REQUEST['message']] ) ) {
+					echo $messages[$_REQUEST['message']];
 				} else {
-					?><div id="message" class="updated fade"><p><?php echo ( $_GET['message'] ); ?></p></div><?php 
+					gPluginWPHelper::notice( $_REQUEST['message'], 'error fade' );
 				}
 				$_SERVER['REQUEST_URI'] = remove_query_arg( array( 'message' ), $_SERVER['REQUEST_URI'] ); 
 			}  
@@ -130,6 +129,16 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 				do_action( $this->args['domain'].'_network_settings_html', $sub, $settings_uri );
 				
 		?><div class="clear"></div></div><?php
+	}
+	
+	// called by extended class as default settings page html
+	public function network_settings_html( $sub, $settings_uri )
+	{
+		echo '<form method="post" action="">';
+			settings_fields( $this->args['domain'].'_'.$sub );
+			do_settings_sections( $this->args['domain'].'_'.$sub );
+			submit_button();
+		echo '</form>';
 	}
 	
     function getFilters( $context, $fallback = array() )

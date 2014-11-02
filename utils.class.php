@@ -1,7 +1,5 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
-
- 
 if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 {
 
@@ -9,20 +7,25 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 						USED FUNCTION: Modyfy with Caution!
 	--------------------------------------------------------------------------------- **/
 
-	// returns the IP address of the current visitor
-	// http://www.catswhocode.com/blog/snippets/getting-real-ip-address-in-php
 	public static function IP() 
 	{
-		//check ip from share internet
-		if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) )
-			return $_SERVER['HTTP_CLIENT_IP']; 
+		if ( getenv( 'HTTP_CLIENT_IP' ) )
+			return getenv( 'HTTP_CLIENT_IP' );
 			
-		//to check ip is pass from proxy
-		if ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) )
-			return $_SERVER['HTTP_X_FORWARDED_FOR']; 
+		if ( getenv( 'HTTP_X_FORWARDED_FOR' ) )
+			return getenv( 'HTTP_X_FORWARDED_FOR' );
+			
+		if ( getenv( 'HTTP_X_FORWARDED' ) )
+			return getenv( 'HTTP_X_FORWARDED' );
+			
+		if ( getenv( 'HTTP_FORWARDED_FOR' ) )
+			return getenv( 'HTTP_FORWARDED_FOR' );
+			
+		if ( getenv( 'HTTP_FORWARDED' ) )
+			return getenv( 'HTTP_FORWARDED' );
 			
 		return $_SERVER['REMOTE_ADDR'];
-	}
+	}	
 	
 	public static function roundArray( $array, $precision = -3, $mode = PHP_ROUND_HALF_UP )
 	{
@@ -189,41 +192,10 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 		return $value;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	/** ---------------------------------------------------------------------------------
 									NOT USED YET
 	--------------------------------------------------------------------------------- **/
 
-	
-	public static function real_ip() 
-	{
-		if ( getenv( 'HTTP_CLIENT_IP' ) )
-			return getenv( 'HTTP_CLIENT_IP' );
-			
-		if ( getenv( 'HTTP_X_FORWARDED_FOR' ) )
-			return getenv( 'HTTP_X_FORWARDED_FOR' );
-			
-		if ( getenv( 'HTTP_X_FORWARDED' ) )
-			return getenv( 'HTTP_X_FORWARDED' );
-			
-		if ( getenv( 'HTTP_FORWARDED_FOR' ) )
-			return getenv( 'HTTP_FORWARDED_FOR' );
-			
-		if ( getenv( 'HTTP_FORWARDED' ) )
-			return getenv( 'HTTP_FORWARDED' );
-			
-		return $_SERVER['REMOTE_ADDR'];
-	}
-	
 	// http://php.net/manual/en/function.array-key-exists.php#77848
 	// example : if(array_key_exists_r('login|user|passwd',$_GET)) {		
 	public static function array_key_exists_r( $keys, $search_r ) 
