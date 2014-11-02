@@ -12,6 +12,7 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper
 			echo ' style="display:none;"';
 	}
 	
+	// DEPRECATED : use gPluginFormHelper::header_nav()
 	public static function wpSettingsHeaderNav( $settings_uri = '', $active = '', $sub_pages = array(), $class_prefix = 'nav-tab-', $tag = 'h3' )
 	{
 		if ( ! count( $sub_pages ) )
@@ -26,6 +27,25 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper
 		echo '</'.$tag.'>';
 	}
 	
+	public static function header_nav( $settings_uri = '', $active = '', $sub_pages = array(), $class_prefix = 'nav-tab-', $tag = 'h3' )
+	{
+		if ( ! count( $sub_pages ) )
+			return;
+
+		$html = '';
+		
+		foreach ( $sub_pages as $page_slug => $sub_page )
+			$html .= self::html( 'a', array(
+				'class' => 'nav-tab '.$class_prefix.$page_slug.( $page_slug == $active ? ' nav-tab-active' : '' ),
+				'href' => add_query_arg( 'sub', $page_slug, $settings_uri ),
+			), esc_html( $sub_page ) );
+		
+		echo self::html( $tag, array(
+			'class' => 'nav-tab-wrapper',
+		), $html );
+	}
+	
+	// must dep
 	public static function wpNavTabs( $tabs, $active = 'manual', $class_prefix = 'nav-tab-', $tag = 'h3' )
 	{
 		echo '<'.$tag.' class="nav-tab-wrapper">';
@@ -40,17 +60,29 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper
 		echo '<link rel="stylesheet" href="'.esc_url( $url ).'" type="text/css" />'."\n"; 
 	}
 	
-
-	public static function _tag_open( $tag, $atts, $content = true )
+	private static function _tag_open( $tag, $atts, $content = true )
 	{
 		$html = '<'.$tag;
         foreach( $atts as $key => $att ) {
+			
 			if ( is_array( $att ) && count( $att ) )
-				$att = implode( ' ', $att );
+				$att = implode( ' ', array_unique( $att ) );
+			
 			if ( 'selected' == $key )	
 				$att = ( $att ? 'selected' : false );
+				
+			if ( 'checked' == $key )	
+				$att = ( $att ? 'checked' : false );
+				
+			if ( 'readonly' == $key )	
+				$att = ( $att ? 'readonly' : false );
+				
+			if ( 'disabled' == $key )	
+				$att = ( $att ? 'disabled' : false );
+			
 			if ( false === $att )
 				continue;
+			
 			if ( 'class' == $key )
 				//$att = sanitize_html_class( $att, false );
 				$att = $att;
@@ -60,10 +92,13 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper
 				//$att = $att;
 			else 
 				$att = esc_attr( $att );
+			
 			$html .= ' '.$key.'="'.$att.'"';
 		}
+		
 		if ( false === $content )
             return $html.' />';
+			
 		return $html.'>';
 	}
 

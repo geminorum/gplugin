@@ -1,44 +1,7 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
-/**
-
-	See: https://github.com/gilbitron/WordPress-Settings-Framework
-
-
-
-**/
-
-
 
 if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore extends gPluginClassCore
 {  
-/**
-    var $_settings_args = array(
-        'plugin_class' => false,
-        'option_group' => 'gpluginsettings',
-		'settings_sanitize' => false, // override sanitization
-		'field_callback' => false, // oberride field print
-		'page' => 'general',
-        'sections' => array( 
-			'default' => array( 
-			//'date' => array( 
-				'title' => false,
-				//'title' => 'Section Title',
-				'callback' => array( __CLASS__, 'section_callback' ), // '__return_false'
-				'fields' => array(
-					'enabled' => array(
-						'title' => 'gPlugin',
-						'desc' => '',
-						'type' => 'enabled',
-						'dir' => 'ltr',
-						'default' => 0,
-						'filter' => false, // 'esc_attr'
-					),
-				),
-			),
-		),
-    );
-	**/
-	
 	public function setup_globals( $constants = array(), $args = array() ) 
 	{	
 		$this->current_blog = get_current_blog_id();
@@ -160,54 +123,111 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 			return;
 		
 		$name = $args['option_group'].'['.esc_attr( $args['field'] ).']';
+		$id = $args['option_group'].'-'.esc_attr( $args['field'] );
 		
 		switch ( $args['type'] ) {
 			case 'enabled' :
-				?><select name="<?php echo $name; ?>" id="<?php echo $name; ?>" class="<?php echo $args['class']; ?>" >
-					<option value="0" <?php selected( $this->options[$args['field']], 0 ); ?>><?php esc_html_e( 'Disabled' ); ?></option>
-					<option value="1" <?php selected( $this->options[$args['field']], 1 ); ?>><?php esc_html_e( 'Enabled' ); ?></option>
-				</select><?php
+
+				$html = gPluginFormHelper::html( 'option', array(
+					'value' => '0',
+					'selected' => '0' == $this->options[$args['field']],
+				), esc_html__( 'Disabled' ) );
+				
+				$html .= gPluginFormHelper::html( 'option', array(
+					'value' => '1',
+					'selected' => '1' == $this->options[$args['field']],
+				), esc_html__( 'Enabled' ) );
+					
+				echo gPluginFormHelper::html( 'select', array(
+					'class' => $args['class'],
+					'name' => $name,
+					'id' => $id,
+				), $html );
 				
 				if ( $args['desc'] )
-					echo '<br /><span class="description">'.esc_html( $args['desc'] ).'</span>';
+					echo gPluginFormHelper::html( 'p', array( 
+						'class' => 'description',
+					), $args['desc'] );
 				
 			break;
 			
 			case 'text' :
-				?><input type="text" class="regular-text code <?php echo $args['class']; ?>" 
-					name="<?php echo $name; ?>" id="<?php echo $name; ?>" 
-					value="<?php echo esc_attr( $this->options[$args['field']] ); ?>" 
-					<?php if ( $args['dir'] ) echo 'dir="'.$args['dir'].'"'; ?> /><?php
+				echo gPluginFormHelper::html( 'input', array(
+					'type' => 'text',
+					'class' => array( 'regular-text', 'c1ode', $args['class'] ),
+					'name' => $name,
+					'id' => $id,
+					'value' => $this->options[$args['field']],
+					'dir' => $args['dir'],
+				) );
+				
 				if ( $args['desc'] )
-					echo '<br /><span class="description">'.esc_html( $args['desc'] ).'</span>';
-					
+					echo gPluginFormHelper::html( 'p', array( 
+						'class' => 'description',
+					), $args['desc'] );
+
 			break;
 			
 			case 'checkbox' :
 				if ( count( $args['values'] ) ) {
 					foreach( $args['values'] as $value_name => $value_title ) {
-						?><input type="checkbox" name="<?php echo $name.'['.$value_name.']'; ?>" id="<?php echo $name.'['.$value_name.']'; ?>" value="1"  class="<?php echo $args['class']; ?>" <?php 
-						checked( true, in_array( $value_name, ( array ) $this->options[$args['field']] ) );?> /><?php
-						?>&nbsp;<span><?php echo esc_html( $value_title ); ?></span><br /><?php
+						$html = gPluginFormHelper::html( 'input', array(
+							'type' => 'checkbox',
+							'class' => $args['class'],
+							'name' => $name.'['.$value_name.']',
+							'id' => $id.'-'.$value_name,
+							'value' => '1',
+							'checked' => in_array( $value_name, ( array ) $this->options[$args['field']] ),
+							'dir' => $args['dir'],
+						) );
+					
+						echo '<p>'.gEditorialHelper::html( 'label', array(
+							'for' => $id.'-'.$value_name,
+						), $html.'&nbsp;'.esc_html( $value_title ) ).'</p>';
 					}
 				} else {
-					?><input type="checkbox" name="<?php echo $name; ?>" id="<?php echo $name; ?>" value="1"  class="<?php echo $args['class']; ?>" <?php checked( 1, $this->options[$args['field']] );?> /><?php
+					$html = gPluginFormHelper::html( 'input', array(
+						'type' => 'checkbox',
+						'class' => $args['class'],
+						'name' => $name,
+						'id' => $id,
+						'value' => '1',
+						'checked' => $this->options[$args['field']],
+						'dir' => $args['dir'],
+					) );
+				
+					echo '<p>'.gEditorialHelper::html( 'label', array(
+						'for' => $id,
+					), $html.'&nbsp;'.esc_html( $value_title ) ).'</p>';
 				}
+				
 				if ( $args['desc'] )
-					echo ' <span class="description" style="vertical-align:base;">'.esc_html( $args['desc'] ).'</span>';
+					echo gPluginFormHelper::html( 'p', array( 
+						'class' => 'description',
+					), $args['desc'] );
 				
 			break;
 			
 			case 'select' :
-				// alow hiding
-				if ( false !== $args['values'] ) {
-					?><select name="<?php echo $name; ?>" id="<?php echo $name; ?>" class="<?php echo $args['class']; ?>"><?php
-						foreach ( $args['values'] as $value_name => $value_title ) {
-							?><option value="<?php echo esc_attr( $value_name ); ?>" <?php selected( $value_name, $this->options[$args['field']] );?>><?php echo esc_html( $value_title ); ?></option><?php
-						}
-					?></select><?php
+				
+				if ( false !== $args['values'] ) { // alow hiding
+					$html = '';
+					foreach ( $args['values'] as $value_name => $value_title )
+						$html .= gPluginFormHelper::html( 'option', array(
+							'value' => $value_name,
+							'selected' => $value_name == $this->options[$args['field']],
+						), esc_html( $value_title ) );
+						
+					echo gPluginFormHelper::html( 'select', array(
+						'class' => $args['class'],
+						'name' => $name,
+						'id' => $id,
+					), $html );
+						
 					if ( $args['desc'] )
-						echo '<br /><span class="description">'.$args['desc'].'</span>';
+						echo gPluginFormHelper::html( 'p', array( 
+							'class' => 'description',
+						), $args['desc'] );
 				}
 			break;
 			
@@ -215,8 +235,9 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 			default :
 				echo 'Error: setting type\'s not defind';
 				if ( $args['desc'] )
-					echo '<br /><span class="description">'.esc_html( $args['desc'] ).'</span>';
-
+					echo gPluginFormHelper::html( 'p', array( 
+						'class' => 'description',
+					), $args['desc'] );
 		}
 		
 	}
@@ -228,7 +249,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 		return $default;
 	}
 	
-	// must dep : use get()
+	// DEPRECATED : use get()
     public function get_option( $field, $default = false )
 	{
 		return $this->get( $field, $default );
@@ -337,9 +358,40 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
         return $output;
     }
     
-    public function section_callback( $section )
-    {
-        echo '<p>Section Description</p>';
-    }
-} 
-}
+} }
+
+/**
+	SAMPLE ARGUMENTS :
+	
+    $args = array(
+        'plugin_class' => false,
+        'option_group' => 'gpluginsettings',
+		'settings_sanitize' => false, // override sanitization
+		'field_callback' => false, // oberride field print
+		'page' => 'general',
+        'sections' => array( 
+			'default' => array( 
+			//'date' => array( 
+				'title' => false,
+				//'title' => 'Section Title',
+				'callback' => array( __CLASS__, 'section_callback' ), // '__return_false'
+				'fields' => array(
+					'enabled' => array(
+						'title' => 'gPlugin',
+						'desc' => '',
+						'type' => 'enabled',
+						'dir' => 'ltr',
+						'default' => 0,
+						'filter' => false, // 'esc_attr'
+					),
+				),
+			),
+		),
+    );
+**/
+
+/** ALSO :
+
+See: https://github.com/gilbitron/WordPress-Settings-Framework
+
+**/
