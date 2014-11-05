@@ -126,13 +126,14 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 			if ( file_exists( $this->constants['plugin_dir'].'admin/network.'.$sub.'.php' ) ) 
 				require_once( $this->constants['plugin_dir'].'admin/network.'.$sub.'.php' );
 			else
-				do_action( $this->args['domain'].'_network_settings_html', $sub, $settings_uri );
+				//do_action( $this->args['domain'].'_network_settings_html', $sub, $settings_uri );
+				do_action( $this->args['domain'].'_network_settings_sub_'.$sub, $settings_uri, $sub );
 				
 		?><div class="clear"></div></div><?php
 	}
 	
 	// called by extended class as default settings page html
-	public function network_settings_html( $sub, $settings_uri )
+	public function network_settings_html( $settings_uri, $sub )
 	{
 		echo '<form method="post" action="">';
 			settings_fields( $this->args['domain'].'_'.$sub );
