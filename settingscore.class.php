@@ -181,7 +181,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 							'dir' => $args['dir'],
 						) );
 					
-						echo '<p>'.gEditorialHelper::html( 'label', array(
+						echo '<p>'.gPluginFormHelper::html( 'label', array(
 							'for' => $id.'-'.$value_name,
 						), $html.'&nbsp;'.esc_html( $value_title ) ).'</p>';
 					}
@@ -196,7 +196,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 						'dir' => $args['dir'],
 					) );
 				
-					echo '<p>'.gEditorialHelper::html( 'label', array(
+					echo '<p>'.gPluginFormHelper::html( 'label', array(
 						'for' => $id,
 					), $html.'&nbsp;'.esc_html( $value_title ) ).'</p>';
 				}
