@@ -21,7 +21,7 @@ if ( ! class_exists( 'gPluginFilteredCore' ) ) { class gPluginFilteredCore exten
 		$this->filtered = array();
 	}
     
-    function get( $group, $fallback = array() )
+    public function get( $group, $fallback = array() )
     {
 		//echo( $group).'<br />';
 	
@@ -43,4 +43,16 @@ if ( ! class_exists( 'gPluginFilteredCore' ) ) { class gPluginFilteredCore exten
 		
 		return $this->filtered[$group]; 
     }
+	
+	// gPlugin default group filters
+	
+	//public function admin_settings_subs() { return array(); }
+	//public function admin_settings_messages() { return array(); }
+	//public function root_settings_subs() { return array(); }
+	//public function root_settings_messages() { return array(); }
+	//public function remote_settings_subs() { return array(); }
+	//public function remote_settings_messages() { return array(); }
+	//public function network_settings_subs() { return array(); }
+	//public function network_settings_messages() { return array(); }
+	
 } }

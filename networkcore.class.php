@@ -112,7 +112,7 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 		
 		?><div class="wrap"><h2><?php 
 			printf( _x( '%s Network Settings', 'Network Settings Page Title', GPLUGIN_TEXTDOMAIN ), $this->args['title'] ); ?></h2><?php 
-			gPluginFormHelper::header_nav( $settings_uri, $sub, $subs );
+			gPluginFormHelper::headerNav( $settings_uri, $sub, $subs );
 			
 			if ( isset( $_GET['message'] ) ) { 
 				if ( isset( $messages[$_REQUEST['message']] ) ) {

@@ -12,7 +12,7 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper
 			echo ' style="display:none;"';
 	}
 	
-	// DEPRECATED : use gPluginFormHelper::header_nav()
+	// DEPRECATED : use gPluginFormHelper::headerNav()
 	public static function wpSettingsHeaderNav( $settings_uri = '', $active = '', $sub_pages = array(), $class_prefix = 'nav-tab-', $tag = 'h3' )
 	{
 		if ( ! count( $sub_pages ) )
@@ -27,7 +27,7 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper
 		echo '</'.$tag.'>';
 	}
 	
-	public static function header_nav( $settings_uri = '', $active = '', $sub_pages = array(), $class_prefix = 'nav-tab-', $tag = 'h3' )
+	public static function headerNav( $settings_uri = '', $active = '', $sub_pages = array(), $class_prefix = 'nav-tab-', $tag = 'h3' )
 	{
 		if ( ! count( $sub_pages ) )
 			return;
@@ -53,7 +53,6 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper
 			echo '<a href="#" class="nav-tab '.$class_prefix.$tab.( $active == $tab ? ' nav-tab-active' : '' ).'" rel="'.$tab.'" >'.$title.'</a>';
 		echo '</'.$tag.'>';
 	}
-	
 	
 	public static function linkStyleSheet( $url )
 	{
