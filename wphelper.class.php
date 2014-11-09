@@ -5,6 +5,27 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 						USED FUNCTION: Modyfy with Caution!
 	--------------------------------------------------------------------------------- **/
 
+	// Checks for the current post type
+	// FROM: EditFlow 0.7
+	// @return string|null $post_type The post type we've found, or null if no post type
+	public static function getCurrentPostType() 
+	{
+		global $post, $typenow, $pagenow, $current_screen;
+
+		if ( $post && $post->post_type )
+			$post_type = $post->post_type;
+		elseif ( $typenow )
+			$post_type = $typenow;
+		elseif ( $current_screen && isset( $current_screen->post_type ) )
+			$post_type = $current_screen->post_type;
+		elseif ( isset( $_REQUEST['post_type'] ) )
+			$post_type = sanitize_key( $_REQUEST['post_type'] );
+		else
+			$post_type = null;
+
+		return $post_type;
+	}
+
 	public static function notice( $notice, $class = 'updated fade', $echo = true ) 
 	{
 		$html = sprintf( '<div id="message" class="%s"><p>%s</p></div>', $class, $notice );
