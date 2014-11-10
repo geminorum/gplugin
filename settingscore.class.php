@@ -1,7 +1,7 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
 if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore extends gPluginClassCore
-{  
+{
 	public function setup_globals( $constants = array(), $args = array() ) 
 	{	
 		$this->current_blog = get_current_blog_id();
@@ -25,7 +25,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 		
 		$this->options = self::get_options();
 		$this->enabled = isset( $this->options['enabled'] ) ? $this->options['enabled'] : false;
-
+		
 		// for something like old gMember Restricted class
 		// when we have to initiate a plugin module if enabled option
 		$plugin_class = $this->args['plugin_class'];
@@ -42,7 +42,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 		else
 			add_action( 'admin_init', array( & $this, 'register_hook' ) );	
 	}	
-    
+	
 	public function init_late()
 	{
 		// giving the plugin a chance to manipulate pre settings args by therir own filter hooks!
@@ -79,7 +79,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 	public function register_sections( $page_name, $sections )
 	{
 		register_setting( $page_name, $this->option_group );  // we added the sanitization manually
-
+		
 		$field_callback = $this->args['field_callback'] ? $this->args['field_callback'] : array( $this, 'do_settings_field' );
 		
 		foreach ( $sections as $section_name => $section_args ) {
@@ -127,7 +127,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 		
 		switch ( $args['type'] ) {
 			case 'enabled' :
-
+				
 				$html = gPluginFormHelper::html( 'option', array(
 					'value' => '0',
 					'selected' => '0' == $value,
@@ -165,7 +165,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 					echo gPluginFormHelper::html( 'p', array( 
 						'class' => 'description',
 					), $args['desc'] );
-
+			
 			break;
 			
 			case 'checkbox' :
@@ -241,8 +241,8 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 		}
 		
 	}
-
-    public function get( $field, $default = false )
+	
+	public function get( $field, $default = false )
 	{
 		if ( isset( $this->options[$field] ) ) 
 			return $this->options[$field];
@@ -250,12 +250,12 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 	}
 	
 	// DEPRECATED : use get()
-    public function get_option( $field, $default = false )
+	public function get_option( $field, $default = false )
 	{
 		return $this->get( $field, $default );
 	}
 	
-    public function get_option_OLD( $field, $default = false )
+	public function get_option_OLD( $field, $default = false )
 	{
 		$options = self::get_options();
 		if ( isset( $options[$field] ) )
@@ -263,18 +263,18 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 		return $default;
 	}
 	
-    public function get_options()
-    {
+	public function get_options()
+	{
 		if ( $this->args['site_options'] )
 			$options = get_site_option( $this->option_group, array() );
 		else
 			$options = get_option( $this->option_group, array() );
 			
 		return gPluginUtils::parse_args_r( $options, self::get_option_defaults() );
-    }
+	}
 	
-    public function update_options( $options = null )
-    {
+	public function update_options( $options = null )
+	{
 		if ( is_null( $options ) )
 			$options = $this->options;
 	
@@ -282,10 +282,10 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 			return update_site_option( $this->option_group, $options );
 		else
 			return update_option( $this->option_group, $options );
-    }
-    
-    public function get_option_defaults()
-    {
+	}
+	
+	public function get_option_defaults()
+	{
 		$defaults = array();
 		
 		if ( is_array( $this->page ) ) {
@@ -303,13 +303,13 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 					$defaults[$field_name] = $field_args['default'];
 				}
 			}
-		}		
+		}
 		
 		return (array) apply_filters( $this->option_group.'_option_defaults', $defaults );
-    }
-    
-    public function settings_sanitize( $input )
-    {
+	}
+	
+	public function settings_sanitize( $input )
+	{
 		$output = array();
 		
 		if ( is_array( $this->page ) ) {
@@ -355,9 +355,8 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 				}
 			}
 		}
-        return $output;
-    }
-    
+		return $output;
+	}
 } }
 
 /**
