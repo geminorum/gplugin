@@ -118,24 +118,24 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 			'option_group' => $this->option_group,
 		), $r );
 		
-		
 		if ( ! $args['field'] )
 			return;
 		
 		$name = $args['option_group'].'['.esc_attr( $args['field'] ).']';
 		$id = $args['option_group'].'-'.esc_attr( $args['field'] );
+		$value = isset( $this->options[$args['field']] ) ? $this->options[$args['field']] : $args['default'];
 		
 		switch ( $args['type'] ) {
 			case 'enabled' :
 
 				$html = gPluginFormHelper::html( 'option', array(
 					'value' => '0',
-					'selected' => '0' == $this->options[$args['field']],
+					'selected' => '0' == $value,
 				), esc_html__( 'Disabled' ) );
 				
 				$html .= gPluginFormHelper::html( 'option', array(
 					'value' => '1',
-					'selected' => '1' == $this->options[$args['field']],
+					'selected' => '1' == $value,
 				), esc_html__( 'Enabled' ) );
 					
 				echo gPluginFormHelper::html( 'select', array(
@@ -157,7 +157,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 					'class' => array( 'regular-text', 'c1ode', $args['class'] ),
 					'name' => $name,
 					'id' => $id,
-					'value' => $this->options[$args['field']],
+					'value' => $value,
 					'dir' => $args['dir'],
 				) );
 				
@@ -177,7 +177,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 							'name' => $name.'['.$value_name.']',
 							'id' => $id.'-'.$value_name,
 							'value' => '1',
-							'checked' => in_array( $value_name, ( array ) $this->options[$args['field']] ),
+							'checked' => in_array( $value_name, ( array ) $value ),
 							'dir' => $args['dir'],
 						) );
 					
@@ -192,7 +192,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 						'name' => $name,
 						'id' => $id,
 						'value' => '1',
-						'checked' => $this->options[$args['field']],
+						'checked' => $value,
 						'dir' => $args['dir'],
 					) );
 				
@@ -215,7 +215,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 					foreach ( $args['values'] as $value_name => $value_title )
 						$html .= gPluginFormHelper::html( 'option', array(
 							'value' => $value_name,
-							'selected' => $value_name == $this->options[$args['field']],
+							'selected' => $value_name == $value,
 						), esc_html( $value_title ) );
 						
 					echo gPluginFormHelper::html( 'select', array(
