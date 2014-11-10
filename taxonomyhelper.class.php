@@ -1,20 +1,10 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 {
-
-	// *********** https://gist.github.com/helenhousandi/1573966
-	
-	// http://scribu.net/wordpress/sortable-taxonomy-columns.html
-	// https://gist.github.com/scribu/856587
-	
-	// http://scribu.net/wordpress/custom-sortable-columns.html
-	// https://gist.github.com/scribu/906872
-
-
 	/** ---------------------------------------------------------------------------------
-						USED FUNCTION: Modyfy with Caution!
+		USED FUNCTION: Modyfy with Caution!
 	--------------------------------------------------------------------------------- **/
-
+	
 	// USED WHEN: admin edit table
 	public static function get_admin_terms_edit( $post_id, $post_type, $taxonomy, $glue = ', ', $empty = '&#8212;' )
 	{
@@ -32,7 +22,7 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 					$posts_in_term_qv['taxonomy'] = $taxonomy;
 					$posts_in_term_qv['term'] = $t->slug;
 				}
-
+				
 				$out[] = sprintf( '<a href="%s">%s</a>',
 					esc_url( add_query_arg( $posts_in_term_qv, 'edit.php' ) ),
 					esc_html( sanitize_term_field( 'name', $t->name, $t->term_id, $taxonomy, 'display' ) )
@@ -45,20 +35,20 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 		}
 	}
 	
-    public static function update_count_callback( $terms, $taxonomy )
-    {
-        global $wpdb;
-        foreach ( (array) $terms as $term ) {
-            $count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $wpdb->term_relationships WHERE term_taxonomy_id = %d", $term ) );
-            do_action( 'edit_term_taxonomy', $term, $taxonomy );
-            $wpdb->update( $wpdb->term_taxonomy, compact( 'count' ), array( 'term_taxonomy_id' => $term ) );
-            do_action( 'edited_term_taxonomy', $term, $taxonomy );
-        }
-    }
+	public static function update_count_callback( $terms, $taxonomy )
+	{
+		global $wpdb;
+		foreach ( (array) $terms as $term ) {
+			$count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $wpdb->term_relationships WHERE term_taxonomy_id = %d", $term ) );
+			do_action( 'edit_term_taxonomy', $term, $taxonomy );
+			$wpdb->update( $wpdb->term_taxonomy, compact( 'count' ), array( 'term_taxonomy_id' => $term ) );
+			do_action( 'edited_term_taxonomy', $term, $taxonomy );
+		}
+	}
 	
-    public static function insert_default_terms( $taxonomy, $defaults )
-    {
-        if ( ! taxonomy_exists( $taxonomy ) )
+	public static function insert_default_terms( $taxonomy, $defaults )
+	{
+		if ( ! taxonomy_exists( $taxonomy ) )
 			return false;
 
 		foreach ( $defaults as $term_slug => $term_name )
@@ -66,7 +56,7 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 				wp_insert_term( $term_name, $taxonomy, array( 'slug' => $term_slug ) );
 
 		return true;
-    }	
+	}
 	
 	public static function prepare_terms( $taxonomy, $args = array(), $terms = null, $key = 'term_id', $obj = true )
 	{
@@ -98,18 +88,9 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 		return $new_terms;
 	}
 
-
-
-
-
-	
-	
-	
-
 	/** ---------------------------------------------------------------------------------
-									NOT USED YET
-	--------------------------------------------------------------------------------- **/	
-	
+		NOT USED YET
+	--------------------------------------------------------------------------------- **/
 	
 	// Remove a given term from the specified post. This function is missing from core WordPress.
 	// https://gist.github.com/mjangda/1506353
@@ -185,7 +166,6 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 		restore_current_blog();
 		return $result;
 	}	
-	
 
 	// dep!
 	// based on WP get_term_by()
@@ -238,26 +218,26 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 
 
 	// http://wordpress.mfields.org/2010/remove-taxonomy-box-from-wordpress-administration-panels/
-    function mfields_hide_taxonomies_from_admin() {
-        global $wp_taxonomies;
-        $hide = array(
-            'symbolism'
-            );
-        foreach( $wp_taxonomies as $name => $taxonomy ) {
-            if( in_array( $name, $hide ) ) {
-                remove_meta_box( 'tagsdiv-' . $name, 'post', 'side' );
-                add_meta_box(
-                    'mfields_taxonomy_ui_' . $name,
-                    $taxonomy->label,
-                    'my_custom_taxonomy_handler_function',
-                    'post',
-                    'side',
-                    'core',
-                    array( 'taxonomy' => $name )
-                    );
-            }
-        }
-    } // add_action( 'add_meta_boxes', 'mfields_hide_taxonomies_from_admin' );
+	function mfields_hide_taxonomies_from_admin() {
+		global $wp_taxonomies;
+		$hide = array(
+			'symbolism'
+			);
+		foreach( $wp_taxonomies as $name => $taxonomy ) {
+			if( in_array( $name, $hide ) ) {
+				remove_meta_box( 'tagsdiv-' . $name, 'post', 'side' );
+				add_meta_box(
+					'mfields_taxonomy_ui_' . $name,
+					$taxonomy->label,
+					'my_custom_taxonomy_handler_function',
+					'post',
+					'side',
+					'core',
+					array( 'taxonomy' => $name )
+					);
+			}
+		}
+	} // add_action( 'add_meta_boxes', 'mfields_hide_taxonomies_from_admin' );
 
 
 
@@ -266,11 +246,11 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 	/**
 	 * Define default terms for custom taxonomies in WordPress 3.0.1
 	 *
-	 * @author    Michael Fields     http://wordpress.mfields.org/
-	 * @props     John P. Bloch      http://www.johnpbloch.com/
+	 * @author Michael Fields http://wordpress.mfields.org/
+	 * @props John P. Bloch  http://www.johnpbloch.com/
 	 *
-	 * @since     2010-09-13
-	 * @alter     2010-09-14
+	 * @since 2010-09-13
+	 * @alter 2010-09-14
 	 *
 	 * @license   GPLv2
 	 */
@@ -291,42 +271,50 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 	} // add_action( 'save_post', 'mfields_set_default_object_terms', 100, 2 );
 	
 	// http://wordpress.mfields.org/2010/set-default-terms-for-your-custom-taxonomies-in-wordpress-3-0/
-    function save_post( $post_id, $post ) 
-    {
-        $gBookHomePlugin =& gBookHomePlugin::getInstance();
-        $options = $gBookHomePlugin->getOptions();            
+	function save_post( $post_id, $post ) 
+	{
+		$gBookHomePlugin =& gBookHomePlugin::getInstance();
+		$options = $gBookHomePlugin->getOptions();
 
-        if ( 'publish' === $post->post_status ) {
-            $defaults = array( 'calendar_type' => array( $options['default_type'] ) ); // ? : don't need really, must add it anyways.
-            if ( false !== $options['default_location'] ) 
+		if ( 'publish' === $post->post_status ) {
+			$defaults = array( 'calendar_type' => array( $options['default_type'] ) ); // ? : don't need really, must add it anyways.
+			if ( false !== $options['default_location'] ) 
 				$defaults['location'] = array( $options['default_location'] );
-            
-            $taxonomies = get_object_taxonomies( $post->post_type );
-            foreach ( (array) $taxonomies as $taxonomy ) {
-                $terms = wp_get_post_terms( $post_id, $taxonomy );
-                if ( empty( $terms ) && array_key_exists( $taxonomy, $defaults ) ) {
-                    wp_set_object_terms( $post_id, $defaults[$taxonomy], $taxonomy );
-                }
-            }
-        }
-    } //add_action( 'save_post', array( &$this, 'save_post' ), 100, 2 );    
-    
-	// Can't add initial calendars on activation, because taxonomy isn't yet registered
-    function register_default_calendar_types( $flag = 'gevent_registering_cal_types' )
-    {
-        if ( taxonomy_exists( 'calendar_type' ) ) {
-            $gBookHomePlugin =& gBookHomePlugin::getInstance();
-            $options = $gBookHomePlugin->getOptions();            
-            foreach ( $options['types'] as $type => $details ) {
-                if ( false !== $details && ! term_exists( $type, 'calendar_type' ) ) {
-                    wp_insert_term( $details['title'], 'calendar_type', array(
-                        'description'=> $details['desc'],
-                        'slug' => $type,
-                    ) );
-                }
-            }
-            delete_option( $flag );
-        }
-    }	
+			
+			$taxonomies = get_object_taxonomies( $post->post_type );
+			foreach ( (array) $taxonomies as $taxonomy ) {
+				$terms = wp_get_post_terms( $post_id, $taxonomy );
+				if ( empty( $terms ) && array_key_exists( $taxonomy, $defaults ) ) {
+					wp_set_object_terms( $post_id, $defaults[$taxonomy], $taxonomy );
+				}
+			}
+		}
+	} //add_action( 'save_post', array( &$this, 'save_post' ), 100, 2 );
 	
+	// Can't add initial calendars on activation, because taxonomy isn't yet registered
+	function register_default_calendar_types( $flag = 'gevent_registering_cal_types' )
+	{
+		if ( taxonomy_exists( 'calendar_type' ) ) {
+			$gBookHomePlugin =& gBookHomePlugin::getInstance();
+			$options = $gBookHomePlugin->getOptions();
+			foreach ( $options['types'] as $type => $details ) {
+				if ( false !== $details && ! term_exists( $type, 'calendar_type' ) ) {
+					wp_insert_term( $details['title'], 'calendar_type', array(
+						'description'=> $details['desc'],
+						'slug' => $type,
+					) );
+				}
+			}
+			delete_option( $flag );
+		}
+	}	
 } }
+
+// *********** https://gist.github.com/helenhousandi/1573966
+
+// http://scribu.net/wordpress/sortable-taxonomy-columns.html
+// https://gist.github.com/scribu/856587
+
+// http://scribu.net/wordpress/custom-sortable-columns.html
+// https://gist.github.com/scribu/906872
+

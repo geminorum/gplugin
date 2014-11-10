@@ -3,9 +3,9 @@ if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper
 {
 
 	/** ---------------------------------------------------------------------------------
-						USED FUNCTION: Modyfy with Caution!
+		USED FUNCTION: Modyfy with Caution!
 	--------------------------------------------------------------------------------- **/
-
+	
 	public static function require_array( $array, $base_path, $suffix = '.class.php', $folder = 'includes' )
 	{
 		foreach ( $array as $file )
@@ -34,14 +34,9 @@ if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper
 		return end( $parts );
 	}
 	
-	
-	
-	
-	
 	/** ---------------------------------------------------------------------------------
-									NOT USED YET
+		NOT USED YET
 	--------------------------------------------------------------------------------- **/	
-	
 	
 	// http://www.paulund.co.uk/html5-download-attribute
 	function download( $file_path, $mime = 'application/octet-stream' )
@@ -59,17 +54,13 @@ if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper
 			header( 'Connection: close' );
 			
 			ob_clean();
-            flush();
+			flush();
 			
 			readfile( $file_path );
 			
 			exit();
 		}
-	}	
-	
-	
-	
-	
+	}
 	
 	/**
 	// https://gist.github.com/chrisguitarguy/6096271
