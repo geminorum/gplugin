@@ -238,15 +238,17 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 									NOT USED YET
 	--------------------------------------------------------------------------------- **/
 	
+	// img : spinner / wpspin_light
+	public static function imgSpin( $img = 'spinner', $large = false  ) 
+	{
+		return esc_url( admin_url( 'images/'.$img.( $large ? '-2x' : '' ).'.gif' ) );
+	}
+	
 	// based on bp
 	public static function username_from_email( $email, $strict = true )
 	{
 		return preg_replace( '/\s+/', '', sanitize_user( preg_replace( '/([^@]*).*/', '$1', $email ), $strict ) );
 	}
-	
-	
-	
-	
 	
 	// UNFINISHED
 	// update post meta by array
