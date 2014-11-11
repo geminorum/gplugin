@@ -116,6 +116,8 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 			'class' => '',
 			'label_for' => '',
 			'option_group' => $this->option_group,
+			
+			'rekey' => false, // use value as key on select
 		), $r );
 		
 		if ( ! $args['field'] )
@@ -214,7 +216,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 					$html = '';
 					foreach ( $args['values'] as $value_name => $value_title )
 						$html .= gPluginFormHelper::html( 'option', array(
-							'value' => $value_name,
+							'value' => ( $args['rekey'] ? $value_title : $value_name ),
 							'selected' => $value_name == $value,
 						), esc_html( $value_title ) );
 						

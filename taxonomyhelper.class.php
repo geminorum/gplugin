@@ -31,28 +31,18 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 	
 	// Originally from : Custom Field Taxonomies : https://github.com/scribu/wp-custom-field-taxonomies
 	// here because we used this to convert meta into terms
-	public static function getMetaKeys( $rekey = false, $table = 'postmeta' )
+	public static function getMetaKeys( $table = 'postmeta' )
 	{
 		global $wpdb;
 
-		// USE prepare
-		// USE $table
-		$keys = $wpdb->get_col( "
+		// TODO: use $table, prepare
+		return $wpdb->get_col( "
 			SELECT meta_key
 			FROM $wpdb->postmeta
 			GROUP BY meta_key
 			HAVING meta_key NOT LIKE '\_%'
 			ORDER BY meta_key ASC
 		" );
-		
-		if ( ! $rekey )
-			return $keys;
-		
-		$re = array();	
-		foreach ( $keys as $key )
-			$re[$key] = $key;
-			
-		return $re;
 	}	
 	
 	// USED WHEN: admin edit table
