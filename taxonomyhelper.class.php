@@ -43,7 +43,23 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 			HAVING meta_key NOT LIKE '\_%'
 			ORDER BY meta_key ASC
 		" );
-	}	
+	}
+
+	// Originally from : Custom Field Taxonomies : https://github.com/scribu/wp-custom-field-taxonomies
+	// here because we used this to convert meta into terms
+	public static function deleteMetaKeys( $meta_key, $limit = false ) 
+	{
+		global $wpdb;
+		
+		if ( $limit )
+			$query = $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key = %s LIMIT %d", $meta_key, $limit );
+		else 
+			$query = $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key = %s", $meta_key );
+			
+		return $wpdb->query( $query ); 
+	}
+	
+	
 	
 	// USED WHEN: admin edit table
 	public static function get_admin_terms_edit( $post_id, $post_type, $taxonomy, $glue = ', ', $empty = '&#8212;' )
