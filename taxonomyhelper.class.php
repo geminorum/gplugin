@@ -5,6 +5,56 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 		USED FUNCTION: Modyfy with Caution!
 	--------------------------------------------------------------------------------- **/
 	
+	// Originally from : Custom Field Taxonomies : https://github.com/scribu/wp-custom-field-taxonomies
+	public static function getMetaRows( $meta_key, $limit = false )
+	{
+		global $wpdb;
+		
+		if ( $limit )
+			$query = $wpdb->prepare( "
+				SELECT post_id, GROUP_CONCAT( meta_value ) as meta
+				FROM $wpdb->postmeta
+				WHERE meta_key = %s
+				GROUP BY post_id
+	 			LIMIT %d							
+			", $meta_key, $limit );
+		else 	
+			$query = $wpdb->prepare( "
+				SELECT post_id, GROUP_CONCAT( meta_value ) as meta
+				FROM $wpdb->postmeta
+				WHERE meta_key = %s
+				GROUP BY post_id
+			", $meta_key );
+		
+		return $wpdb->get_results( $query );
+	}
+	
+	// Originally from : Custom Field Taxonomies : https://github.com/scribu/wp-custom-field-taxonomies
+	// here because we used this to convert meta into terms
+	public static function getMetaKeys( $rekey = false, $table = 'postmeta' )
+	{
+		global $wpdb;
+
+		// USE prepare
+		// USE $table
+		$keys = $wpdb->get_col( "
+			SELECT meta_key
+			FROM $wpdb->postmeta
+			GROUP BY meta_key
+			HAVING meta_key NOT LIKE '\_%'
+			ORDER BY meta_key ASC
+		" );
+		
+		if ( ! $rekey )
+			return $keys;
+		
+		$re = array();	
+		foreach ( $keys as $key )
+			$re[$key] = $key;
+			
+		return $re;
+	}	
+	
 	// USED WHEN: admin edit table
 	public static function get_admin_terms_edit( $post_id, $post_type, $taxonomy, $glue = ', ', $empty = '&#8212;' )
 	{
