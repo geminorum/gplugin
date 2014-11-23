@@ -1,19 +1,35 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
 defined( 'GPLUGIN_SESSION_NETWORKWIDE' ) or define( 'GPLUGIN_SESSION_NETWORKWIDE', true );
+defined( 'GPLUGIN_SESSION_CRON_ROUTINE' ) or define( 'GPLUGIN_SESSION_CRON_ROUTINE', 'twicedaily' ); // 'hourly'
 
-// based on WP Session Manager 1.1.1 by Eric Mann 
-// http://jumping-duck.com/wordpress/plugins
-// http://wordpress.org/plugins/wp-session-manager/
-class gPluginSessionHelper {
+/**
+ *
+ * based on WP Session Manager 1.1.2 by Eric Mann 
+ * http://jumping-duck.com/wordpress/plugins
+ * http://wordpress.org/plugins/wp-session-manager/
+ * http://jumping-duck.com/wordpress/plugins/wp-session-manager/
+ *
+**/
+
+class gPluginSessionHelper 
+{
 
 	public static function setup_actions()
 	{
-		add_action( 'wp', array( __CLASS__, 'register_garbage_collection' ) );	
-		add_action( 'plugins_loaded', array( __CLASS__, 'start' ) );
-		add_action( 'shutdown', array( __CLASS__, 'write_close' ) );
-		add_action( 'gplugin_session_garbage_collection', array( __CLASS__, 'cleanup' ) );
+		global $gPluginSessionLoaded;
+		
+		if ( empty ( $gPluginSessionLoaded ) ) {
+		
+			add_action( 'wp', array( __CLASS__, 'register_garbage_collection' ) );
+			add_action( 'plugins_loaded', array( __CLASS__, 'start' ) );
+			add_action( 'shutdown', array( __CLASS__, 'write_close' ) );
+			add_action( 'gplugin_session_garbage_collection', array( __CLASS__, 'cleanup' ) );
+			
+			$gPluginSessionLoaded = true;
+		}
 	}
+	
 	/**
 	 * Return the current cache expire setting.
 	 *
@@ -79,11 +95,11 @@ class gPluginSessionHelper {
 	public static function start() 
 	{
 		$gPluginSession = gPluginSession::get_instance();
-		do_action( 'wp_session_start' );
+		do_action( 'wp_session_start' ); // back comp
 		return $gPluginSession->session_started();
 	}
 	
-
+	
 	/**
 	 * Return the current session status.
 	 *
@@ -96,7 +112,7 @@ class gPluginSessionHelper {
 			return PHP_SESSION_ACTIVE;
 		return PHP_SESSION_NONE;
 	}
-
+	
 	/**
 	 * Unset all session variables.
 	 */
@@ -105,7 +121,7 @@ class gPluginSessionHelper {
 		$gPluginSession = gPluginSession::get_instance();
 		$gPluginSession->reset();
 	}
-
+	
 	/**
 	 * Write session data and end session
 	 */
@@ -113,7 +129,7 @@ class gPluginSessionHelper {
 	{
 		$gPluginSession = gPluginSession::get_instance();
 		$gPluginSession->write_data();
-		do_action( 'wp_session_commit' );
+		do_action( 'wp_session_commit' ); // back comp
 	}
 	
 
@@ -126,19 +142,17 @@ class gPluginSessionHelper {
 	 */
 	public static function cleanup() 
 	{
-	
 		global $wpdb;
 
-		if ( defined( 'WP_SETUP_CONFIG' ) ) {
+		if ( defined( 'WP_SETUP_CONFIG' ) )
 			return;
-		}
 
 		if ( ! defined( 'WP_INSTALLING' ) ) {
 			if ( GPLUGIN_SESSION_NETWORKWIDE )
 				$expiration_keys = $wpdb->get_results( "SELECT meta_key, meta_value FROM $wpdb->sitemeta WHERE meta_key LIKE '_gp_session_expires_%'" );
 			else
 				$expiration_keys = $wpdb->get_results( "SELECT option_name, option_value FROM $wpdb->options WHERE option_name LIKE '_gp_session_expires_%'" );
-
+			
 			$now = time();
 			$expired_sessions = array();
 			if ( GPLUGIN_SESSION_NETWORKWIDE ) {
@@ -147,7 +161,7 @@ class gPluginSessionHelper {
 					if ( $now > intval( $expiration->meta_value ) ) {
 						// Get the session ID by parsing the option_name
 						$session_id = substr( $expiration->meta_key, 20 );
-
+						
 						$expired_sessions[] = $expiration->meta_key;
 						$expired_sessions[] = "_gp_session_$session_id";
 					}
@@ -158,7 +172,7 @@ class gPluginSessionHelper {
 					if ( $now > intval( $expiration->option_value ) ) {
 						// Get the session ID by parsing the option_name
 						$session_id = substr( $expiration->option_name, 20 );
-
+						
 						$expired_sessions[] = $expiration->option_name;
 						$expired_sessions[] = "_gp_session_$session_id";
 					}
@@ -173,28 +187,27 @@ class gPluginSessionHelper {
 					$wpdb->query( "DELETE FROM $wpdb->options WHERE option_name IN ('$option_names')" );
 			}
 		}
-
+		
 		// Allow other plugins to hook in to the garbage collection process.
-		do_action( 'wp_session_cleanup' );	
-
+		do_action( 'wp_session_cleanup' );
+		
 	}
 	
-
+	
 	/**
 	 * Register the garbage collector as a twice daily event.
 	 */
 	public static function register_garbage_collection() 
 	{
 		if ( ! wp_next_scheduled( 'gplugin_session_garbage_collection' ) )
-			wp_schedule_event( time(), 'twicedaily', 'gplugin_session_garbage_collection' );
+			wp_schedule_event( time(), GPLUGIN_SESSION_CRON_ROUTINE, 'gplugin_session_garbage_collection' );
 	}
 	
-
+	
 }
 
-
 // Multidimensional ArrayAccess : Allows ArrayAccess-like functionality with multidimensional arrays.  Fully supports both sets and unsets.
-// based on WP Session Manager 1.1.1 by Eric Mann 
+// based on WP Session Manager 1.1.2 by Eric Mann 
 // http://jumping-duck.com/wordpress/plugins
 // http://wordpress.org/plugins/wp-session-manager/
 class gPluginRecursiveArrayAccess implements ArrayAccess {
@@ -319,7 +332,7 @@ class gPluginRecursiveArrayAccess implements ArrayAccess {
 }
 
 // Standardizes WordPress session data using database-backed options for storage. for storing user session information.
-// based on WP Session Manager 1.1.1 by Eric Mann 
+// based on WP Session Manager 1.1.2 by Eric Mann 
 // http://jumping-duck.com/wordpress/plugins
 // http://wordpress.org/plugins/wp-session-manager/
 final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterator, Countable {
