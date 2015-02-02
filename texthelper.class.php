@@ -80,6 +80,27 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 									NOT USED YET
 	--------------------------------------------------------------------------------- **/	
 	
+	// generating unique strings
+	// Sometimes you don't want to create any files but just random string of given length (eg. to generate password).
+	// http://ahoj.io/generating-temporary-files-in-php
+	/**
+		string(20) "H5DA9GPT36DM24MZHILA"
+		string(20) "LBMM6I8CLY1437ZK241O"
+		string(20) "OE431O8KVE15ER0KB82V"	
+	**/
+	public static function uniqueString( $max = 20 )
+	{
+		$string = '';
+		
+		for ($i=0; $i < $max; $i++) { 
+			$d = rand(1,30) % 2;
+			$char = $d ? chr(rand(65,90)) : chr(rand(48,57));
+			$string .= $char;
+		}
+		
+		return $string;
+	}
+	
 	// create username from email address
 	// ALSO SEE : http://php.net/manual/en/function.mailparse-rfc822-parse-addresses.php
 	public static function email_to_username( $email )
