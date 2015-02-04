@@ -3,8 +3,18 @@ if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper
 {
 
 	/** ---------------------------------------------------------------------------------
-		USED FUNCTION: Modyfy with Caution!
-	--------------------------------------------------------------------------------- **/
+						USED FUNCTIONS: Modyfy with Caution!
+	--------------------------------------------------------------------------------- **/	
+	
+	public static function mime( $extension )
+	{
+		switch ( $extension ) {
+			case 'xlsx' : return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+			case 'csv' : return 'text/csv';
+			case 'xml' : return 'text/xml';
+		}
+		return '';
+	}	
 	
 	public static function require_array( $array, $base_path, $suffix = '.class.php', $folder = 'includes' )
 	{
@@ -35,8 +45,79 @@ if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper
 	}
 	
 	/** ---------------------------------------------------------------------------------
-		NOT USED YET
+									NOT USED YET
 	--------------------------------------------------------------------------------- **/	
+
+	// TESTED : not working very well with UTF
+	// http://www.scriptville.in/parse-csv-data-to-array/
+	// Parse csv data to array
+	// Here, we have function to parse csv file into array. This function return associative array of each line with all column name in array as key and csv data for each line as key values.
+	public static function csvToArray( $file )
+	{
+		$rows = $headers = array();
+		
+		if ( file_exists( $file ) && is_readable( $file ) ) {
+			
+			$handle = fopen( $file, 'r' );
+			
+			while ( ! feof( $handle ) ) {
+				
+				$row = fgetcsv( $handle, 10240, ',', '"' );
+
+				if ( empty( $headers ) )
+					$headers = $row;
+				else if ( is_array( $row ) ) {
+					array_splice( $row, count( $headers ) );
+					$rows[] = array_combine( $headers, $row );
+				}
+			}
+			
+			fclose( $handle );
+		
+		} else {
+			
+			throw new Exception( $file.' doesn`t exist or is not readable.' );
+			
+		}
+		
+		return $rows;
+    }	
+	
+	// http://www.php.net/manual/en/function.copy.php#103732
+	// 'cp -R' written in PHP.
+	public static function copy( $path, $dest, $ds = DIRECTORY_SEPARATOR ) 
+	{
+		if( is_dir( $path ) ) {
+			
+			@ mkdir( $dest );
+			$objects = scandir( $path );
+			
+			if( sizeof( $objects ) > 0 ) {
+				
+				foreach( $objects as $file ) {
+					
+					if( $file == "." || $file == ".." )
+						continue;
+					
+					if( is_dir( $path.$ds.$file ) )
+						self::copy( $path.$ds.$file, $dest.$ds.$file );
+					else
+						copy( $path.$ds.$file, $dest.$ds.$file );
+				}
+			}
+			
+			return true;
+			
+		} elseif( is_file( $path ) ) {
+			
+			return copy( $path, $dest );
+			
+		} 
+		
+		return false;
+	}
+
+
 	
 	// http://www.paulund.co.uk/html5-download-attribute
 	function download( $file_path, $mime = 'application/octet-stream' )
