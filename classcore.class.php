@@ -72,6 +72,24 @@ class gPluginClassCore implements gPluginClassCoreInterface
 	// Setup the default hooks and actions
 	public function setup_actions() { }	
 	
+	////////////////////////////////////////////////////
+	// helpers
+	
+	// ANCESTOR : shortcode_atts()
+	public static function atts( $pairs, $atts )
+	{
+		$atts = (array) $atts;
+		$out = array();
+
+		foreach( $pairs as $name => $default ) {
+			if ( array_key_exists( $name, $atts ) )
+				$out[$name] = $atts[$name];
+			else
+				$out[$name] = $default;
+		}
+
+		return $out;
+	}	
 }
 
 }
