@@ -7,6 +7,12 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 						USED FUNCTION: Modyfy with Caution!
 	--------------------------------------------------------------------------------- **/
 
+	// https://gist.github.com/geminorum/5eec57816adb003ccefb
+	public static function joinString( $parts, $between, $last )
+	{
+		return join( $last, array_filter( array_merge( array( join( $between, array_slice( $parts, 0, -1 ) ) ), array_slice( $parts, -1 ) ) ) );
+	}
+	
 	// http://stackoverflow.com/a/3161830
 	public static function truncateString( $string, $length = 15, $dots = '&hellip;' ) 
 	{
