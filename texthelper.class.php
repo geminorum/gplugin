@@ -86,6 +86,20 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 									NOT USED YET
 	--------------------------------------------------------------------------------- **/	
 	
+	// https://www.addedbytes.com/blog/code/php-querystring-functions/
+	public static function removeQueryVar( $url, $key ) 
+	{
+		return substr( preg_replace( '/(.*)(?|&)'.$key.'=[^&]+?(&)(.*)/i', '$1$2$4', $url.'&' ), 0, -1 );
+	}	
+	
+	public static function addQueryVar( $url, $key, $value ) 
+	{
+		$url = self::removeQueryVar( $url, $key );
+		if ( false === strpos( $url, '?' ) ) 
+			return $url.'?'.$key.'='.$value;
+		return $url.'&'.$key.'='.$value;
+	}	
+	
 	// generating unique strings
 	// Sometimes you don't want to create any files but just random string of given length (eg. to generate password).
 	// http://ahoj.io/generating-temporary-files-in-php
