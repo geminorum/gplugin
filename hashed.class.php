@@ -4,19 +4,19 @@ if ( ! class_exists( 'gPluginHashed' ) ) { class gPluginHashed
 	/**
 
 	http://www.fileformat.info/tool/hash.htm
-	
+
 	http://wordpress.org/plugins/wp-hashed-ids/
 	http://www.hashids.org/php/
-	
+
 	http://stackoverflow.com/a/2237247
 
 	http://kvz.io/blog/2009/06/10/create-short-ids-with-php-like-youtube-or-tinyurl/
 	http://www.codinghorror.com/blog/2007/08/url-shortening-hashes-in-practice.html
-	
+
 	http://blog.kevburnsjr.com/php-unique-hash
-	
+
 	**/
-	
+
 	/** ---------------------------------------------------------------------------------
 						USED FUNCTION: Modyfy with Caution!
 	--------------------------------------------------------------------------------- **/
@@ -27,74 +27,74 @@ if ( ! class_exists( 'gPluginHashed' ) ) { class gPluginHashed
 	{
 		return md5( uniqid( microtime().rand(), true ) );
 	}
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 	/** ---------------------------------------------------------------------------------
 									NOT USED YET
-	--------------------------------------------------------------------------------- **/	
-	
-	
-	
+	--------------------------------------------------------------------------------- **/
+
+
+
 	//http://programanddesign.com/php/base62-encode/
 	// If you have large integers and you want to shrink them down in size for whatever reason, you can use this code. Should be easy enough to extend if you want even higher bases (just add a few more chars and increase the base).
-	
+
 	/**
 	 * Converts a base 10 number to any other base.
-	 * 
+	 *
 	 * @param int $val   Decimal number
 	 * @param int $base  Base to convert to. If null, will use strlen($chars) as base.
 	 * @param string $chars Characters used in base, arranged lowest to highest. Must be at least $base characters long.
-	 * 
+	 *
 	 * @return string    Number converted to specified base
 	 */
-	public static function base_encode( $val, $base = 62, $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' ) 
+	public static function base_encode( $val, $base = 62, $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' )
 	{
-		if( ! isset( $base ) ) 
+		if( ! isset( $base ) )
 			$base = strlen( $chars );
 		$str = '';
-		
+
 		do {
 			$m = bcmod( $val, $base );
 			$str = $chars[$m].$str;
 			$val = bcdiv( bcsub( $val, $m ), $base );
 		} while( bccomp( $val,0 ) > 0 );
-		
+
 		return $str;
 	}
 
 	/**
 	* Convert a number from any base to base 10
-	* 
+	*
 	* @param string $str   Number
 	* @param int $base  Base of number. If null, will use strlen($chars) as base.
 	* @param string $chars Characters use in base, arranged lowest to highest. Must be at least $base characters long.
-	* 
+	*
 	* @return int    Number converted to base 10
 	*/
-	public static function base_decode( $str, $base = 62, $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' ) 
+	public static function base_decode( $str, $base = 62, $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' )
 	{
-		if ( ! isset( $base ) ) 
+		if ( ! isset( $base ) )
 			$base = strlen( $chars );
 		$len = strlen( $str );
 		$val = 0;
 		$arr = array_flip( str_split( $chars ) );
-		
+
 		for( $i = 0; $i < $len; ++$i )
 			$val = bcadd( $val, bcmul( $arr[$str[$i]], bcpow( $base, $len-$i - 1 ) ) );
 
 		return $val;
-	}	
-	
-	
-	
+	}
+
+
+
 	// http://kvz.io/blog/2009/06/10/create-short-ids-with-php-like-youtube-or-tinyurl/
 	// alphaID(9007199254740989); -> PpQXn7COf
 	// alphaID('PpQXn7COf', true); -> 9007199254740989
-	
+
 	/**
 	 * Translates a number to a short alhanumeric version
 	 *
@@ -251,9 +251,9 @@ if ( ! class_exists( 'gPluginHashed' ) ) { class gPluginHashed
 
 		return $out;
 	}
-	
-	
-	
+
+
+
 } }
 
 
@@ -266,20 +266,20 @@ for ($i = 0; $i < 10; $i++) {
 	echo gPluginHashedRandom::num(1, 100) . '<br />';
 }
 **/
-if ( ! class_exists( 'gPluginHashedRandom' ) ) { class gPluginHashedRandom 
+if ( ! class_exists( 'gPluginHashedRandom' ) ) { class gPluginHashedRandom
 {
 	private static $RSeed = 0; // random seed
 	 // set seed
-	public static function seed( $s = 0 ) 
+	public static function seed( $s = 0 )
 	{
 		self::$RSeed = abs( intval( $s ) ) % 9999999 + 1;
 		self::num();
 	}
-	
+
 	// generate random number
-	public static function num( $min = 0, $max = 9999999 ) 
+	public static function num( $min = 0, $max = 9999999 )
 	{
-		if ( self::$RSeed == 0 ) 
+		if ( self::$RSeed == 0 )
 			self::seed( mt_rand() );
 		self::$RSeed = ( self::$RSeed * 125 ) % 2796203;
 		return self::$RSeed % ($max - $min + 1) + $min;

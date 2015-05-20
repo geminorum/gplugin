@@ -8,20 +8,20 @@ if ( ! function_exists( 'gPluginFactory' ) ) : function gPluginFactory( $class =
 	return false;
 } endif;
 
-if ( ! class_exists( 'gPluginClassCore' ) ) { 
+if ( ! class_exists( 'gPluginClassCore' ) ) {
 
 // http://stackoverflow.com/a/6386309
-interface gPluginClassCoreInterface 
+interface gPluginClassCoreInterface
 {
     static function instance( $constants = array(), $args = array() );
 }
 
 // based on WP_Deregister_Users by John James Jacoby : http://wordpress.org/extend/plugins/deregister-users/
-class gPluginClassCore implements gPluginClassCoreInterface 
+class gPluginClassCore implements gPluginClassCoreInterface
 {
 	protected $data;
-	
-    public static final function instance( $class = 'gPluginClassCore', $constants = array(), $args = array() ) 
+
+    public static final function instance( $class = 'gPluginClassCore', $constants = array(), $args = array() )
 	{
         static $instance;
 		if ( ! isset( $instance ) )	{
@@ -31,7 +31,7 @@ class gPluginClassCore implements gPluginClassCoreInterface
 		}
 		return $instance;
     }
-	
+
 	// A dummy constructor to prevent loading more than once.
 	protected function __construct() { /* Do nothing here */ }
 	protected function __distruct() { $this->data = null; }
@@ -48,33 +48,33 @@ class gPluginClassCore implements gPluginClassCoreInterface
 	public function __unset( $key ) { if ( isset( $this->data[$key] ) ) unset( $this->data[$key] ); }
 	// Magic method to prevent notices and errors from invalid method calls
 	public function __call( $name = '', $args = array() ) { unset( $name, $args ); return null; }
-	
+
 	// workaround to avoid : "Indirect modification of overloaded property"
 	public function inject( $key, $value ) { $this->{$key} = array_merge( $this->{$key}, (array) $value ); }
 	public function append( $key, $arr_key, $arr_val ) { $temp = $this->{$key}; $temp[$arr_key] = $arr_val; $this->{$key} = $temp; }
-	
+
 	// must dep
 	// shortcode_atts() mock-up
-	public function set_args( $defaults, $args ) { 
-		$args = (array) $args; 
+	public function set_args( $defaults, $args ) {
+		$args = (array) $args;
 		$out = array();
-		foreach( $defaults as $name => $default ) { 
-			if ( array_key_exists( $name, $args ) ) 
-				$out[$name] = $args[$name]; 
-			else 
-				$out[$name] = $default; 
+		foreach( $defaults as $name => $default ) {
+			if ( array_key_exists( $name, $args ) )
+				$out[$name] = $args[$name];
+			else
+				$out[$name] = $default;
 		}
 		$this->args = $out;
 	}
-	
+
 	// Set some smart defaults to class variables. Allow some of them to be filtered to allow for early overriding.
 	public function setup_globals( $constants = array(), $args = array() ) { $this->constants = $constants; $this->args = $args; }
 	// Setup the default hooks and actions
-	public function setup_actions() { }	
-	
+	public function setup_actions() { }
+
 	////////////////////////////////////////////////////
 	// helpers
-	
+
 	// ANCESTOR : shortcode_atts()
 	public static function atts( $pairs, $atts )
 	{
@@ -89,7 +89,7 @@ class gPluginClassCore implements gPluginClassCoreInterface
 		}
 
 		return $out;
-	}	
+	}
 }
 
 }

@@ -7,26 +7,26 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
     /*
      * Based on Simple Term Meta by Jacob M Goldman : http://www.cmurrayconsulting.com/software/wordpress-simple-term-meta/
      */
-    
-	public function setup_globals( $constants = array(), $args = array() ) 
-	{ 
+
+	public function setup_globals( $constants = array(), $args = array() )
+	{
 		$this->set_args( array(
 			'db_version' => '1',
 		), $args );
 	}
-	
-    public function setup_actions() 
-	{ 
+
+    public function setup_actions()
+	{
         // http://justintadlock.com/archives/2011/06/09/install-and-upgrade-functions-for-plugins-and-themes
-        
+
         // NO NEED : probably, because we call it manually upon enableing the remote
         //register_activation_hook( constant( 'GTERMMETA_FILE' ), array( &$this, 'activation_hook' ) );
-        
+
         //register_uninstall_hook( constant( 'GTERMMETA_FILE' ), array( &$this, 'uninstall_hook' ) );
         //register_uninstall_hook( constant( 'GTERMMETA_FILE' ), 'gPluginTermMeta::uninstall_hook' );
         //register_deactivation_hook( constant( 'GTERMMETA_FILE' ), 'gPluginTermMeta::deactivation_hook' );
-        
-        
+
+
         //register_uninstall_hook( constant( 'GTERMMETA_FILE' ), array( 'gPluginTermMeta', 'uninstall_hook' ) );
         add_action( 'init', array( $this, 'define_table' ) );
 	}
@@ -45,7 +45,7 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
             meta_value longtext,
             PRIMARY KEY (meta_id),
             KEY term_id (term_id),
-            KEY meta_key (meta_key)	  
+            KEY meta_key (meta_key)
             );";
 
             require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -64,7 +64,7 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
         delete_option( 'gtermmeta_db_version' );
     }
 
-    function define_table() 
+    function define_table()
 	{
         global $wpdb;
         $wpdb->termmeta = $wpdb->prefix.'termmeta';
@@ -79,11 +79,11 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
     *
     * @param array $term_ids List of post IDs.
     * @return bool|array Returns false if there is nothing to update or an array of metadata.
-    */    
-    public static function update_termmeta_cache( $term_ids ) 
+    */
+    public static function update_termmeta_cache( $term_ids )
 	{
         return update_meta_cache( 'term', $term_ids );
-    }    
+    }
 
     /**
     * Add meta data field to a term.
@@ -94,10 +94,10 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
     * @param bool $unique Optional, default is false. Whether the same key should not be added.
     * @return bool False for failure. True for success.
     */
-    public static function add_term_meta( $term_id, $meta_key, $meta_value, $unique = false ) 
+    public static function add_term_meta( $term_id, $meta_key, $meta_value, $unique = false )
 	{
         return add_metadata( 'term', $term_id, $meta_key, $meta_value, $unique );
-    }    
+    }
 
     /**
     * Remove metadata matching criteria from a term.
@@ -111,7 +111,7 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
     * @param mixed $meta_value Optional. Metadata value.
     * @return bool False for failure. True for success.
     */
-    public static function delete_term_meta( $term_id, $meta_key, $meta_value = '' ) 
+    public static function delete_term_meta( $term_id, $meta_key, $meta_value = '' )
 	{
         return delete_metadata( 'term', $term_id, $meta_key, $meta_value );
     }
@@ -125,7 +125,7 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
     * @return mixed Will be an array if $single is false. Will be value of meta data field if $single
     *  is true.
     */
-    public static function get_term_meta( $term_id, $key, $single = false ) 
+    public static function get_term_meta( $term_id, $key, $single = false )
 	{
         return get_metadata( 'term', $term_id, $key, $single );
     }
@@ -144,7 +144,7 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
     * @param mixed $prev_value Optional. Previous value to check before removing.
     * @return bool False on failure, true if success.
     */
-    public static function update_term_meta( $term_id, $meta_key, $meta_value, $prev_value = '' ) 
+    public static function update_term_meta( $term_id, $meta_key, $meta_value, $prev_value = '' )
 	{
         return update_metadata( 'term', $term_id, $meta_key, $meta_value, $prev_value );
     }
@@ -155,7 +155,7 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
     * @param string $term_meta_key Key to search for when deleting.
     * @return bool Whether the term meta key was deleted from the database
     */
-    public static function delete_term_meta_by_key( $term_meta_key ) 
+    public static function delete_term_meta_by_key( $term_meta_key )
 	{
         if ( !$term_meta_key )
             return false;
@@ -186,7 +186,7 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
     * @param int $term_id term ID
     * @return array
     */
-    public static function get_term_custom( $term_id ) 
+    public static function get_term_custom( $term_id )
 	{
         $term_id = (int) $term_id;
 
@@ -205,7 +205,7 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
     * @param int $term_id term ID
     * @return array|null Either array of the keys, or null if keys could not be retrieved.
     */
-    public static function get_term_custom_keys( $term_id ) 
+    public static function get_term_custom_keys( $term_id )
 	{
         $custom = self::get_term_custom( $term_id );
 
@@ -226,14 +226,14 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
     * @param int $term_id Term ID
     * @return array Meta field values.
     */
-    public static function get_term_custom_values( $key = '', $term_id ) 
+    public static function get_term_custom_values( $key = '', $term_id )
 	{
         if ( !$key )
             return null;
 
         $custom = self::get_term_custom($term_id);
         return isset( $custom[$key] ) ? $custom[$key] : null;
-    }    
+    }
 } }
 
 if ( ! function_exists( 'update_termmeta_cache' ) ) : function update_termmeta_cache( $term_ids ) { return gPluginTermMeta::update_termmeta_cache( $term_ids ); } endif;

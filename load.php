@@ -9,35 +9,34 @@ $GLOBALS['_gplugin'] = array( 20, __FILE__, array(
 
 	'gPluginNetworkCore',
 	'gPluginComponentCore',
-	
+
 	'gPluginSettingsCore',
 	'gPluginFilteredCore',
 
 	'gPluginAdminCore',
 	'gPluginMetaCore',
-	
+
 	'gPluginTemplateCore',
 	'gPluginListTableCore',
 	'gPluginLoggerCore',
 	'gPluginImportCore',
-	
+
 	'gPluginTermMeta',
 	'gPluginSession',
-	
-	
+
 	'gPluginWPHelper',
 	'gPluginTaxonomyHelper',
 	'gPluginCacheHelper',
 
 	'gPluginPersianHelper',
-	
+
 	'gPluginFormHelper',
 	'gPluginTextHelper',
 	'gPluginFileHelper',
 	'gPluginImageHelper',
 	'gPluginLocationHelper',
 	'gPluginDateTimeHelper',
-	
+
 	'gPluginUtils',
 	'gPluginHashed',
 ) );
@@ -51,24 +50,24 @@ if ( ! class_exists( 'gPlugin' ) ) : class gPlugin {
 
 	private static $loaded;
 
-	static function init( $callback = '' ) 
+	static function init( $callback = '' )
 	{
 		list( $rev, $file, $classes ) = $GLOBALS['_gplugin'];
 		self::$candidates[$file] = $rev;
 		self::$classes[$file] = $classes;
-	
+
 		if ( ! empty( $callback ) ) {
 			self::$callbacks[$file] = $callback;
 			add_action( 'activate_plugin',  array( __CLASS__, 'delayed_activation' ) );
 		}
-		
+
 		if ( did_action( 'plugins_loaded' ) )
 			self::load();
 		else
 			add_action( 'plugins_loaded', array( __CLASS__, 'load' ), 9, 0 );
 	}
 
-	static function delayed_activation( $plugin ) 
+	static function delayed_activation( $plugin )
 	{
 		$plugin_dir = dirname( $plugin );
 
@@ -85,7 +84,7 @@ if ( ! class_exists( 'gPlugin' ) ) : class gPlugin {
 		}
 	}
 
-	static function load( $do_callbacks = true ) 
+	static function load( $do_callbacks = true )
 	{
 		arsort( self::$candidates );
 		$file = key( self::$candidates );
@@ -107,12 +106,12 @@ if ( ! class_exists( 'gPlugin' ) ) : class gPlugin {
 				call_user_func( $callback );
 	}
 
-	static function get_info() 
+	static function get_info()
 	{
 		arsort( self::$candidates );
 		return array( self::$loaded, self::$candidates );
 	}
-	
+
 } endif;
 
 if ( ! function_exists( 'gplugin_init' ) ) : function gplugin_init( $callback = '' ) {

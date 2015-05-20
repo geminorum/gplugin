@@ -12,13 +12,13 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 	{
 		return join( $last, array_filter( array_merge( array( join( $between, array_slice( $parts, 0, -1 ) ) ), array_slice( $parts, -1 ) ) ) );
 	}
-	
+
 	// http://stackoverflow.com/a/3161830
-	public static function truncateString( $string, $length = 15, $dots = '&hellip;' ) 
+	public static function truncateString( $string, $length = 15, $dots = '&hellip;' )
 	{
 		return ( strlen( $string ) > $length ) ? substr( $string, 0, $length - strlen( $dots ) ).$dots : $string;
 	}
-	
+
 	// http://camendesign.com/code/title-case
 	// http://daringfireball.net/2008/05/title_case
 	// https://github.com/gouch/to-title-case
@@ -26,39 +26,39 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 	// original Title Case script © John Gruber <daringfireball.net>
 	// javascript port © David Gouch <individed.com>
 	// PHP port of the above by Kroc Camen <camendesign.com>
-	public static function titleCase( $title ) 
+	public static function titleCase( $title )
 	{
 		// remove HTML, storing it for later
 		// HTML elements to ignore    | tags  | entities
 		$regx = '/<(code|var)[^>]*>.*?<\/\1>|<[^>]+>|&\S+;/';
 		preg_match_all ($regx, $title, $html, PREG_OFFSET_CAPTURE);
 		$title = preg_replace ( $regx, '', $title );
-		
+
 		//find each word (including punctuation attached)
 		preg_match_all ('/[\w\p{L}&`\'‘’"“\.@:\/\{\(\[<>_]+-? */u', $title, $m1, PREG_OFFSET_CAPTURE);
 		foreach ($m1[0] as &$m2) {
 			//shorthand these- "match" and "index"
 			list ($m, $i) = $m2;
-			
+
 			//correct offsets for multi-byte characters (`PREG_OFFSET_CAPTURE` returns *byte*-offset)
 			//we fix this by recounting the text before the offset using multi-byte aware `strlen`
 			$i = mb_strlen (substr ($title, 0, $i), 'UTF-8');
-			
+
 			//find words that should always be lowercase…
 			//(never on the first word, and never if preceded by a colon)
-			$m = $i>0 && mb_substr ($title, max (0, $i-2), 1, 'UTF-8') !== ':' && 
-				!preg_match ('/[\x{2014}\x{2013}] ?/u', mb_substr ($title, max (0, $i-2), 2, 'UTF-8')) && 
+			$m = $i>0 && mb_substr ($title, max (0, $i-2), 1, 'UTF-8') !== ':' &&
+				!preg_match ('/[\x{2014}\x{2013}] ?/u', mb_substr ($title, max (0, $i-2), 2, 'UTF-8')) &&
 				 preg_match ('/^(a(nd?|s|t)?|b(ut|y)|en|for|i[fn]|o[fnr]|t(he|o)|vs?\.?|via)[ \-]/i', $m)
 			?	//…and convert them to lowercase
 				mb_strtolower ($m, 'UTF-8')
-				
+
 			//else:	brackets and other wrappers
 			: (	preg_match ('/[\'"_{(\[‘“]/u', mb_substr ($title, max (0, $i-1), 3, 'UTF-8'))
 			?	//convert first letter within wrapper to uppercase
 				mb_substr ($m, 0, 1, 'UTF-8').
 				mb_strtoupper (mb_substr ($m, 1, 1, 'UTF-8'), 'UTF-8').
 				mb_substr ($m, 2, mb_strlen ($m, 'UTF-8')-2, 'UTF-8')
-				
+
 			//else:	do not uppercase these cases
 			: (	preg_match ('/[\])}]/', mb_substr ($title, max (0, $i-1), 3, 'UTF-8')) ||
 				preg_match ('/[A-Z]+|&|\w+[._]\w+/u', mb_substr ($m, 1, mb_strlen ($m, 'UTF-8')-1, 'UTF-8'))
@@ -67,60 +67,60 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 			:	mb_strtoupper (mb_substr ($m, 0, 1, 'UTF-8'), 'UTF-8').
 				mb_substr ($m, 1, mb_strlen ($m, 'UTF-8'), 'UTF-8')
 			));
-			
+
 			//resplice the title with the change (`substr_replace` is not multi-byte aware)
 			$title = mb_substr ($title, 0, $i, 'UTF-8').$m.
 				 mb_substr ($title, $i+mb_strlen ($m, 'UTF-8'), mb_strlen ($title, 'UTF-8'), 'UTF-8')
 			;
 		}
-		
+
 		//restore the HTML
 		foreach ($html[0] as &$tag) $title = substr_replace ($title, $tag[0], $tag[1], 0);
 		return $title;
-	}	
-	
-	
-	
-	
+	}
+
+
+
+
 	/** ---------------------------------------------------------------------------------
 									NOT USED YET
-	--------------------------------------------------------------------------------- **/	
-	
+	--------------------------------------------------------------------------------- **/
+
 	// https://www.addedbytes.com/blog/code/php-querystring-functions/
-	public static function removeQueryVar( $url, $key ) 
+	public static function removeQueryVar( $url, $key )
 	{
 		return substr( preg_replace( '/(.*)(?|&)'.$key.'=[^&]+?(&)(.*)/i', '$1$2$4', $url.'&' ), 0, -1 );
-	}	
-	
-	public static function addQueryVar( $url, $key, $value ) 
+	}
+
+	public static function addQueryVar( $url, $key, $value )
 	{
 		$url = self::removeQueryVar( $url, $key );
-		if ( false === strpos( $url, '?' ) ) 
+		if ( false === strpos( $url, '?' ) )
 			return $url.'?'.$key.'='.$value;
 		return $url.'&'.$key.'='.$value;
-	}	
-	
+	}
+
 	// generating unique strings
 	// Sometimes you don't want to create any files but just random string of given length (eg. to generate password).
 	// http://ahoj.io/generating-temporary-files-in-php
 	/**
 		string(20) "H5DA9GPT36DM24MZHILA"
 		string(20) "LBMM6I8CLY1437ZK241O"
-		string(20) "OE431O8KVE15ER0KB82V"	
+		string(20) "OE431O8KVE15ER0KB82V"
 	**/
 	public static function uniqueString( $max = 20 )
 	{
 		$string = '';
-		
-		for ($i=0; $i < $max; $i++) { 
+
+		for ($i=0; $i < $max; $i++) {
 			$d = rand(1,30) % 2;
 			$char = $d ? chr(rand(65,90)) : chr(rand(48,57));
 			$string .= $char;
 		}
-		
+
 		return $string;
 	}
-	
+
 	// create username from email address
 	// ALSO SEE : http://php.net/manual/en/function.mailparse-rfc822-parse-addresses.php
 	public static function email_to_username( $email )
@@ -128,14 +128,14 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 		return preg_replace( '/([^@]*).*/', '$1', $email ); // before @ // http://stackoverflow.com/a/956584
 		//return preg_replace( '/@.*?$/', '', $email ); // without @ // http://stackoverflow.com/a/6333658
 	}
-	
+
 	// http://php.net/manual/en/function.strrev.php#62422
 	public static function utf8_strrev($str)
 	{
 		preg_match_all( '/./us', $str, $ar );
 		return join( '', array_reverse( $ar[0] ) );
 	}
-	
+
 	// Uppercase the first character of each word in a string except 'and', 'to', etc
 	// http://stackoverflow.com/a/17817669
 	public static function titleCaseUTF($string, $delimiters = array(" ", "-", ".", "'", "O'", "Mc"), $exceptions = array("and", "to", "of", "das", "dos", "I", "II", "III", "IV", "V", "VI"))
@@ -166,9 +166,9 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 			$string = join($delimiter, $newwords);
 	   }//foreach
 	   return $string;
-	}	
-	
-	
+	}
+
+
 	// http://www.w3.org/International/questions/qa-forms-utf-8.en.php
 	// http://wpkrauts.com/2013/enforce-utf-8-with-php/
 	/**
@@ -191,17 +191,17 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 		   | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
 		   |  \xF4[\x80-\x8F][\x80-\xBF]{2}     # plane 16
 		  )*$/x",
-		  $str 
+		  $str
 		);
-	}	
-	
+	}
+
 	// http://wpkrauts.com/2013/enforce-utf-8-with-php/
 	/**
 	 * Try to convert a string to UTF-8.
 	 *
 	 * @author Thomas Scholz <http://toscho.de>
 	 * @param string $str String to encode
-	 * @param string $inputEnc Maybe the source encoding. 
+	 * @param string $inputEnc Maybe the source encoding.
 	 *               Set to NULL if you are not sure. iconv() will fail then.
 	 * @return string
 	 */
@@ -222,13 +222,13 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 		// You could also just return the original string.
 		trigger_error(
 			'Cannot convert string to UTF-8 in file '
-				. __FILE__ . ', line ' . __LINE__ . '!', 
-			E_USER_ERROR 
+				. __FILE__ . ', line ' . __LINE__ . '!',
+			E_USER_ERROR
 		);
-	}	
-	
-	
-	
+	}
+
+
+
 	// https://gist.github.com/phpdistiller/8067353
 	// This snippet sanitizes database inputs.
 	// Source : http://css-tricks.com/snippets/php/sanitize-database-inputs/
@@ -242,25 +242,25 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 		$_POST = sanitize($_POST);
 		$_GET  = sanitize($_GET);
 	**/
-	
-	
+
+
 	// Function for stripping out malicious bits
-	public static function cleanInput($input) 
+	public static function cleanInput($input)
 	{
-	 
+
 	  $search = array(
 		'@<script[^>]*?>.*?</script>@si',   // Strip out javascript
 		'@<[\/\!]*?[^<>]*?>@si',            // Strip out HTML tags
 		'@<style[^>]*?>.*?</style>@siU',    // Strip style tags properly
 		'@<![\s\S]*?--[ \t\n\r]*>@'         // Strip multi-line comments
 	  );
-	 
+
 		$output = preg_replace($search, '', $input);
 		return $output;
 	}
 
 	// Sanitization function
-	public static function sanitize($input) 
+	public static function sanitize($input)
 	{
 		if (is_array($input)) {
 			foreach($input as $var=>$val) {
@@ -280,10 +280,10 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	// https://gist.github.com/chrisguitarguy/6562266
 	// PHP regex to match a "string"
-	public static function a_string() 
+	public static function a_string()
 	{
 		$regex = '(?<!\\\\)"' // any " not preceded by a backslash
 			. '(?:[^"]|(?<=\\\\)")*' // 0 or more of anything that's NOT a " OR a " that's preceded by a backslash
@@ -292,11 +292,11 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 			. '(?<!\\\\)\'' // any ' not preceded by a backslash
 			. '(?:[^\']|(?<=\\\\)\')*' // 0 or more of anything that's NOT a ' or a ' preceded by a backslash
 			. '\''; // followed by a closing '
-			
+
 		// all togther
 		$confusing = '(?<!\\\\)"(?:[^"]|(?<=\\\\)")*"|(?<!\\\\)\'(?:[^\']|(?<=\\\\)\')*\'';
 	}
-	
+
 	// originally from WP core
 	/**
 	 * Strip any new lines from the HTML.
@@ -304,47 +304,47 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 	 * @param string $html Existing HTML.
 	 * @return string Possibly modified $html
 	 */
-	public static function strip_newlines( $html ) 
+	public static function strip_newlines( $html )
 	{
 		if ( false !== strpos( $html, "\n" ) )
 			$html = str_replace( array( "\r\n", "\n" ), '', $html );
 		return $html;
-	}	
-	
+	}
+
 
 	// https://gist.github.com/ericmann/5400972
-	public static function add_img_titles( $content, $title ) 
+	public static function add_img_titles( $content, $title )
 	{
 		$replacements = array();
 		preg_match_all( '/<img[^>]*>/', $content, $matches );
-		
+
 		foreach( $matches[0] as $match ) {
-		
+
 			if ( preg_match( '/title=\s*/', $match ) )
 				continue;
-			
+
 			$newimg = str_replace( '<img ', '<img title="'.$title.'" ', $match );
 			$replacements[$match] = $newimg;
 		}
-		
+
 		foreach( $replacements as $original => $replacement )
 			$content = str_replace( $original, $replacement, $content );
-	
+
 		return $content;
 	}
 
 
-	
+
 	// http://bavotasan.com/2012/convert-pre-tag-contents-to-html-entities-in-wordpress/
-	public static function pre_content_filter( $content ) 
+	public static function pre_content_filter( $content )
 	{
 		return preg_replace_callback( '|<pre.*>(.*)</pre|isU' , array( __CLASS__, 'convert_pre_entities' ), $content );
 	}
-	public static function convert_pre_entities( $matches ) 
+	public static function convert_pre_entities( $matches )
 	{
 		return str_replace( $matches[1], htmlentities( $matches[1] ), $matches[0] );
 	}
-	
+
 	// http://bavotasan.com/2012/trim-characters-using-php/
 	public static function trim_characters( $text, $length = 45, $append = '&hellip;' ) {
 
@@ -366,13 +366,13 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 
 	// UTF 8 String remove all invisible characters except newline
 	// http://stackoverflow.com/a/12545470/642752
-	public static function remove_non_printable( $string ) 
+	public static function remove_non_printable( $string )
 	{
 		return preg_replace( '/[^\P{C}\n]+/u', '', $string );
 	}
 
-	
-	
+
+
 	// https://gist.github.com/boonebgorges/3657745
 	/**
 	 * Turn email-style quotes into blockquotes
@@ -403,25 +403,25 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 	public static function process_quotes( $content ) {
 		// Find blank lines
 		$content = preg_replace( '/\n\s*\n/m', '<BBG_EMPTY_LINE>', $content );
-	 
+
 		// Explode on the blank lines
 		$content = explode( '<BBG_EMPTY_LINE>', $content );
-	 
+
 		foreach ( $content as &$c ) {
 			$c = trim( $c );
-	 
+
 			// Reduce multiple-line quotes to a single line
 			// This works because the first > in a block will not have a
 			// line break before it
 			$c = preg_replace( '/\n(>|&gt;)(.*)/m', '$2', $c );
-	 
+
 			// Blockquote 'em
 			$c = preg_replace( '/^(>|&gt;) (.*)/m', '<blockquote>$2</blockquote>', $c );
 		}
-	 
+
 		// Put everything back as we found it
 		$content = implode( "\n\n", $content );
-	 
+
 		return $content;
 	}
 	//add_filter( 'the_content', 'teleogistic_process_quotes', 5 );
@@ -440,35 +440,35 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 
 
 	/**
-	
+
 	http://daringfireball.net/2009/11/liberal_regex_for_matching_urls
 	http://daringfireball.net/2010/07/improved_regex_for_matching_urls
-	
+
 	--
 	// Link, URL and maching word
 	// http://stackoverflow.com/a/2175491/642752
-	
+
 	'/<a.*?href\s*=\s*["\']([^"\'>]+)["\'][^>]*>.*?<\/a>/si'
-	
+
 	// To look for word inside of the link url, use:
 	'/<a.*?href\s*=\s*["\']([^"\'>]*word[^"\'>]*)["\'][^>]*>.*?<\/a>/si'
-	
+
 	// To look for word inside of the link text, use:
 	'/<a.*?href\s*=\s*["\']([^"\'>]+)["\'][^>]*>.*?word.*?<\/a>/si'
-	
+
 	// if you want to match either "red" or "blue", do it like this: (red|blue); if you don't want to match that part itself, you can also use (?:red|blue).
-	
+
 
 	// http://gilbert.pellegrom.me/php-strip-non-alphanumeric-chars-from-a-string
 	// PHP Strip Non-Alphanumeric Chars from a String
 	// $string = preg_replace("/[^a-z0-9]+/i", "", $string);
-	
-	
-	
-	
-	
+
+
+
+
+
 	**/
-	
+
 	// NOT WORKINGG! DO NOT USE
 	// http://stackoverflow.com/a/10539617/642752
 	public static function strip_whitespace_between_tags( $text )
@@ -479,10 +479,10 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 			 [^<>]*   # any characters except angle brackets
 			 >        # followed by a closing bracket.
 			)         # End of lookahead
-			/x', 
-			'', $text );	
+			/x',
+			'', $text );
 	}
-	
+
 	// Use this for compressing output
 	// Replacing multiple spaces with a single space
 	// http://stackoverflow.com/a/2368546/642752
@@ -491,7 +491,7 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 		return preg_replace( '!\s+!', ' ', $text );
 		// retun preg_replace( "/[[:blank:]]+/", " ", $text );
 	}
-	
+
 	// Adding space after periods
 	// http://stackoverflow.com/a/2866454/642752
 	// TODO : make utf compatible
@@ -499,7 +499,7 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 	{
 		return preg_replace( '#(\.|,|\?|!)(\w)#', '\1 \2', $text );
 	}
-	
+
 	/**
 	// Replace replacement array
 	// http://stackoverflow.com/a/8611495/642752
@@ -512,21 +512,21 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 			}, $text );
 	}
 	**/
-	
+
 	// ?? : ONLY IMG TAG with "/>"
 	// http://bavotasan.com/2009/using-php-to-remove-an-html-tag-from-a-string/
 	public static function strip_closed_tag( $text, $tag = 'img' )
 	{
-		return preg_replace( "/<".$tag."[^>]+\>/i", "", $text ); 
+		return preg_replace( "/<".$tag."[^>]+\>/i", "", $text );
 	}
-	
+
 	// Strip entire html link (including text)
 	// http://stackoverflow.com/a/4421552/642752
 	public static function strip_entire_link( $text )
 	{
 		return preg_replace( '#(<a[^>]*?>.*?</a>)#i', '', $text );
 	}
-	
+
 	// http://stackoverflow.com/a/9022442/642752
 	// http://codepad.org/FTNikw8g
 	// EXAMPLE : http://www.yelp.com/biz/my-business-name > yelp.com
@@ -535,7 +535,7 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 		return preg_replace( '~^www.~', '', parse_url( $url, PHP_URL_HOST ) );
 		// return preg_replace( '/^www./', '', parse_url($url, PHP_URL_HOST ) );
 	}
-	
+
 	// http://gilbert.pellegrom.me/php-make_clickable
 	// So you have string that contains URL’s and you want to make them “clickable”. This is simple and it works:
 	// Supports normal, ftp, file and email URL’s as well as subdomains. Also it doesn’t mess with HTML a tags that already exist in the string.
@@ -574,11 +574,11 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 		foreach ( $words as $key => $word )
 			if ( $key == 0 || ! in_array( $word, $small_words ) )
 				$words[$key] = ucwords( $word );
-		
+
 		return implode( ' ', $words );
 	}
 
 
-	
+
 }
 }

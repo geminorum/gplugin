@@ -13,9 +13,9 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 
 	public static function do_string( $text )
 	{
-		if ( is_null( $text ) ) 
+		if ( is_null( $text ) )
 			return null;
-	
+
 		$pairs = array(
 			'0' => chr(0xDB).chr(0xB0),
 			'1' => chr(0xDB).chr(0xB1),
@@ -27,7 +27,7 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 			'7' => chr(0xDB).chr(0xB7),
 			'8' => chr(0xDB).chr(0xB8),
 			'9' => chr(0xDB).chr(0xB9),
-			
+
 			chr(0xD9).chr(0xA0) => chr(0xDB).chr(0xB0),
 			chr(0xD9).chr(0xA1) => chr(0xDB).chr(0xB1),
 			chr(0xD9).chr(0xA2) => chr(0xDB).chr(0xB2),
@@ -43,48 +43,48 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 			chr(0xD9).chr(0x8A) => chr(0xDB).chr(0x8C),
 			chr(0xDB).chr(0x80) => chr(0xD9).chr(0x87).chr(0xD9).chr(0x94)
 		);
-		
+
 		return strtr( $text, $pairs );
 	}
 
 
-	
+
 	/** ---------------------------------------------------------------------------------
 									NOT USED YET
 	--------------------------------------------------------------------------------- **/
 
 	// get unicode char by its code
 	// http://php.net/manual/en/function.chr.php#88611
-	public static function unichr( $u ) 
+	public static function unichr( $u )
 	{
 		return mb_convert_encoding( '&#'.intval( $u ).';', 'UTF-8', 'HTML-ENTITIES' );
 	}
-	
-	
+
+
 	public static function fa_alphabet()
 	{
 		return array(
 			self::unichr( 0622 ) => 'الف',
 		);
 	}
-	
+
 	// http://stackoverflow.com/a/23457484
 	public static function ordinal($str)
 	{
 		$charString = mb_substr($str, 0, 1, 'utf-8');
-		$size = strlen($charString);        
+		$size = strlen($charString);
 		$ordinal = ord($charString[0]) & (0xFF >> $size);
-		
+
 		//Merge other characters into the value
 		for($i = 1; $i < $size; $i++ )
 			$ordinal = $ordinal << 6 | (ord($charString[$i]) & 127);
-		
+
 		return $ordinal;
 	}
-	
-	
-	
-	
+
+
+
+
 	// http://stackoverflow.com/questions/4764244/tinymce-blank-content-on-ajax-form-submit
 	// http://wordpress.stackexchange.com/questions/73257/bridging-tinymce-js-and-wordpress-php
 	// http://devwp.eu/overcome-the-wordpress-autosave-limitations/
@@ -95,16 +95,16 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 
 	var $i = 0;
 	var $urls = array();
-	
+
 	var $persian_numbers = "۱۲۳۴۵۶۷۸۹۰";
 	var $arabic_numbers  = "١٢٣٤٥٦٧٨٩٠";
 	var $english_numbers = "1234567890";
 	var $bad_chars  = ",;كي%";
 	var $good_chars = "،؛کی٪";
 
-	function en_fa() 
+	function en_fa()
 	{
-		return array(	
+		return array(
 			'0' => chr(0xDB).chr(0xB0),
 			'1' => chr(0xDB).chr(0xB1),
 			'2' => chr(0xDB).chr(0xB2),
@@ -117,10 +117,10 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 			'9' => chr(0xDB).chr(0xB9),
 		);
 	}
-	
+
 	function ar_fa()
 	{
-		return array(	
+		return array(
 			chr(0xD9).chr(0xA0) => chr(0xDB).chr(0xB0),
 			chr(0xD9).chr(0xA1) => chr(0xDB).chr(0xB1),
 			chr(0xD9).chr(0xA2) => chr(0xDB).chr(0xB2),
@@ -131,18 +131,18 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 			chr(0xD9).chr(0xA7) => chr(0xDB).chr(0xB7),
 			chr(0xD9).chr(0xA8) => chr(0xDB).chr(0xB8),
 			chr(0xD9).chr(0xA9) => chr(0xDB).chr(0xB9),
-			
+
 			chr(0xD9).chr(0x83) => chr(0xDA).chr(0xA9),
 			chr(0xD9).chr(0x89) => chr(0xDB).chr(0x8C),
 			chr(0xD9).chr(0x8A) => chr(0xDB).chr(0x8C),
 			chr(0xDB).chr(0x80) => chr(0xD9).chr(0x87).chr(0xD9).chr(0x94),
-			
+
 			'%' => '٪',
 			';' => '؛',
 			',' => '،',
 		);
 	}
-	
+
 	// modified version of WP core : make_clickable()
 	function html_cleanup( $text )
 	{
@@ -199,91 +199,91 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 
 		// Cleanup of accidental links within links
 		$r = preg_replace( '#(<a( [^>]+?>|>))<a [^>]+?>([^>]+?)</a></a>#i', "$1$3</a>", $r );
-		return $r;			
-			
+		return $r;
+
 	}
-	
+
 	// based on : https://github.com/aziz/virastar | http://virastar.heroku.com/
     function cleanup( $text, $urls = true )
     {
-	
+
 		//gPluginUtils::dump( $matches ); die();
-	
+
 		// it's a joke!? right? :D
 		# removing URLS bringing them back at the end of process
 		// $text = preg_replace_callback( '/https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?/', array( $this, 'repelace_url' ), $text );
-		
+
 		# replace double dash to ndash and triple dash to mdash
 		$text = preg_replace( '/-{3}/', '—', $text );
 		$text = preg_replace( '/-{2}/', '–', $text );
-		
-		
-		
+
+
+
 		# replace three dots with ellipsis
 		$text = preg_replace( '/\s*\.{3,}/', '…', $text );
-		
+
 		# replace English quotes with their Persian equivalent
 		$text = preg_replace( '/(["\'`]+)(.+?)(\1)/u', '«$2»', $text );
 
 		# should convert ه ی to ه
 		$text = preg_replace( '/(\S)(ه[\s‌]+[یي])(\s)/u', '$1هٔ$3', $text );
-		
+
 		# remove unnecessary zwnj char that are succeeded/preceded by a space
 		$text = preg_replace( '/\s+‌|‌\s+/u', ' ', $text );
 		//$text = preg_replace( '/\s\s+/', ' ', $text ); // from php manual
-		
+
 		# character replacement
 		$text = strtr( $text, $this->en_fa() );
 		$text = strtr( $text, $this->ar_fa() );
 
 		# should not replace exnglish chars in english phrases
 		//$text = preg_replace_callback( '/([a-z\-_]{2,}[۰-۹]+|[۰-۹]+[a-z\-_]{2,})/i', array( $this, 'repelace_character' ), $text );
-		
+
 		# put zwnj between word and prefix (mi* nemi*)
 		# there's a possible bug here: می and نمی could be separate nouns and not prefix
 		$text = preg_replace( '/\s+(ن?می)\s+/u', ' $1‌', $text );
-		
+
 		# put zwnj between word and suffix (*tar *tarin *ha *haye)
 		# there's a possible bug here: های and تر could be separate nouns and not suffix
 		# in case you can not read it: \s+(tar(i(n)?)?|ha(ye)?)\s+
 		$text = preg_replace( '/\s+(تر(ی(ن)?)?|ها(ی)?)\s+/u', '‌$1 ', $text );
-		
+
         # replace more than one ! or ? mark with just one
 		$text = preg_replace( '/(!){2,}/u', '$1', $text );
 		$text = preg_replace( '/(؟){2,}/u', '$1', $text );
-        
+
 		# should remove all kashida
 		$text = preg_replace( '/ـ+/u', "", $text );
-		
+
 		# should fix outside and inside spacing for () [] {}  “” «»
 		$text = preg_replace( '/[   ‌]*(\()\s*([^)]+?)\s*?(\))[   ‌]*/u', ' $1$2$3 ', $text );
 		$text = preg_replace( '/[   ‌]*(\[)\s*([^)]+?)\s*?(\])[   ‌]*/u', ' $1$2$3 ', $text );
 		$text = preg_replace( '/[   ‌]*(\{)\s*([^)]+?)\s*?(\})[   ‌]*/u', ' $1$2$3 ', $text );
 		$text = preg_replace( '/[   ‌]*(“)\s*([^)]+?)\s*?(”)[   ‌]*/u', ' $1$2$3 ', $text );
 		$text = preg_replace( '/[   ‌]*(«)\s*([^)]+?)\s*?(»)[   ‌]*/u', ' $1$2$3 ', $text );
-		
+
 		# : ; , . ! ? and their persian equivalents should have one space after and no space before
 		$text = preg_replace( '/[ ‌  ]*([:;,؛،.؟!]{1})[ ‌  ]*/u', '$1 ', $text );
-		
+
 		# do not put space after colon that separates time parts
 		$text = preg_replace( '/([۰-۹]+):\s+([۰-۹]+)/u', '$1:$2', $text );
-		
+
 		# should fix inside spacing for () [] {}  “” «»
 		$text = preg_replace( '/(\()\s*([^)]+?)\s*?(\))/u', '$1$2$3', $text );
 		$text = preg_replace( '/(\[)\s*([^)]+?)\s*?(\])/u', '$1$2$3', $text );
 		$text = preg_replace( '/(\{)\s*([^)]+?)\s*?(\})/u', '$1$2$3', $text );
 		$text = preg_replace( '/(“)\s*([^)]+?)\s*?(”)/u', '$1$2$3', $text );
 		$text = preg_replace( '/(«)\s*([^)]+?)\s*?(»)/u', '$1$2$3', $text );
-		
+
 		# should replace more than one space with just a single one
 		$text = preg_replace( '/[ ]+/u', ' ', $text );
 		$text = preg_replace( '/([\n]+)[   ‌]*/u', '$1', $text );
-		
+
 		# remove spaces, tabs, and new lines from the beginning and enf of file
 		// $text = trim( $text ); // interfere with html_cleanup
 
       /**
-	  
+
       # removing URLS bringing them back at the end of process
       urls = []
       i = 0
@@ -292,35 +292,35 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
         i += 1
         "__urls__#{i}__"
       end
-	  
-	  
+
+
 	  # bringing back urls
       text.gsub!(/__urls__\d+__/) do |s|
         urls[s.split("__").last.to_i - 1]
       end
 **/
-		
-		
+
+
 		return $text;
     }
-	
+
 	function repelace_character( $matches )
 	{
 		//gPluginUtils::dump( $matches ); die();
-		
+
 		return strtr( $text, $this->persian_numbers, $this->english_numbers );
 	}
-	
+
 	function re_repelace_urls( $text )
 	{
 		if ( count( $this->urls ) )
 			foreach ( $this->urls as $i => $url )
 				$text = preg_replace( '/{__URL__'.$i.'__}/', $url, $text );
-		
+
 		$this->urls = array();
 		return $text;
 	}
-	
+
 	// modified version of WP core : _make_url_clickable_cb()
 	function repelace_url( $matches )
 	{
@@ -346,16 +346,16 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 			return $matches[0];
 
 		//return $matches[1] . "<a href=\"$url\" rel=\"nofollow\">$url</a>" . $suffix;
-		
+
 		$this->urls[$this->i] = $matches[1].$url.$suffix;
 		$key = '{__URL__'.$this->i.'__}';
 		$this->i++;
 		return $key;
 	}
-	
+
 
 	// WP core exact function :
-	
+
 	/**
 	 * Breaks a string into chunks by splitting at whitespace characters.
 	 * The length of each returned chunk is as close to the specified length goal as possible,
@@ -412,18 +412,18 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 		}
 
 		return $chunks;
-	}	
+	}
 
-	
+
 	// https://groups.google.com/d/msg/persian-computing/UjtEQjyLjfY/NuZfFziU08wJ
 	// I have a text that contains characters from the Arabic presentation form (U+FE70 - U+FEFF) like ﺵﺝﺭ
-	// Does any body have a PHP code that converts this to a normal UTF-8 text? 
+	// Does any body have a PHP code that converts this to a normal UTF-8 text?
 	function purify_value( $v ){
-		if ( $v < 0xFE70 ) 
+		if ( $v < 0xFE70 )
 			return $v;
-		if ( $v < 0xFE8F ) 
+		if ( $v < 0xFE8F )
 			return $v;
-		
+
 		$cv_table = array(
 			0xFE92 => 0x628,
 			0xFE94 => 0x629,
@@ -433,7 +433,7 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 			0xFEA4 => 0x62D,
 			0xFEA8 => 0x62E,
 			0xFEAA => 0x62F,
-			0xFEAC => 0x630, 
+			0xFEAC => 0x630,
 			0xFEAE => 0x631,
 			0xFEB0 => 0x632,
 			0xFEB4 => 0x633,
@@ -454,13 +454,12 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 			0xFEEE => 0x648,
 			0xFEF4 => 0x649
 		);
-		
+
 		foreach( $cv_table as $fr => $t )
-			if( $v <= $fr ) 
+			if( $v <= $fr )
 				return $t;
 	}
 
-	
+
 
 } }
-

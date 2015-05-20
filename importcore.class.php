@@ -3,11 +3,11 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 {
 	//public function setup_globals( $constants = array(), $args = array() ) { parent::setup_globals(); }
 	public function setup_actions() {}
-	
+
 	/**
 		EXAMPLE :
 			$attachment_id = self::selectAttachment( gPluginFileHelper::mime( 'csv' ) );
-			if ( $attachment_id ) 
+			if ( $attachment_id )
 				$file_path = gPluginWPHelper::get_attachmnet_path( $attachment_id );
 	**/
 	public static function selectAttachment( $mime_type = '', $selected = null, $name = 'attach_id' )
@@ -19,29 +19,29 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 			'post_mime_type' => $mime_type,
 			'post_parent'    => null,
 			'orderby'        => 'post_date',
-			'order'          => 'DESC',			
+			'order'          => 'DESC',
 		) );
-		
+
 		if ( $attachments ) {
 			$html = '';
-			
+
 			if ( is_null( $selected ) && isset( $_REQUEST[$name] ) )
 				$selected = $_REQUEST[$name];
-			
+
 			foreach ( $attachments as $attachment )
 				$html .= gPluginFormHelper::html( 'option', array(
 					'value' => $attachment->ID,
 					'selected' => $selected == $attachment->ID,
 				), esc_html( date_i18n( __( 'Y/m/j' ), strtotime( $attachment->post_date ) ).' — '.$attachment->post_title ) );
-			
+
 			echo gPluginFormHelper::html( 'select', array(
 				'name' => $name,
-			), $html );			
+			), $html );
 		}
-		
+
 		return $selected;
-	}	
-	
+	}
+
 	// helper
 	function implode( $string, $l10n = false, $glue = '،' )
 	{
@@ -50,45 +50,45 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 			$results = array_map( array( $this, 'l10n' ), $results );
 		return implode( $glue, $results );
 	}
-	
+
 	// http://ask.libreoffice.org/en/question/7036/how-to-convert-every-hyphendash-between-numbers-to-en-dash/
 	// https://help.libreoffice.org/Common/List_of_Regular_Expressions
-	
-	// 
-	
+
+	//
+
 	// helper
 	function explode( $string, $l10n = false, $vav = false )
 	{
 		$dels = array( '،', '-', ',' );
 		if ( $vav )
 			$dels[] = ' و ';
-			
+
 		$results = explode( ',', str_ireplace( $dels, ',', $string ) );
 		if ( ! $l10n )
 			return $results;
 		return array_map( array( $this, 'l10n' ), $results );
 	}
-	
+
 	// helper
 	function l10n( $string, $strip = false )
 	{
 		return gPluginPersianHelper::l10n( trim( $string ), $strip );
 	}
-	
+
 	// helper
 	function cleanup( $string )
 	{
 		return gPluginPersianHelper::cleanup( trim( $string ) );
 	}
-	
+
 	//helper
 	function str( $string )
 	{
 		$string = str_ireplace( array( "\n", "\t" ), ' ', $string );
-		
+
 		return $string;
 	}
-	
+
 	// DEPRECATD use self::selectAttachment()
 	function select_attachment( $name = 'attach_id', $selected = false, $mime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' )
 	{
@@ -98,13 +98,13 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 			'post_status' => null,
 			'post_mime_type' => $mime,
 			'post_parent' => null,
-		); 
+		);
 		$attachments = get_posts( $args );
-		
+
 		if ( $attachments ) {
 			echo '<select name="'.$name.'">';
 			foreach ($attachments as $post) {
-				setup_postdata( $post ); 
+				setup_postdata( $post );
 				echo '<option value="'.$post->ID.'"'.( $selected == $post->ID ? ' selected="selected"' : '' ).'>'.$post->post_title.'</option>';
 			}
 			echo '</select>';
@@ -112,7 +112,7 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 	}
 
 	// exact copy of wp core with diffrent output
-	function media_sideload_image( $file, $post_id, $desc = null ) 
+	function media_sideload_image( $file, $post_id, $desc = null )
 	{
 		// fix file filename for query strings
 		preg_match( '/[^\?]+\.(jpe?g|jpe|gif|png)\b/i', $file, $matches );
@@ -131,11 +131,11 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 			@unlink( $file_array['tmp_name'] );
 			return $id;
 		}
-		
+
 		return $id;
-	}	
-	
-	
+	}
+
+
 	function unpublish_post( $post_id )
 	{
 		global $wpdb;
@@ -143,7 +143,7 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 		clean_post_cache( $post_id );
 		return true;
 	}
-	
+
 	// DRAFT
 	function delete_attachments( $post_id )
 	{
@@ -158,6 +158,6 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 		foreach ( $ids as $id )
 			wp_delete_attachment($id);
 	}
-		
+
 }
 }

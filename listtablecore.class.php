@@ -2,35 +2,36 @@
 
 // Mock-up of gPluginListTableCore ( from : 3.7-alpha-25343 )
 // mainly because it's a private class for wp core : http://wpengineer.com/2426/gPluginListTableCore-a-step-by-step-guide/#comment-9617
+// SEE: https://core.trac.wordpress.org/ticket/30914
 
 if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore extends gPluginClassCore
 {
-	public function setup_globals( $constants = array(), $args = array() ) 
-	{ 
+	public function setup_globals( $constants = array(), $args = array() )
+	{
 		$this->args = gPluginUtils::parse_args_r( $args, array(
 			'domain' => 'gplugin',
 			'title' => __( 'gPlugin', GPLUGIN_TEXTDOMAIN ),
-			
+
 			'plural' => '',
 			'singular' => '',
 			'ajax' => false,
 			'screen' => null,
-			
+
 			'options' => array(),
-		) );	
+		) );
 
 		// $this->screen = convert_to_screen( $args['screen'] );
-		
+
 		if ( $this->args['ajax'] )
 			add_action( 'admin_footer', array( $this, '_js_vars' ) );
-			
-			
+
+
 		$current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
 		$this->current_url = remove_query_arg( 'paged', $current_url );
 
 	}
-	
-	public static function get_column_headers( $screen_id ) 
+
+	public static function get_column_headers( $screen_id )
 	{
 		static $column_headers = array();
 
@@ -39,35 +40,31 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 
 		return $column_headers[$screen_id];
 	}
-	
-	public static function get_hidden_columns( $screen_id ) 
+
+	public static function get_hidden_columns( $screen_id )
 	{
 		return (array) get_user_option( 'manage'.$screen_id.'columnshidden' );
 	}
-	
-	public static function search_query() 
+
+	public static function search_query()
 	{
 		echo isset( $_REQUEST['s'] ) ? esc_attr( gPluginUtils::unslash( $_REQUEST['s'] ) ) : '';
 	}
-	
-	
-	
-	
-	
+
 	// Checks the current user's permissions
-	function ajax_user_can() 
+	function ajax_user_can()
 	{
 		die( 'function gPluginListTableCore::ajax_user_can() must be over-ridden in a sub-class.' );
 	}
 
 	// Prepares the list of items for displaying.
-	function prepare_items() 
+	function prepare_items()
 	{
 		die( 'function gPluginListTableCore::prepare_items() must be over-ridden in a sub-class.' );
 	}
 
 	// An internal method that sets all the necessary pagination arguments
-	function set_pagination_args( $args ) 
+	function set_pagination_args( $args )
 	{
 		$args = wp_parse_args( $args, array(
 			'total_items' => 0,
@@ -88,18 +85,17 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 	}
 
 	// Access the pagination args
-	function get_pagination_arg( $key ) 
+	function get_pagination_arg( $key )
 	{
 		if ( 'page' == $key )
 			return $this->get_pagenum();
 
 		if ( isset( $this->_pagination_args[$key] ) )
 			return $this->_pagination_args[$key];
-	}	
-	
+	}
 
 	// Display the table
-	function display() 
+	function display()
 	{
 		$this->display_tablenav( 'top' );
 		?><table class="wp-list-table gplugin-list-table <?php echo implode( ' ', $this->get_table_classes() ); ?>" cellspacing="0">
@@ -108,31 +104,31 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 			<tbody id="the-list"<?php if ( $this->args['singular'] ) echo " data-wp-lists='list:".$this->args['singular']."'"; ?>>
 				<?php $this->display_rows_or_placeholder(); ?>
 			</tbody>
-		</table><?php
+		</table> <?php
 		$this->display_tablenav( 'bottom' );
 	}
 
 	// Get a list of CSS classes for the <table> tag
-	function get_table_classes() 
+	function get_table_classes()
 	{
 		return array( 'widefat', 'fixed', $this->args['plural'] );
 	}
 
 	// Generate the table navigation above or below the table
-	function display_tablenav( $which = 'top' ) 
+	function display_tablenav( $which = 'top' )
 	{
 		if ( 'top' == $which )
 			wp_nonce_field( 'bulk-' . $this->_args['plural'] );
 		?><div class="tablenav <?php echo esc_attr( $which ); ?>">
 			<div class="alignleft actions bulkactions"><?php $this->bulk_actions(); ?></div><?php
-			
+
 			$this->extra_tablenav( $which );
 			$this->pagination( $which );
-			
-		?><br class="clear" /></div><?php
+
+		?><br class="clear" /></div> <?php
 
 	}
-	
+
 	// Print column headers, accounting for hidden and sortable columns.
 	function print_column_headers( $with_id = true )
 	{
@@ -193,9 +189,9 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 			echo "<th scope='col' $id $class $style>$column_display_name</th>";
 		}
 	}
-	
+
 	// Get a list of all, hidden and sortable columns, with filter applied
-	function get_column_info() 
+	function get_column_info()
 	{
 		if ( isset( $this->_column_headers ) )
 			return $this->_column_headers;
@@ -219,14 +215,14 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 
 		return $this->_column_headers;
 	}
-	
+
 	// Get a list of columns. The format is:
 	// 'internal-name' => 'Title'
-	function get_columns() 
+	function get_columns()
 	{
 		die( 'function gPluginListTableCore::get_columns() must be over-ridden in a sub-class.' );
-	}	
-	
+	}
+
 	/**
 	 * Get a list of sortable columns. The format is:
 	 * 'internal-name' => 'orderby'
@@ -234,25 +230,25 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 	 * 'internal-name' => array( 'orderby', true )
 	 * The second format will make the initial sorting order be descending
 	 */
-	function get_sortable_columns() 
+	function get_sortable_columns()
 	{
 		return array();
 	}
-	
+
 	// Return number of visible columns
-	function get_column_count() 
+	function get_column_count()
 	{
 		list ( $columns, $hidden ) = $this->get_column_info();
 		$hidden = array_intersect( array_keys( $columns ), array_filter( $hidden ) );
 		return count( $columns ) - count( $hidden );
 	}
-	
-	
+
+
 	// Extra controls to be displayed between bulk actions and pagination
 	function extra_tablenav( $which ) {}
 
 	// Generate the <tbody> part of the table
-	function display_rows_or_placeholder() 
+	function display_rows_or_placeholder()
 	{
 		if ( $this->has_items() ) {
 			$this->display_rows();
@@ -263,28 +259,28 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 			echo '</td></tr>';
 		}
 	}
-	
+
 	// Whether the table has items to display or not
-	function has_items() 
+	function has_items()
 	{
 		return ! empty( $this->items );
 	}
 
 	// Message to be displayed when there are no items
-	function no_items() 
+	function no_items()
 	{
 		_e( 'No items found.' );
 	}
-	
+
 	// Generate the table rows
-	function display_rows() 
+	function display_rows()
 	{
 		foreach ( $this->items as $item )
 			$this->single_row( $item );
 	}
 
 	// Generates content for a single row of the table
-	function single_row( $item ) 
+	function single_row( $item )
 	{
 		static $row_class = '';
 		$row_class = ( $row_class == '' ? ' class="alternate"' : '' );
@@ -292,10 +288,10 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 		echo '<tr'.$row_class.'>';
 		$this->single_row_columns( $item );
 		echo '</tr>';
-	}	
-	
+	}
+
 	// Generates the columns for a single row of the table
-	function single_row_columns( $item ) 
+	function single_row_columns( $item )
 	{
 		list( $columns, $hidden ) = $this->get_column_info();
 
@@ -309,29 +305,29 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 			$attributes = "$class$style";
 
 			if ( 'cb' == $column_name ) {
-			
+
 				echo '<th scope="row" class="check-column">';
 				echo $this->column_cb( $item );
 				echo '</th>';
-				
+
 			} elseif ( method_exists( $this, 'column_' . $column_name ) ) {
-			
+
 				echo "<td $attributes>";
 				echo call_user_func( array( $this, 'column_'.$column_name ), $item );
 				echo "</td>";
-			
+
 			} else {
-			
+
 				echo "<td $attributes>";
 				echo $this->column_default( $item, $column_name );
 				echo "</td>";
-				
+
 			}
 		}
 	}
-	
+
 	// Display the search box.
-	function search_box( $text, $input_id ) 
+	function search_box( $text, $input_id )
 	{
 		if ( empty( $_REQUEST['s'] ) && ! $this->has_items() )
 			return;
@@ -346,22 +342,22 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 			echo '<input type="hidden" name="post_mime_type" value="'.esc_attr( $_REQUEST['post_mime_type'] ).'" />';
 		if ( ! empty( $_REQUEST['detached'] ) )
 			echo '<input type="hidden" name="detached" value="'.esc_attr( $_REQUEST['detached'] ).'" />';
-			
+
 		?><p class="search-box">
 			<label class="screen-reader-text" for="<?php echo $input_id ?>"><?php echo $text; ?>:</label>
 			<input type="search" id="<?php echo $input_id ?>" name="s" value="<?php self::search_query(); ?>" />
 			<?php submit_button( $text, 'button', false, false, array( 'id' => 'search-submit' ) ); ?>
-		</p><?php
+		</p> <?php
 	}
 
 	// Get an associative array ( id => link ) with the list of views available on this table.
-	function get_views() 
+	function get_views()
 	{
 		return array();
 	}
 
 	// Display the list of views available on this table.
-	function views() 
+	function views()
 	{
 		$views = $this->get_views();
 		$views = apply_filters( 'views_'.$this->args['screen'], $views );
@@ -378,13 +374,13 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 	}
 
 	// Get an associative array ( option_name => option_title ) with the list of bulk actions available on this table.
-	function get_bulk_actions() 
+	function get_bulk_actions()
 	{
 		return isset( $this->_bulk_actions ) ? $this->_bulk_actions : array();
 	}
 
 	// Display the bulk actions dropdown.
-	function bulk_actions() 
+	function bulk_actions()
 	{
 		if ( is_null( $this->_actions ) ) {
 			$no_new_actions = $this->_actions = $this->get_bulk_actions();
@@ -415,7 +411,7 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 	}
 
 	// Get the current action selected from the bulk actions dropdown.
-	function current_action() 
+	function current_action()
 	{
 		if ( isset( $_REQUEST['action'] ) && -1 != $_REQUEST['action'] )
 			return $_REQUEST['action'];
@@ -427,7 +423,7 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 	}
 
 	// Generate row actions div
-	function row_actions( $actions, $always_visible = false ) 
+	function row_actions( $actions, $always_visible = false )
 	{
 		$action_count = count( $actions );
 		$i = 0;
@@ -445,9 +441,9 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 
 		return $out;
 	}
-	
+
 	// Display a view switcher
-	function view_switcher( $current_mode ) 
+	function view_switcher( $current_mode )
 	{
 		$modes = array(
 			'list'    => __( 'List View' ),
@@ -460,11 +456,11 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 				$class = ( $current_mode == $mode ) ? 'class="current"' : '';
 				echo "<a href='" . esc_url( add_query_arg( 'mode', $mode, $_SERVER['REQUEST_URI'] ) ) . "' $class><img id='view-switch-$mode' src='" . esc_url( includes_url( 'images/blank.gif' ) ) . "' width='20' height='20' title='$title' alt='$title' /></a>\n";
 			}
-		?></div><?php
-	}	
+		?></div> <?php
+	}
 
 	// Get the current page number
-	function get_pagenum() 
+	function get_pagenum()
 	{
 		$pagenum = isset( $_REQUEST['paged'] ) ? absint( $_REQUEST['paged'] ) : 0;
 
@@ -475,7 +471,7 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 	}
 
 	// Get number of items to display on a single page
-	function get_items_per_page( $option, $default = 20 ) 
+	function get_items_per_page( $option, $default = 20 )
 	{
 		$per_page = (int) get_user_option( $option );
 		if ( empty( $per_page ) || $per_page < 1 )
@@ -485,7 +481,7 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 	}
 
 	// Display the pagination.
-	function pagination( $which ) 
+	function pagination( $which )
 	{
 		if ( empty( $this->_pagination_args ) )
 			return;
@@ -563,9 +559,9 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 
 		echo $this->_pagination;
 	}
-	
+
 	// Handle an incoming ajax request (called from admin-ajax.php)
-	function ajax_response() 
+	function ajax_response()
 	{
 		$this->prepare_items();
 
@@ -594,7 +590,7 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 	}
 
 	// Send required variables to JavaScript land
-	function _js_vars() 
+	function _js_vars()
 	{
 		$args = array(
 			'class'  => get_class( $this ),
@@ -609,12 +605,10 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 
 	// mine
 	// for ajax use
-	function get_single_row( $item ) 
+	function get_single_row( $item )
 	{
 		ob_start();
 		$this->single_row( $item );
 		return ob_get_clean();
 	}
-	
-	
 } }

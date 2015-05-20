@@ -5,37 +5,37 @@ defined( 'GPLUGIN_SESSION_CRON_ROUTINE' ) or define( 'GPLUGIN_SESSION_CRON_ROUTI
 
 /**
  *
- * based on WP Session Manager 1.1.2 by Eric Mann 
+ * based on WP Session Manager 1.1.2 by Eric Mann
  * http://jumping-duck.com/wordpress/plugins
  * http://wordpress.org/plugins/wp-session-manager/
  * http://jumping-duck.com/wordpress/plugins/wp-session-manager/
  *
 **/
 
-class gPluginSessionHelper 
+class gPluginSessionHelper
 {
 
 	public static function setup_actions()
 	{
 		global $gPluginSessionLoaded;
-		
+
 		if ( empty ( $gPluginSessionLoaded ) ) {
-		
+
 			add_action( 'wp', array( __CLASS__, 'register_garbage_collection' ) );
 			add_action( 'plugins_loaded', array( __CLASS__, 'start' ) );
 			add_action( 'shutdown', array( __CLASS__, 'write_close' ) );
 			add_action( 'gplugin_session_garbage_collection', array( __CLASS__, 'cleanup' ) );
-			
+
 			$gPluginSessionLoaded = true;
 		}
 	}
-	
+
 	/**
 	 * Return the current cache expire setting.
 	 *
 	 * @return int
 	 */
-	public static function cache_expire() 
+	public static function cache_expire()
 	{
 		$gPluginSession = gPluginSession::get_instance();
 		return $gPluginSession->cache_expiration();
@@ -44,7 +44,7 @@ class gPluginSessionHelper
 	/**
 	 * Alias of write_close()
 	 */
-	public static function commit() 
+	public static function commit()
 	{
 		self::write_close();
 	}
@@ -54,7 +54,7 @@ class gPluginSessionHelper
 	 *
 	 * @param string $data
 	 */
-	public static function decode( $data ) 
+	public static function decode( $data )
 	{
 		$gPluginSession = gPluginSession::get_instance();
 		return $gPluginSession->json_in( $data );
@@ -65,7 +65,7 @@ class gPluginSessionHelper
 	 *
 	 * @return string
 	 */
-	public static function encode() 
+	public static function encode()
 	{
 		$gPluginSession = gPluginSession::get_instance();
 		return $gPluginSession->json_out();
@@ -78,7 +78,7 @@ class gPluginSessionHelper
 	 *
 	 * @return bool
 	 */
-	public static function regenerate_id( $delete_old_session = false ) 
+	public static function regenerate_id( $delete_old_session = false )
 	{
 		$gPluginSession = gPluginSession::get_instance();
 		$gPluginSession->regenerate_id( $delete_old_session );
@@ -92,46 +92,46 @@ class gPluginSessionHelper
 	 *
 	 * @return bool
 	 */
-	public static function start() 
+	public static function start()
 	{
 		$gPluginSession = gPluginSession::get_instance();
 		do_action( 'wp_session_start' ); // back comp
 		return $gPluginSession->session_started();
 	}
-	
-	
+
+
 	/**
 	 * Return the current session status.
 	 *
 	 * @return int
 	 */
-	public static function status() 
+	public static function status()
 	{
 		$gPluginSession = gPluginSession::get_instance();
 		if ( $gPluginSession->session_started() )
 			return PHP_SESSION_ACTIVE;
 		return PHP_SESSION_NONE;
 	}
-	
+
 	/**
 	 * Unset all session variables.
 	 */
-	public static function reset() 
+	public static function reset()
 	{
 		$gPluginSession = gPluginSession::get_instance();
 		$gPluginSession->reset();
 	}
-	
+
 	/**
 	 * Write session data and end session
 	 */
-	public static function write_close() 
+	public static function write_close()
 	{
 		$gPluginSession = gPluginSession::get_instance();
 		$gPluginSession->write_data();
 		do_action( 'wp_session_commit' ); // back comp
 	}
-	
+
 
 	/**
 	 * Clean up expired sessions by removing data and their expiration entries from
@@ -140,7 +140,7 @@ class gPluginSessionHelper
 	 * This method should never be called directly and should instead be triggered as part
 	 * of a scheduled task or cron job.
 	 */
-	public static function cleanup() 
+	public static function cleanup()
 	{
 		global $wpdb;
 
@@ -152,7 +152,7 @@ class gPluginSessionHelper
 				$expiration_keys = $wpdb->get_results( "SELECT meta_key, meta_value FROM $wpdb->sitemeta WHERE meta_key LIKE '_gp_session_expires_%'" );
 			else
 				$expiration_keys = $wpdb->get_results( "SELECT option_name, option_value FROM $wpdb->options WHERE option_name LIKE '_gp_session_expires_%'" );
-			
+
 			$now = time();
 			$expired_sessions = array();
 			if ( GPLUGIN_SESSION_NETWORKWIDE ) {
@@ -161,7 +161,7 @@ class gPluginSessionHelper
 					if ( $now > intval( $expiration->meta_value ) ) {
 						// Get the session ID by parsing the option_name
 						$session_id = substr( $expiration->meta_key, 20 );
-						
+
 						$expired_sessions[] = $expiration->meta_key;
 						$expired_sessions[] = "_gp_session_$session_id";
 					}
@@ -172,7 +172,7 @@ class gPluginSessionHelper
 					if ( $now > intval( $expiration->option_value ) ) {
 						// Get the session ID by parsing the option_name
 						$session_id = substr( $expiration->option_name, 20 );
-						
+
 						$expired_sessions[] = $expiration->option_name;
 						$expired_sessions[] = "_gp_session_$session_id";
 					}
@@ -187,27 +187,27 @@ class gPluginSessionHelper
 					$wpdb->query( "DELETE FROM $wpdb->options WHERE option_name IN ('$option_names')" );
 			}
 		}
-		
+
 		// Allow other plugins to hook in to the garbage collection process.
 		do_action( 'wp_session_cleanup' );
-		
+
 	}
-	
-	
+
+
 	/**
 	 * Register the garbage collector as a twice daily event.
 	 */
-	public static function register_garbage_collection() 
+	public static function register_garbage_collection()
 	{
 		if ( ! wp_next_scheduled( 'gplugin_session_garbage_collection' ) )
 			wp_schedule_event( time(), GPLUGIN_SESSION_CRON_ROUTINE, 'gplugin_session_garbage_collection' );
 	}
-	
-	
+
+
 }
 
 // Multidimensional ArrayAccess : Allows ArrayAccess-like functionality with multidimensional arrays.  Fully supports both sets and unsets.
-// based on WP Session Manager 1.1.2 by Eric Mann 
+// based on WP Session Manager 1.1.2 by Eric Mann
 // http://jumping-duck.com/wordpress/plugins
 // http://wordpress.org/plugins/wp-session-manager/
 class gPluginRecursiveArrayAccess implements ArrayAccess {
@@ -326,13 +326,13 @@ class gPluginRecursiveArrayAccess implements ArrayAccess {
 	 */
 	public function offsetUnset( $offset ) {
 		unset( $this->container[ $offset ] );
-		
+
 		$this->dirty = true;
 	}
 }
 
 // Standardizes WordPress session data using database-backed options for storage. for storing user session information.
-// based on WP Session Manager 1.1.2 by Eric Mann 
+// based on WP Session Manager 1.1.2 by Eric Mann
 // http://jumping-duck.com/wordpress/plugins
 // http://wordpress.org/plugins/wp-session-manager/
 final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterator, Countable {
@@ -371,7 +371,7 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 	 *
 	 * @return bool|WP_Session
 	 */
-	public static function get_instance() 
+	public static function get_instance()
 	{
 		if ( ! self::$instance )
 			self::$instance = new self();
@@ -386,12 +386,12 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 	 * @param $session_id
 	 * @uses apply_filters Calls `wp_session_expiration` to determine how long until sessions expire.
 	 */
-	protected function __construct() 
+	protected function __construct()
 	{
-	
+
 		if( ! defined( 'GPLUGIN_SESSION_COOKIE' ) )
 			define( 'GPLUGIN_SESSION_COOKIE', '_gp_session' );
-	
+
 		if ( isset( $_COOKIE[GPLUGIN_SESSION_COOKIE] ) ) {
 			$cookie = stripslashes( $_COOKIE[GPLUGIN_SESSION_COOKIE] );
 			$cookie_crumbs = explode( '||', $cookie );
@@ -435,27 +435,27 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 	 * @uses apply_filters Calls `wp_session_expiration_variant` to get the max update window for session data.
 	 * @uses apply_filters Calls `wp_session_expiration` to get the standard expiration time for sessions.
 	 */
-	private function set_expiration() 
+	private function set_expiration()
 	{
 		//$this->exp_variant = time() + intval( apply_filters( 'wp_session_expiration_variant', 24 * 60 ) );
 		//$this->expires = time() + intval( apply_filters( 'wp_session_expiration', 30 * 60 ) );
-		
+
 		$this->exp_variant = time() + (int) apply_filters( 'wp_session_expiration_variant', 24 * 60 );
 		$this->expires = time() + (int) apply_filters( 'wp_session_expiration', 30 * 60 );
-		
+
 	}
-	
+
 	/**
 	 * Set the session cookie
 	 */
 	protected function set_cookie() {
 		// setcookie( WP_SESSION_COOKIE, $this->session_id . '||' . $this->expires . '||' . $this->exp_variant , $this->expires, COOKIEPATH, COOKIE_DOMAIN );
-		setcookie( GPLUGIN_SESSION_COOKIE, 
+		setcookie( GPLUGIN_SESSION_COOKIE,
 			$this->session_id.'||'.$this->expires.'||'.$this->exp_variant,
 			$this->expires,
 			( GPLUGIN_SESSION_NETWORKWIDE ? SITECOOKIEPATH : COOKIEPATH ),
 			COOKIE_DOMAIN
-		);		
+		);
 	}
 
 	/**
@@ -463,7 +463,7 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 	 *
 	 * @return string
 	 */
-	private function generate_id() 
+	private function generate_id()
 	{
 		require_once( ABSPATH.'wp-includes/class-phpass.php' );
 		$hasher = new PasswordHash( 8, false );
@@ -478,7 +478,7 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 	 *
 	 * @return array
 	 */
-	private function read_data() 
+	private function read_data()
 	{
 		if ( GPLUGIN_SESSION_NETWORKWIDE )
 			$this->container = get_site_option( "_gp_session_{$this->session_id}", array() );
@@ -492,7 +492,7 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 	 * Write the data from the current session to the data storage system.
 	 */
 	public function write_data() {
-	
+
 		$option_key = "_gp_session_{$this->session_id}";
 
 		// Only write the collection to the DB if it's changed.
@@ -520,7 +520,7 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 	 *
 	 * @return string
 	 */
-	public function json_out() 
+	public function json_out()
 	{
 		return json_encode( $this->container );
 	}
@@ -532,7 +532,7 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 	 *
 	 * @return bool
 	 */
-	public function json_in( $data ) 
+	public function json_in( $data )
 	{
 		$array = json_decode( $data );
 
@@ -549,7 +549,7 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 	 *
 	 * @param bool $delete_old Flag whether or not to delete the old session data from the server.
 	 */
-	public function regenerate_id( $delete_old = false ) 
+	public function regenerate_id( $delete_old = false )
 	{
 		if ( $delete_old ) {
 			if ( GPLUGIN_SESSION_NETWORKWIDE )
@@ -561,20 +561,20 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 		$this->session_id = $this->generate_id();
 		$this->set_cookie();
 	}
-	
+
 	// mine
 	public function get_id()
 	{
 		return $this->session_id;
 	}
-	
+
 
 	/**
 	 * Check if a session has been initialized.
 	 *
 	 * @return bool
 	 */
-	public function session_started() 
+	public function session_started()
 	{
 		return !!self::$instance;
 	}
@@ -584,7 +584,7 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 	 *
 	 * @return int
 	 */
-	public function cache_expiration() 
+	public function cache_expiration()
 	{
 		return $this->expires;
 	}
@@ -592,7 +592,7 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 	/**
 	 * Flushes all session variables.
 	 */
-	public function reset() 
+	public function reset()
 	{
 		$this->container = array();
 	}
@@ -608,7 +608,7 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 	 *
 	 * @return mixed
 	 */
-	public function current() 
+	public function current()
 	{
 		return current( $this->container );
 	}
@@ -620,7 +620,7 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 	 *
 	 * @return mixed
 	 */
-	public function key() 
+	public function key()
 	{
 		return key( $this->container );
 	}
@@ -632,7 +632,7 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 	 *
 	 * @return void
 	 */
-	public function next() 
+	public function next()
 	{
 		next( $this->container );
 	}
@@ -644,7 +644,7 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 	 *
 	 * @return void
 	 */
-	public function rewind() 
+	public function rewind()
 	{
 		reset( $this->container );
 	}
@@ -656,7 +656,7 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 	 *
 	 * @return bool
 	 */
-	public function valid() 
+	public function valid()
 	{
 		return $this->offsetExists( $this->key() );
 	}
@@ -672,7 +672,7 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 	 *
 	 * @return int
 	 */
-	public function count() 
+	public function count()
 	{
 		return count( $this->container );
 	}

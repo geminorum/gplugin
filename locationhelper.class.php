@@ -1,5 +1,5 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
-if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper 
+if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 {
 	// http://countrycode.org/
 	// http://en.wikipedia.org/wiki/ISO_3166-1
@@ -11,10 +11,10 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 	/** ---------------------------------------------------------------------------------
 						USED FUNCTION: Modyfy with Caution!
 	--------------------------------------------------------------------------------- **/
-	
-	public static function validate_zipcode( $zip = 0, $country_code = '' ) 
+
+	public static function validate_zipcode( $zip = 0, $country_code = '' )
 	{
-		if ( empty( $zip ) 
+		if ( empty( $zip )
 			|| empty( $country_code ) )
 				return false;
 
@@ -176,24 +176,24 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 			"ZM" => "\d{5}"
 		);
 
-		if ( ! isset ( $zip_regex[ $country_code ] ) 
+		if ( ! isset ( $zip_regex[ $country_code ] )
 			|| preg_match( "/" . $zip_regex[ $country_code ] . "/i", $zip ) )
 				$ret = true;
-				
+
 		return false;
-	}			
+	}
 
 	// Originally from Easy Digital Downloads
-	public static function get_states( $country = null ) 
+	public static function get_states( $country = null )
 	{
 		if ( ! empty( $country ) && method_exists( 'gPluginLocationHelper', 'get_states_'.$country ) )
 			return call_user_func( array( 'gPluginLocationHelper', 'get_states_'.$country ) );
 		return array();
 	}
-	
-	public static function get_cities( $country = null, $state = null ) 
+
+	public static function get_cities( $country = null, $state = null )
 	{
-		if ( ! empty( $country ) && ! empty( $state )		
+		if ( ! empty( $country ) && ! empty( $state )
 			&& method_exists( 'gPluginLocationHelper', 'get_cities_'.$country ) ) {
 				$cities = call_user_func( array( 'gPluginLocationHelper', 'get_cities_'.$country ) );
 				if ( isset( $cities[$state] ) ) {
@@ -202,7 +202,7 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 			}
 		return array();
 	}
-	
+
 	public static function get_states_US()
 	{
 		return array(
@@ -274,7 +274,7 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 			'AP' => 'Armed Forces - Pacific'
 		);
 	}
-	
+
 	// Canada Provinces
 	public static function get_states_CA()
 	{
@@ -294,7 +294,7 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 			'YT' => 'Yukon',
 		);
 	}
-	
+
 	// Australian States
 	public static function get_states_AU()
 	{
@@ -309,7 +309,7 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 			'WA'  => 'Western Australia',
 		);
 	}
-	
+
 	// Brazil States
 	public static function get_states_BR()
 	{
@@ -341,13 +341,13 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 			'SP' => 'S&atilde;o Paulo',
 			'SE' => 'Sergipe',
 			'TO' => 'Tocantins'
-		);			
+		);
 	}
-	
+
 	// Chinese States
 	public static function get_states_CN()
 	{
-		return array(	
+		return array(
 			'CN1'  => 'Yunnan / &#20113;&#21335;',
 			'CN2'  => 'Beijing / &#21271;&#20140;',
 			'CN3'  => 'Tianjin / &#22825;&#27941;',
@@ -380,23 +380,23 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 			'CN30' => 'Macau / &#28595;&#38376;',
 			'CN31' => 'Tibet / &#35199;&#34255;',
 			'CN32' => 'Xinjiang / &#26032;&#30086;'
-		);		
+		);
 	}
-	
+
 	// Hong Kong States
 	public static function get_states_HK()
 	{
-		return array(	
+		return array(
 			'HONG KONG' => 'Hong Kong Island',
 			'KOWLOON' => 'Kowloon',
 			'NEW TERRITORIES' => 'New Territories'
 		);
 	}
-	
+
 	// Hungary States
 	public static function get_states_HU()
 	{
-		return array(	
+		return array(
 			'BK' => 'Bács-Kiskun',
 			'BE' => 'Békés',
 			'BA' => 'Baranya',
@@ -419,11 +419,11 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 			'ZA' => 'Zala',
 		);
 	}
-	
+
 	// Indonesian States
 	public static function get_states_ID()
 	{
-		return array(	
+		return array(
 			'AC' => 'Daerah Istimewa Aceh',
 			'SU' => 'Sumatera Utara',
 			'SB' => 'Sumatera Barat',
@@ -458,9 +458,9 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 			'MU' => 'Maluku Utara',
 			'PA' => 'Papua',
 			'PB' => 'Papua Barat',
-		);			
+		);
 	}
-	
+
 	// Indian States
 	public static function get_states_IN()
 	{
@@ -500,13 +500,13 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 			'DL' => 'Delhi',
 			'LD' => 'Lakshadeep',
 			'PY' => 'Pondicherry (Puducherry)',
-		);		
+		);
 	}
-	
+
 	// Malaysian States
 	public static function get_states_MY()
 	{
-		return array(	
+		return array(
 			'JHR' => 'Johor',
 			'KDH' => 'Kedah',
 			'KTN' => 'Kelantan',
@@ -523,13 +523,13 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 			'KUL' => 'W.P. Kuala Lumpur',
 			'LBN' => 'W.P. Labuan',
 			'PJY' => 'W.P. Putrajaya',
-		);			
+		);
 	}
-	
+
 	// New Zealand States
 	public static function get_states_NZ()
 	{
-		return array(	
+		return array(
 			'AK' => 'Auckland',
 			'BP' => 'Bay of Plenty',
 			'CT' => 'Canterbury',
@@ -547,10 +547,10 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 			'WC' => 'West Coast',
 		);
 	}
-	
+
 	public static function get_states_TH()
 	{
-		return array(	
+		return array(
 			'TH-37' => 'Amnat Charoen (&#3629;&#3635;&#3609;&#3634;&#3592;&#3648;&#3592;&#3619;&#3636;&#3597;)',
 			'TH-15' => 'Ang Thong (&#3629;&#3656;&#3634;&#3591;&#3607;&#3629;&#3591;)',
 			'TH-14' => 'Ayutthaya (&#3614;&#3619;&#3632;&#3609;&#3588;&#3619;&#3624;&#3619;&#3637;&#3629;&#3618;&#3640;&#3608;&#3618;&#3634;)',
@@ -628,13 +628,13 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 			'TH-53' => 'Uttaradit (&#3629;&#3640;&#3605;&#3619;&#3604;&#3636;&#3605;&#3606;&#3660;)',
 			'TH-95' => 'Yala (&#3618;&#3632;&#3621;&#3634;)',
 			'TH-35' => 'Yasothon (&#3618;&#3650;&#3626;&#3608;&#3619;)'
-		);	
+		);
 	}
-	
+
 	// South African States
 	public static function get_states_ZA()
 	{
-		return array(		
+		return array(
 			'EC'  => 'Eastern Cape',
 			'FS'  => 'Free State',
 			'GP'  => 'Gauteng',
@@ -646,7 +646,7 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 			'WC'  => 'Western Cape',
 		);
 	}
-	
+
 	// Originally from Easy Digital Downloads
 	public static function get_countries( $pre = array() )
 	{
@@ -894,11 +894,11 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 			'YE' => 'Yemen',
 			'YU' => 'Yugoslavia',
 			'ZM' => 'Zambia',
-			'ZW' => 'Zimbabwe'		
+			'ZW' => 'Zimbabwe'
 		) );
 	}
-	
-	
+
+
 	// Iran
 	public static function get_states_IR()
 	{
@@ -936,10 +936,10 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 			'ALZ' => 'البرز',
 		);
 	}
-	
+
 	public static function get_next_states_IR( $state = 'TEH' )
 	{
-		$array = array( 
+		$array = array(
 			'EAZ' => array( 'WEZ','ARD','ZAN', ),
 			'WEZ' => array( 'EAZ','ZAN','KRD', ),
 			'ARD' => array( 'EAZ','ZAN','GIL', ),
@@ -972,17 +972,17 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 			'HMD' => array( 'ZAN','QAZ','KRD','KRM','LRS','MKZ', ),
 			'YZD' => array( 'EFH','SKH','RKH','SMN','FAR','KRB', ),
 		);
-		
+
 		if ( isset( $array[$state] ) )
 			return $array[$state];
 		return false;
 	}
-	
-	
+
+
 	public static function get_cities_IR()
 	{
 		return array(
-			'EAZ' => array( 
+			'EAZ' => array(
 				'آذرشهر',
 				'اسکو',
 				'اهر',
@@ -1002,8 +1002,8 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				'ورزقان',
 				'هریس',
 				'هشترود',
-			), 
-			'WEZ' => array( 
+			),
+			'WEZ' => array(
 				'ارومیه',
 				'اشنویه',
 				'بوکان',
@@ -1018,8 +1018,8 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				'مهاباد',
 				'میاندوآب',
 				'نقده',
-			), 
-			'ARD' => array( 
+			),
+			'ARD' => array(
 				'اردبیل',
 				'بیله‌سوار',
 				'پارس‌آباد',
@@ -1029,8 +1029,8 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				'مِشگین‌شهر',
 				'نَمین',
 				'نیر',
-			), 
-			'EFH' => array( 
+			),
+			'EFH' => array(
 				'آران و بیدگل',
 				'اردستان',
 				'اصفهان',
@@ -1052,8 +1052,8 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				'نائین',
 				'نجف‌آباد',
 				'نطنز',
-			), 
-			'ILM' => array( 
+			),
+			'ILM' => array(
 				'آبدانان',
 				'ایلام',
 				'ایوان',
@@ -1061,8 +1061,8 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				'دهلران',
 				'شیروان و چرداول',
 				'مهران',
-			), 
-			'BSH' => array( 
+			),
+			'BSH' => array(
 				'بوشهر',
 				'تنگستان',
 				'جم',
@@ -1071,8 +1071,8 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				'دیلم',
 				'کنگان',
 				'گناوه',
-			), 
-			'TEH' => array( 
+			),
+			'TEH' => array(
 				'اسلام‌شهر',
 				'پاکدشت',
 				'تهران',
@@ -1086,24 +1086,24 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				'کرج',
 				'نظرآباد',
 				'ورامین',
-			), 
-			'CMB' => array( 
+			),
+			'CMB' => array(
 				'اردل',
 				'بروجن',
 				'شهرکرد',
 				'فارسان',
 				'کوهرنگ',
 				'لردگان',
-			), 
-			'SKH' => array( 
+			),
+			'SKH' => array(
 				'بیرجند',
 				'درمیان',
 				'سرایان',
 				'سربیشه',
 				'فردوس',
 				'قائنات,نهبندان',
-			), 
-			'RKH' => array( 
+			),
+			'RKH' => array(
 				'بردسکن',
 				'تایباد',
 				'تربت جام',
@@ -1123,16 +1123,16 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				'مشهد',
 				'مه ولات',
 				'نیشابور',
-			 ), 
-			'NKH' => array( 
+			 ),
+			'NKH' => array(
 				'اسفراین',
 				'بجنورد',
 				'جاجرم',
 				'شیروان',
 				'فاروج',
 				'مانه و سملقان',
-			 ), 
-			'KZT' => array( 
+			 ),
+			'KZT' => array(
 				'آبادان',
 				'امیدیه',
 				'اندیمشک',
@@ -1153,8 +1153,8 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				'لالی',
 				'مسجد سلیمان',
 				'هندیجان',
-			 ), 
-			'ZAN' => array( 
+			 ),
+			'ZAN' => array(
 				'ابهر',
 				'ایجرود',
 				'خدابنده',
@@ -1162,15 +1162,15 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				'زنجان',
 				'طارم',
 				'ماه‌نشان',
-			 ), 
-			'SMN' => array( 
+			 ),
+			'SMN' => array(
 				'دامغان',
 				'سمنان',
 				'شاهرود',
 				'گرمسار',
 				'مهدی‌شهر',
-			), 
-			'SBL' => array( 
+			),
+			'SBL' => array(
 				'ایرانشهر',
 				'چابهار',
 				'خاش',
@@ -1182,8 +1182,8 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				'سرباز',
 				'کنارک',
 				'نیک‌شهر',
-			), 
-			'FAR' => array( 
+			),
+			'FAR' => array(
 				'آباده',
 				'ارسنجان',
 				'استهبان',
@@ -1208,18 +1208,18 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				'ممسنی',
 				'مهر',
 				'نی‌ریز',
-				 ), 
-			'QAZ' => array( 
+				 ),
+			'QAZ' => array(
 				'آبیک',
 				'البرز',
 				'بوئین‌زهرا',
 				'تاکستان',
 				'قزوین',
-			), 
-			'QOM' => array( 
+			),
+			'QOM' => array(
 				'قم',
-			), 
-			'KRD' => array( 
+			),
+			'KRD' => array(
 				'بانه',
 				'بیجار',
 				'دیواندره',
@@ -1229,8 +1229,8 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				'قروه',
 				'کامیاران',
 				'مریوان',
-			), 
-			'KRB' => array( 
+			),
+			'KRB' => array(
 				'بافت',
 				'بردسیر',
 				'بم',
@@ -1247,8 +1247,8 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				'کوهبنان',
 				'کهنوج',
 				'منوجان',
-			), 
-			'KRM' => array( 
+			),
+			'KRM' => array(
 				'اسلام‌آباد غرب',
 				'پاوه',
 				'ثلاث باباجانی',
@@ -1263,15 +1263,15 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				'کنگاور',
 				'گیلان غرب',
 				'هرسین',
-			), 
-			'KBA' => array( 
+			),
+			'KBA' => array(
 				'بویراحمد',
 				'بهمئی',
 				'دنا',
 				'کهگیلویه',
 				'گچساران',
-			), 
-			'GLS' => array( 
+			),
+			'GLS' => array(
 				'آزادشهر',
 				'آق‌قلا',
 				'بندر گز',
@@ -1284,8 +1284,8 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				'گنبد کاووس',
 				'مراوه‌تپه',
 				'مینودشت',
-			), 
-			'GIL' => array( 
+			),
+			'GIL' => array(
 				'آستارا',
 				'آستانه اشرفیه',
 				'اَملَش',
@@ -1302,8 +1302,8 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				'لاهیجان',
 				'لنگرود',
 				'ماسال',
-			), 
-			'LRS' => array( 
+			),
+			'LRS' => array(
 				'ازنا',
 				'الیگودرز',
 				'بروجرد',
@@ -1313,8 +1313,8 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				'دلفان',
 				'سلسله',
 				'کوهدشت',
-			), 
-			'MZD' => array( 
+			),
+			'MZD' => array(
 				'آمل',
 				'بابل',
 				'بابلسر',
@@ -1331,8 +1331,8 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				'نکا',
 				'نور',
 				'نوشهر',
-			), 
-			'MKZ' => array( 
+			),
+			'MKZ' => array(
 				'آشتیان',
 				'اراک',
 				'تفرش',
@@ -1343,8 +1343,8 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				'شازند',
 				'کمیجان',
 				'محلات',
-			), 
-			'HRM' => array( 
+			),
+			'HRM' => array(
 				'ابوموسی',
 				'بستک',
 				'بندر عباس',
@@ -1356,8 +1356,8 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				'قشم',
 				'گاوبندی',
 				'میناب',
-			), 
-			'HMD' => array( 
+			),
+			'HMD' => array(
 				'اسدآباد',
 				'بهار',
 				'تویسرکان',
@@ -1366,8 +1366,8 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				'ملایر',
 				'نهاوند',
 				'همدان',
-			), 
-			'YZD' => array( 
+			),
+			'YZD' => array(
 				'ابرکوه',
 				'اردکان',
 				'بافق',
@@ -1378,7 +1378,7 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				'مهریز',
 				'مِیبُد',
 				'یزد',
-			), 
+			),
 			'ALZ' => array(
 				'کرج',
 				'ساوجبلاغ',
@@ -1389,8 +1389,8 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 			),
 		);
 	}
-	
-	
+
+
    	/** ---------------------------------------------------------------------------------
 									NOT USED YET
 	--------------------------------------------------------------------------------- **/
@@ -1399,14 +1399,14 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 	// http://www.catswhocode.com/blog/snippets/detect-location-by-ip
 	// http://ipinfodb.com/
 	// http://ipinfodb.com/ip_location_api.php
-	
+
 	// ALSO SEE : https://github.com/BeingTomGreen/IP-User-Location
-	
-	function get_location_by_ip( $ip ) 
+
+	function get_location_by_ip( $ip )
 	{
-        if ( ! is_string( $ip ) 
-			|| strlen( $ip ) < 1 
-			|| $ip == '127.0.0.1' 
+        if ( ! is_string( $ip )
+			|| strlen( $ip ) < 1
+			|| $ip == '127.0.0.1'
 			|| $ip == 'localhost' )
 				$ip = '8.8.8.8';
 
@@ -1438,12 +1438,12 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 
 		if ( $city && $state && $country )
 			return array( $city, $state, preg_replace( '/<img[^>]+\>/i', '', $country ) );
-			
-		return false;
-    }	
-	
 
-	
+		return false;
+    }
+
+
+
 	// http://www.catswhocode.com/blog/snippets/calculate-the-distance-between-two-points-in-php
 	// http://www.inkplant.com/code/calculate-the-distance-between-two-points.php
 	/**
@@ -1453,8 +1453,8 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 		$distance = getDistanceBetweenPointsNew($point1['lat'], $point1['long'], $point2['lat'], $point2['long']);
 		foreach ($distance as $unit => $value) {
 			echo $unit.': '.number_format($value,4).'<br />';
-		}	
-	**/	
+		}
+	**/
 	function getDistanceBetweenPointsNew( $latitude1, $longitude1, $latitude2, $longitude2 )
 	{
 		$theta = $longitude1 - $longitude2;
@@ -1466,43 +1466,43 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 		$yards = $feet / 3;
 		$kilometers = $miles * 1.609344;
 		$meters = $kilometers * 1000;
-		return compact('miles','feet','yards','kilometers','meters'); 
+		return compact('miles','feet','yards','kilometers','meters');
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	// SEE : http://en.wikipedia.org/wiki/Haversine_formula
 	// http://www.codecodex.com/wiki/Calculate_Distance_Between_Two_Points_on_a_Globe
 	// http://www.movable-type.co.uk/scripts/latlong.html
-	
+
 	// SEE : https://developers.google.com/maps/articles/phpsqlsearch_v3
-	
+
 	// SEE: http://www.geodatasource.com/world-cities-database/free
-	
-	
+
+
 	//--------------------------------------------------------------------------
-	
-	
+
+
 	// http://www.geodatasource.com/developers/php
 	/*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
 	/*::                                                                         :*/
@@ -1530,12 +1530,12 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 	/*::         GeoDataSource.com (C) All Rights Reserved 2013		   		     :*/
 	/*::                                                                         :*/
 	/*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-	
+
 	// echo distance(32.9697, -96.80322, 29.46786, -98.53506, "M") . " Miles<br>";
 	// echo distance(32.9697, -96.80322, 29.46786, -98.53506, "K") . " Kilometers<br>";
 	// echo distance(32.9697, -96.80322, 29.46786, -98.53506, "N") . " Nautical Miles<br>";
-	
-	function distance( $lat1, $lon1, $lat2, $lon2, $unit = 'K' ) 
+
+	function distance( $lat1, $lon1, $lat2, $lon2, $unit = 'K' )
 	{
 
 		$theta = $lon1 - $lon2;
@@ -1552,12 +1552,12 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 		return $miles;
 	}
 
-			
-			
+
+
 	// http://stackoverflow.com/a/9046008
-	// http://en.wikipedia.org/wiki/Geographical_distance	
+	// http://en.wikipedia.org/wiki/Geographical_distance
 	// echo distanceGeoPoints(22,50,22.1,50.1);
-	function distanceGeoPoints( $lat1, $lng1, $lat2, $lng2 ) 
+	function distanceGeoPoints( $lat1, $lng1, $lat2, $lng2 )
 	{
 		$earthRadius = 3958.75;
 
@@ -1577,21 +1577,21 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 
 		return $geopointDistance;
 	}
-	
 
-	
-	
-	
-	
-	
-		
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
 	// http://ip.codehelper.io/
-	
+
 	// http://stackoverflow.com/a/7767055
-	
+
 	// http://ipinfo.io/developers
 	// http://jsfiddle.net/zK5FN/2/
 

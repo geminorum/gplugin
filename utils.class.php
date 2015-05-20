@@ -7,26 +7,26 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 						USED FUNCTION: Modyfy with Caution!
 	--------------------------------------------------------------------------------- **/
 
-	public static function IP() 
+	public static function IP()
 	{
 		if ( getenv( 'HTTP_CLIENT_IP' ) )
 			return getenv( 'HTTP_CLIENT_IP' );
-			
+
 		if ( getenv( 'HTTP_X_FORWARDED_FOR' ) )
 			return getenv( 'HTTP_X_FORWARDED_FOR' );
-			
+
 		if ( getenv( 'HTTP_X_FORWARDED' ) )
 			return getenv( 'HTTP_X_FORWARDED' );
-			
+
 		if ( getenv( 'HTTP_FORWARDED_FOR' ) )
 			return getenv( 'HTTP_FORWARDED_FOR' );
-			
+
 		if ( getenv( 'HTTP_FORWARDED' ) )
 			return getenv( 'HTTP_FORWARDED' );
-			
+
 		return $_SERVER['REMOTE_ADDR'];
-	}	
-	
+	}
+
 	public static function roundArray( $array, $precision = -3, $mode = PHP_ROUND_HALF_UP )
 	{
 		$new = array();
@@ -34,7 +34,7 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 			$new[$key] = round( (float) $value, $precision, $mode );
 		return $new;
 	}
-   
+
 	public static function dump( & $var, $htmlSafe = true )
 	{
 		$result = var_export( $var, true );
@@ -46,7 +46,7 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 		$result = var_export( $var, true );
 		echo '<pre dir="ltr" style="text-align:left;direction:ltr;">'.( $htmlSafe ? htmlspecialchars( $result ) : $result).'</pre>';
 	}
-	
+
     // returns array of the keys if options values are true
     public static function getKeys( $options = array() )
     {
@@ -65,7 +65,7 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
         }
         return $list;
     }
-	
+
 	// for useing with $('form').serializeArray();
 	// http://api.jquery.com/serializeArray/
 	public static function parseJSArray( $array )
@@ -76,19 +76,19 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 		return $parsed;
 	}
 
-	public static function strpos_arr( $haystack, $needle ) 
+	public static function strpos_arr( $haystack, $needle )
 	{
-		if( ! is_array( $needle ) ) 
+		if( ! is_array( $needle ) )
 			$needle = array( $needle );
-		
-		foreach( $needle as $what ) 
-			if( ( $pos = strpos( $haystack, $what ) ) !==false ) 
+
+		foreach( $needle as $what )
+			if( ( $pos = strpos( $haystack, $what ) ) !==false )
 				return $pos;
 		return false;
-	}	
-	
+	}
+
 	// Originally from : http://wordpress.org/plugins/easy-digital-downloads/
-	public static function getIP() 
+	public static function getIP()
 	{
 		if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
 			//check ip from share internet
@@ -103,8 +103,8 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 		return $ip;
 	}
 
-	
-	
+
+
 	// http://teleogistic.net/2013/05/a-recursive-sorta-version-of-wp_parse_args/
 	// https://gist.github.com/boonebgorges/5510970
 	/**
@@ -138,7 +138,7 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 		$a = (array) $a;
 		$b = (array) $b;
 		$r = $b;
-		 
+
 		foreach ( $a as $k => &$v ) {
 			if ( is_array( $v ) && isset( $r[ $k ] ) ) {
 				$r[ $k ] = self::parse_args_r( $v, $r[ $k ] );
@@ -146,11 +146,11 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 				$r[ $k ] = $v;
 			}
 		}
-		 
+
 		return $r;
 	}
-	
-	public static function parse_args( $args, $defaults = '' ) 
+
+	public static function parse_args( $args, $defaults = '' )
 	{
 		if ( is_object( $args ) )
 			$r = get_object_vars( $args );
@@ -163,20 +163,20 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 			return array_merge( $defaults, $r );
 		return $r;
 	}
-	
-	public static function parse_str( $string, & $array ) 
+
+	public static function parse_str( $string, & $array )
 	{
 		parse_str( $string, $array );
 		if ( get_magic_quotes_gpc() )
 			$array = stripslashes_deep( $array );
 	}
 
-	public static function unslash( $value ) 
+	public static function unslash( $value )
 	{
 		return self::stripslashes_deep( $value );
 	}
-	
-	public static function stripslashes_deep( $value ) 
+
+	public static function stripslashes_deep( $value )
 	{
 		if ( is_array( $value ) ) {
 			$value = array_map( array( __CLASS__, 'stripslashes_deep' ), $value );
@@ -191,14 +191,14 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 
 		return $value;
 	}
-	
+
 	/** ---------------------------------------------------------------------------------
 									NOT USED YET
 	--------------------------------------------------------------------------------- **/
 
 	// http://php.net/manual/en/function.array-key-exists.php#77848
-	// example : if(array_key_exists_r('login|user|passwd',$_GET)) {		
-	public static function array_key_exists_r( $keys, $search_r ) 
+	// example : if(array_key_exists_r('login|user|passwd',$_GET)) {
+	public static function array_key_exists_r( $keys, $search_r )
 	{
 		$keys_r = split('\|',$keys);
 		foreach($keys_r as $key)
@@ -206,16 +206,16 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 				return false;
 		return true;
 	}
-	
+
 	// http://stackoverflow.com/a/17620260
-	public static function search_array( $value, $key, $array ) 
+	public static function search_array( $value, $key, $array )
 	{
 		foreach ( $array as $k => $val )
 			if ( $val[$key] == $value )
 				return $k;
 		return null;
 	}
-	
+
 	// http://stackoverflow.com/a/15031805
 	/**
 	 * Search Revisions
@@ -223,10 +223,10 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 	 * @param string $key_to_search The associative key to find it in, ie first_name
 	 * @param string $other_matching_key The associative key to find in the matches for employed
 	 * @param string $other_matching_value The value to find in that matching associative key, ie true
-	 * 
+	 *
 	 * @return array keys, ie all the people with the first name 'Taylor' that are employed.
 	 */
-	public static function search_revisions( $revisions, $search_value, $key_to_search, $other_matching_value = null, $other_matching_key = null ) 
+	public static function search_revisions( $revisions, $search_value, $key_to_search, $other_matching_value = null, $other_matching_key = null )
 	{
 		// This function will search the revisions for a certain value
 		// related to the associative key you are looking for.
@@ -245,10 +245,10 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 			}
 		}
 		return $keys;
-	}	
-	
+	}
+
 	// http://nl1.php.net/manual/en/function.array-multisort.php#100534
-	// I came up with an easy way to sort database-style results. This does what example 3 does, except it takes care of creating those intermediate arrays for you before passing control on to array_multisort(). 
+	// I came up with an easy way to sort database-style results. This does what example 3 does, except it takes care of creating those intermediate arrays for you before passing control on to array_multisort().
 	// Pass the array, followed by the column names and sort flags
 	// $sorted = array_orderby($data, 'volume', SORT_DESC, 'edition', SORT_ASC);
 	public static function array_orderby()
@@ -266,36 +266,36 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 		$args[] = &$data;
 		call_user_func_array('array_multisort', $args);
 		return array_pop($args);
-	}	
-	
-	
+	}
+
+
 	// http://davidwalsh.name/data-uri-php
 	// http://www.catswhocode.com/blog/snippets/image-data-uris-with-php
-	public static function getDataURI( $image, $mime = '' ) 
+	public static function getDataURI( $image, $mime = '' )
 	{
 		return 'data: '.( function_exists( 'mime_content_type' ) ? mime_content_type( $image ) : $mime ).';base64,'.base64_encode( file_get_contents( $image ) );
-	}	
-	
+	}
+
 
 	// recursively sort multidimentional arrays by key
 	// http://www.php.net/manual/en/function.ksort.php#105399
-	public static function deep_ksort( & $arr ) 
+	public static function deep_ksort( & $arr )
 	{
 		ksort( $arr );
 		foreach ( $arr as &$a )
 			if ( is_array($a) && ! empty( $a ) )
 				self::deep_ksort( $a );
-	} 	
-	
+	}
+
 	// Sort multidimensional Array by Value
 	// http://stackoverflow.com/questions/2699086/sort-multidimensional-array-by-value-2
 	// http://en.wikipedia.org/wiki/Sorting_algorithm
 	// aasort( $your_array, "order" );
-	public static function aasort( & $array, $key ) 
+	public static function aasort( & $array, $key )
 	{
 		$sorter = $ret = array();
 		reset( $array );
-		
+
 		foreach ( $array as $ii => $va )
 			$sorter[$ii] = $va[$key];
 
@@ -315,7 +315,7 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 		$arr[$key] = $val;
 		$arr = array_reverse( $arr, true );
 		return count( $arr );
-	} 
+	}
 
 }
 }

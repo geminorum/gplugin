@@ -3,16 +3,16 @@ class gPluginMetaCore extends gPluginClassCore
 {
 
 	// public function setup_globals( $constants = array(), $args = array() ) { $this->constants = $constants; $this->args = $args; }
-	
+
 	//public function setup_actions() { }
 
-	
+
 	// MUST DEPREATED
 	function admin_field( $field, $fields, $post, $ltr = false )
 	{
 		global $gEditorial;
-		
-		if ( in_array( $field, $fields ) && $gEditorial->meta->user_can( 'view', $field )  ) { 
+
+		if ( in_array( $field, $fields ) && $gEditorial->meta->user_can( 'view', $field )  ) {
 			?><p class="">
 				<input style="width:99%;" class="geditorial-meta-prompt" type="text" autocomplete="off"
 				name="geditorial-meta-<?php echo $field; ?>" id="geditorial-meta-<?php echo $field; ?>" <?php if ( $ltr ) echo 'dir="ltr"'; ?>
@@ -23,28 +23,28 @@ class gPluginMetaCore extends gPluginClassCore
 			</p><?php
 		}
 	}
-	
-	
+
+
 	public static function is_active()
 	{
 		global $gEditorial;
-		
+
 		if ( is_object( $gEditorial ) )
 			return true;
-			
+
 		return false;
-		
+
 		// TODO : find a sane method!!
-	
+
 	}
-	
+
 	public static function get_the_term( $taxonomy, $b = '', $a = '', $f = false, $args = array() )
 	{
 		global $post;
-		
+
 		if ( ! self::is_active() )
 			return;
-		
+
 		$args = wp_parse_args( $args, array(
 			'id' => $post->ID,
 			'echo' => true,
@@ -52,13 +52,13 @@ class gPluginMetaCore extends gPluginClassCore
 			'sep' => _x( ', ', 'get_term_seperator', GPLUGIN_TEXTDOMAIN ),
 			'class' => 'term',
 		) );
-		
-		
+
+
 		$html = '';
         $terms = get_the_terms( $args['id'], $taxonomy );
-		
+
 		if ( $terms && ! is_wp_error( $terms ) ) {
-		
+
 			foreach ( $terms as $term ) {
 				$desc = get_term_field( 'description', $term->term_id, $term->taxonomy );
 				//$desc = is_wp_error( $desc ) ? '' : wpautop( $desc, false );
@@ -73,7 +73,7 @@ class gPluginMetaCore extends gPluginClassCore
 				return $b.rtrim( $html, $args['sep'] ).$a;
 			}
 		}
-		
+
 		if ( isset( $args['def'] ) && $args['def'] ) {
 			if ( isset( $args['echo'] ) && $args['echo'] ) {
 				echo $args['def'];
@@ -82,6 +82,6 @@ class gPluginMetaCore extends gPluginClassCore
 			return $args['def'];
 		}
 	}
-	
+
 
 }
