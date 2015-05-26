@@ -2,9 +2,8 @@
 
 class gPluginAdminCore extends gPluginClassCore
 {
-	var $_component = 'admin'; // root / remote
 
-	// public function setup_globals( $constants = array(), $args = array() ) { $this->constants = $constants; $this->args = $args; }
+	var $_component = 'admin'; // root / remote
 
 	public function setup_actions()
 	{
@@ -27,32 +26,32 @@ class gPluginAdminCore extends gPluginClassCore
 	public function init() { }
 	public function admin_init() { }
 	public function admin_footer() { }
-	//public function admin_settings_load() { }
+	// public function admin_settings_load() { }
 
-    public function admin_menu()
-    {
+	public function admin_menu()
+	{
 		// bail if extended class not ready to have an admin settings page
 		if ( ! method_exists( $this, 'admin_settings_load' ) )
 			return;
 
-        $hook = add_submenu_page( 'options-general.php',
-            sprintf( _x( '%s Settings', 'Admin Settings Page Title', GPLUGIN_TEXTDOMAIN ), $this->args['title'] ),
-            sprintf( _x( '%s', 'Admin Menu Title', GPLUGIN_TEXTDOMAIN ), $this->args['title'] ),
-            'manage_options',
-            $this->args['domain'],
-            array( $this, 'admin_settings' )
-        );
+		$hook = add_submenu_page( 'options-general.php',
+			sprintf( _x( '%s Settings', 'Admin Settings Page Title', GPLUGIN_TEXTDOMAIN ), $this->args['title'] ),
+			sprintf( _x( '%s', 'Admin Menu Title', GPLUGIN_TEXTDOMAIN ), $this->args['title'] ),
+			'manage_options',
+			$this->args['domain'],
+			array( $this, 'admin_settings' )
+		);
 
 		add_action( 'load-'.$hook, array( $this, 'admin_settings_load' ) );
-    }
+	}
 
-	function admin_settings()
+	public function admin_settings()
 	{
-        $settings_uri = 'options-general.php?page='.$this->args['domain'];
+		$settings_uri = 'options-general.php?page='.$this->args['domain'];
 		$sub = isset( $_GET['sub'] ) ? trim( $_GET['sub'] ) : 'general';
 		$subs = $this->getFilters( $this->_component.'_settings_subs', array(
 			'overview' => __( 'Overview', GPLUGIN_TEXTDOMAIN ),
-			'general' => __( 'General', GPLUGIN_TEXTDOMAIN ),
+			'general'  => __( 'General', GPLUGIN_TEXTDOMAIN ),
 		) );
 
 		$messages = $this->getFilters( $this->_component.'_settings_messages' );
@@ -100,7 +99,7 @@ class gPluginAdminCore extends gPluginClassCore
 	// for settings page only
 	public function admin_print_styles_settings()
 	{
-        if ( strpos( $_SERVER['REQUEST_URI'], 'page='.$this->args['domain'] ) )
+		if ( strpos( $_SERVER['REQUEST_URI'], 'page='.$this->args['domain'] ) )
 			echo '<link rel="stylesheet" href="'.$this->constants['plugin_url'].'assets/css/settings.css" type="text/css" />';
 	}
 
@@ -116,14 +115,13 @@ class gPluginAdminCore extends gPluginClassCore
 		return gPluginWPHelper::getCurrentPostType();
 	}
 
-    function getFilters( $context, $fallback = array() )
-    {
+	function getFilters( $context, $fallback = array() )
+	{
 		if ( isset( $this->constants['class_filters'] )
 			&& class_exists( $this->constants['class_filters'] ) ) {
 				$filtred = gPluginFactory( $this->constants['class_filters'] );
 				return $filtred->get( $context, $fallback );
 		}
 		return $fallback;
-    }
-
+	}
 }

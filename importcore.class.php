@@ -1,15 +1,15 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
+
 if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends gPluginClassCore
 {
-	//public function setup_globals( $constants = array(), $args = array() ) { parent::setup_globals(); }
 	public function setup_actions() {}
 
-	/**
+	/*
 		EXAMPLE :
 			$attachment_id = self::selectAttachment( gPluginFileHelper::mime( 'csv' ) );
 			if ( $attachment_id )
 				$file_path = gPluginWPHelper::get_attachmnet_path( $attachment_id );
-	**/
+	*/
 	public static function selectAttachment( $mime_type = '', $selected = null, $name = 'attach_id' )
 	{
 		$attachments = get_posts( array(
@@ -30,7 +30,7 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 
 			foreach ( $attachments as $attachment )
 				$html .= gPluginFormHelper::html( 'option', array(
-					'value' => $attachment->ID,
+					'value'    => $attachment->ID,
 					'selected' => $selected == $attachment->ID,
 				), esc_html( date_i18n( __( 'Y/m/j' ), strtotime( $attachment->post_date ) ).' — '.$attachment->post_title ) );
 
@@ -53,8 +53,6 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 
 	// http://ask.libreoffice.org/en/question/7036/how-to-convert-every-hyphendash-between-numbers-to-en-dash/
 	// https://help.libreoffice.org/Common/List_of_Regular_Expressions
-
-	//
 
 	// helper
 	function explode( $string, $l10n = false, $vav = false )
@@ -93,11 +91,11 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 	function select_attachment( $name = 'attach_id', $selected = false, $mime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' )
 	{
 		$args = array(
-			'post_type' => 'attachment',
-			'numberposts' => -1,
-			'post_status' => null,
+			'post_type'      => 'attachment',
+			'numberposts'    => -1,
+			'post_status'    => null,
 			'post_mime_type' => $mime,
-			'post_parent' => null,
+			'post_parent'    => null,
 		);
 		$attachments = get_posts( $args );
 
@@ -135,7 +133,6 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 		return $id;
 	}
 
-
 	function unpublish_post( $post_id )
 	{
 		global $wpdb;
@@ -158,6 +155,4 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 		foreach ( $ids as $id )
 			wp_delete_attachment($id);
 	}
-
-}
-}
+} }

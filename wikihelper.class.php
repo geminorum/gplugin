@@ -1,8 +1,9 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
+
 if ( ! class_exists( 'gPluginWikiHelper' ) ) { class gPluginWikiHelper
 {
 
-/**
+/*
 
 http://www.labnol.org/internet/tools/using-wikipedia-api-demo-source-code-example/3076/
 http://stackoverflow.com/questions/964454/how-to-use-wikipedia-api-if-it-exists
@@ -10,28 +11,11 @@ http://www.mediawiki.org/wiki/API
 http://www.mediawiki.org/wiki/API:Tutorial
 http://www.ibm.com/developerworks/library/x-phpwikipedia/
 
-
-
-
-
-
-
-
-
 **/
 
-
-
-
-
-
-
-
-
-
-
 	// http://www.barattalo.it/2010/08/29/php-bot-to-get-wikipedia-definitions/
-	function wikidefinition($s) {
+	function wikidefinition($s)
+	{
 		$url = "http://fa.wikipedia.org/w/api.php?action=opensearch&search=".urlencode($s)."&format=xml&limit=1";
 		$ch = curl_init($url);
 		curl_setopt($ch, CURLOPT_HTTPGET, TRUE);
@@ -53,14 +37,11 @@ http://www.ibm.com/developerworks/library/x-phpwikipedia/
 		}
 	}
 
-
-
 	// originally from : http://wordpress.org/plugins/wikipedia-search-and-display-widget/
 	//	add_action('wp_ajax_nopriv_wikipedia_search', 'wikipedia_get');
 	//	add_action('wp_ajax_wikipedia_search', 'wikipedia_get');
 	function wikipedia_get()
 	{
-
 		$ch = curl_init();
 		curl_setopt($ch,CURLOPT_URL,$_POST['wiki_url'] . "/w/api.php?format=xml&action=opensearch&search=" . strtolower($_POST['keywords']) . "&limit=" . $_POST['no_items']);
 		curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
@@ -84,14 +65,9 @@ http://www.ibm.com/developerworks/library/x-phpwikipedia/
 				}
 				echo "<p><a href='" . $value->Url . "'>" . $value->Text . "</a> | <a class='wikipedia-widget-link' title='click to expand' onclick='javascript:if(document.getElementById(\"wikipedia_widget_" . $counter. "\").style.display==\"block\"){document.getElementById(\"wikipedia_widget_" . $counter. "\").style.display=\"none\"}else{document.getElementById(\"wikipedia_widget_" . $counter. "\").style.display=\"block\"};'>+</a>";
 				echo "<span id='wikipedia_widget_" . $counter++ . "'>" . $value->Description . "</span></p></li>";
-
-
 			}
-
 		}
 
 		die(); // this is required to return a proper result
-
 	}
-
 } }

@@ -47,24 +47,24 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 		echo '<pre dir="ltr" style="text-align:left;direction:ltr;">'.( $htmlSafe ? htmlspecialchars( $result ) : $result).'</pre>';
 	}
 
-    // returns array of the keys if options values are true
-    public static function getKeys( $options = array() )
-    {
-        $keys = array();
-        foreach ( (array) $options as $support => $enabled )
-            if ( $enabled ) $keys[] = $support;
-        return $keys;
-    }
+	// returns array of the keys if options values are true
+	public static function getKeys( $options = array() )
+	{
+		$keys = array();
+		foreach ( (array) $options as $support => $enabled )
+			if ( $enabled ) $keys[] = $support;
+		return $keys;
+	}
 
-    // http://wordpress.mfields.org/2011/rekey-an-indexed-array-of-post-objects-by-post-id/
-    public static function reKey( $list, $key )
-    {
-        if ( ! empty( $list ) ) {
-            $ids = wp_list_pluck( $list, $key );
-            $list = array_combine( $ids, $list );
-        }
-        return $list;
-    }
+	// http://wordpress.mfields.org/2011/rekey-an-indexed-array-of-post-objects-by-post-id/
+	public static function reKey( $list, $key )
+	{
+		if ( ! empty( $list ) ) {
+			$ids = wp_list_pluck( $list, $key );
+			$list = array_combine( $ids, $list );
+		}
+		return $list;
+	}
 
 	// for useing with $('form').serializeArray();
 	// http://api.jquery.com/serializeArray/

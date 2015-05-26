@@ -193,17 +193,12 @@ class gPluginSessionHelper
 
 	}
 
-
-	/**
-	 * Register the garbage collector as a twice daily event.
-	 */
+	// Register the garbage collector as a twice daily event.
 	public static function register_garbage_collection()
 	{
 		if ( ! wp_next_scheduled( 'gplugin_session_garbage_collection' ) )
 			wp_schedule_event( time(), GPLUGIN_SESSION_CRON_ROUTINE, 'gplugin_session_garbage_collection' );
 	}
-
-
 }
 
 // Multidimensional ArrayAccess : Allows ArrayAccess-like functionality with multidimensional arrays.  Fully supports both sets and unsets.

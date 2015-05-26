@@ -2,11 +2,12 @@
 
 if ( ! class_exists( 'gPluginFilteredCore' ) ) { class gPluginFilteredCore extends gPluginClassCore
 {
+
 	public function setup_globals( $constants = array(), $args = array() )
 	{
 		$this->args = gPluginUtils::parse_args_r( $args, array(
-			'domain' => 'gplugin',
-			'title' => __( 'gPlugin Network', GPLUGIN_TEXTDOMAIN ),
+			'domain'        => 'gplugin',
+			'title'         => __( 'gPlugin Network', GPLUGIN_TEXTDOMAIN ),
 			'filter_prefix' => false,
 		) );
 
@@ -28,7 +29,7 @@ if ( ! class_exists( 'gPluginFilteredCore' ) ) { class gPluginFilteredCore exten
 
 		if ( isset( $this->filtered[$group] )
 			&& count( $this->filtered[$group] ) )
-            return $this->filtered[$group];
+			return $this->filtered[$group];
 
 		if ( ! method_exists( $this, $group ) ) {
 			if ( ! count( $fallback ) )

@@ -6,18 +6,17 @@
 
 if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore extends gPluginClassCore
 {
+
 	public function setup_globals( $constants = array(), $args = array() )
 	{
 		$this->args = gPluginUtils::parse_args_r( $args, array(
-			'domain' => 'gplugin',
-			'title' => __( 'gPlugin', GPLUGIN_TEXTDOMAIN ),
-
-			'plural' => '',
+			'domain'   => 'gplugin',
+			'title'    => __( 'gPlugin', GPLUGIN_TEXTDOMAIN ),
+			'plural'   => '',
 			'singular' => '',
-			'ajax' => false,
-			'screen' => null,
-
-			'options' => array(),
+			'ajax'     => false,
+			'screen'   => null,
+			'options'  => array(),
 		) );
 
 		// $this->screen = convert_to_screen( $args['screen'] );
@@ -25,10 +24,8 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 		if ( $this->args['ajax'] )
 			add_action( 'admin_footer', array( $this, '_js_vars' ) );
 
-
 		$current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
 		$this->current_url = remove_query_arg( 'paged', $current_url );
-
 	}
 
 	public static function get_column_headers( $screen_id )
@@ -69,7 +66,7 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 		$args = wp_parse_args( $args, array(
 			'total_items' => 0,
 			'total_pages' => 0,
-			'per_page' => 0,
+			'per_page'    => 0,
 		) );
 
 		if ( ! $args['total_pages'] && $args['per_page'] > 0 )

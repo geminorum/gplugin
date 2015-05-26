@@ -1,11 +1,7 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
+
 class gPluginMetaCore extends gPluginClassCore
 {
-
-	// public function setup_globals( $constants = array(), $args = array() ) { $this->constants = $constants; $this->args = $args; }
-
-	//public function setup_actions() { }
-
 
 	// MUST DEPREATED
 	function admin_field( $field, $fields, $post, $ltr = false )
@@ -20,10 +16,9 @@ class gPluginMetaCore extends gPluginClassCore
                 value="<?php echo esc_attr( $gEditorial->meta->get_postmeta( $post->ID, $field ) ); ?>"
 				title="<?php echo esc_attr( $gEditorial->meta->get_string( $field, $post->post_type ) ); ?>"
                 placeholder="<?php echo esc_attr( $gEditorial->meta->get_string( $field, $post->post_type ) ); ?>" />
-			</p><?php
+			</p> <?php
 		}
 	}
-
 
 	public static function is_active()
 	{
@@ -35,7 +30,6 @@ class gPluginMetaCore extends gPluginClassCore
 		return false;
 
 		// TODO : find a sane method!!
-
 	}
 
 	public static function get_the_term( $taxonomy, $b = '', $a = '', $f = false, $args = array() )
@@ -46,13 +40,12 @@ class gPluginMetaCore extends gPluginClassCore
 			return;
 
 		$args = wp_parse_args( $args, array(
-			'id' => $post->ID,
-			'echo' => true,
-			'def' => '',
-			'sep' => _x( ', ', 'get_term_seperator', GPLUGIN_TEXTDOMAIN ),
+			'id'    => $post->ID,
+			'echo'  => true,
+			'def'   => '',
+			'sep'   => _x( ', ', 'get_term_seperator', GPLUGIN_TEXTDOMAIN ),
 			'class' => 'term',
 		) );
-
 
 		$html = '';
         $terms = get_the_terms( $args['id'], $taxonomy );
@@ -82,6 +75,4 @@ class gPluginMetaCore extends gPluginClassCore
 			return $args['def'];
 		}
 	}
-
-
 }

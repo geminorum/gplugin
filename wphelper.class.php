@@ -1,4 +1,5 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
+
 if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 {
 	/** ---------------------------------------------------------------------------------
@@ -36,14 +37,13 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 
 	// from gMemberHelper
 	public static function get_current_site_blog_id()
-    {
-        if ( ! is_multisite() )
-            return get_current_blog_id();
+	{
+		if ( ! is_multisite() )
+			return get_current_blog_id();
 
-        global $current_site;
-        return absint( $current_site->blog_id );
-    }
-
+		global $current_site;
+		return absint( $current_site->blog_id );
+	}
 
 	// http://kovshenin.com/2011/attachments-filename-and-directory-in-wordpress/
 	// an absolute path (filesystem path, not URL) to the location of your attachment file.
@@ -54,8 +54,6 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 
 		return str_replace( $uploads['baseurl'], $uploads['basedir'], wp_get_attachment_url( $post_id ) );
 	}
-
-
 
 	// http://www.stephenharris.info/2012/get-post-content-by-id/
 	// Display the post content. Optinally allows post ID to be passed
@@ -152,17 +150,17 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 		//return apply_filters( 'edd_is_caching_plugin_active', $caching );
 	}
 
-    public static function getUserRols( $object = false )
-    {
-        $roles = ( $object ? new stdClass : array() );
-        $wp_roles = get_editable_roles();
-        foreach( $wp_roles as $role_name => $role )
-            if ( $object )
-                $roles->{$role_name} = translate_user_role( $role['name'] );
-            else
-                $roles[$role_name] = translate_user_role( $role['name'] );
-        return $roles;
-    }
+	public static function getUserRols( $object = false )
+	{
+		$roles = ( $object ? new stdClass : array() );
+		$wp_roles = get_editable_roles();
+		foreach( $wp_roles as $role_name => $role )
+			if ( $object )
+				$roles->{$role_name} = translate_user_role( $role['name'] );
+			else
+				$roles[$role_name] = translate_user_role( $role['name'] );
+		return $roles;
+	}
 
 	// Originally From : http://wp.tutsplus.com/tutorials/creative-coding/add-a-custom-column-in-posts-and-custom-post-types-admin-screen/
 	public static function get_featured_image_src( $post_id, $size = 'thumbnail', $default = false )
@@ -175,10 +173,10 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 		return $default;
 	}
 
-    public static function get_user_edit_link( $user_ID )
-    {
-        return add_query_arg( 'wp_http_referer', urlencode( stripslashes( $_SERVER['REQUEST_URI'] ) ), 'user-edit.php?user_id='.$user_ID );
-    }
+	public static function get_user_edit_link( $user_ID )
+	{
+		return add_query_arg( 'wp_http_referer', urlencode( stripslashes( $_SERVER['REQUEST_URI'] ) ), 'user-edit.php?user_id='.$user_ID );
+	}
 
 	// https://gist.github.com/boonebgorges/4165099
 	// Are we looking at the WordPress admin?
@@ -195,7 +193,6 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 
 		return $is_admin;
 	}
-
 
 	/**
 	* Generates a domain-mapping safe URL on WordPress.com
@@ -230,10 +227,6 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 	}
 
 
-
-
-
-
 	/** ---------------------------------------------------------------------------------
 									NOT USED YET
 	--------------------------------------------------------------------------------- **/
@@ -261,9 +254,6 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 
 		return update_metadata( 'post', $post_id, $meta_key, $meta_value, '' );
 	}
-
-
-
 
 	// http://tommcfarlin.com/save-custom-post-meta/
 	// https://gist.github.com/tommcfarlin/4468321
@@ -297,27 +287,22 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 
 	}
 
+	function is_plugin_active( $plugin )
+	{
+		return in_array( $plugin, (array) get_option( 'active_plugins', array() ) ) || self::is_plugin_active_for_network( $plugin );
+	}
 
+	function is_plugin_active_for_network( $plugin )
+	{
+		if ( ! is_multisite() )
+			return false;
 
+		$plugins = get_site_option( 'active_sitewide_plugins' );
+		if ( isset( $plugins[$plugin] ) )
+			return true;
 
-
-
-    function is_plugin_active( $plugin )
-    {
-        return in_array( $plugin, (array) get_option( 'active_plugins', array() ) ) || self::is_plugin_active_for_network( $plugin );
-    }
-
-    function is_plugin_active_for_network( $plugin )
-    {
-        if ( ! is_multisite() )
-            return false;
-
-        $plugins = get_site_option( 'active_sitewide_plugins' );
-        if ( isset( $plugins[$plugin] ) )
-            return true;
-
-        return false;
-    }
+		return false;
+	}
 
 	// NOT WORKING!!!! ON ADMIN
 	// http://kovshenin.com/2012/current-url-in-wordpress/
@@ -328,8 +313,8 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 
 		if ( is_admin() )
 			$current_url = add_query_arg( $wp->query_string, '', home_url( $wp->request ) );
-        else
-            $current_url = home_url( add_query_arg( array(), ( empty( $wp->request ) ? false : $wp->request ) ) );
+		else
+			$current_url = home_url( add_query_arg( array(), ( empty( $wp->request ) ? false : $wp->request ) ) );
 
 		if ( $trailingslashit )
 			return trailingslashit( $current_url );
@@ -342,26 +327,18 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 		return stripslashes_deep( $_SERVER['REQUEST_URI'] );
 	}
 
-
-
-
-
-
-
 	// http://gilbert.pellegrom.me/wordpress-get_blog_url
 	// Have you ever needed to find the WordPress blog URL? Using home_url() is fine but what if your Settings > Reading options
 	// in WordPress are set to your blog having a static page (usually called �Blog�). You may need to know what the URL of that page is.
 	// So here is a quick function I came up with to find it.
 	function get_blog_url()
 	{
-        if( $posts_page_id = get_option( 'page_for_posts' ) ){
-            return home_url( get_page_uri( $posts_page_id ) );
-        } else {
-            return home_url();
-        }
-    }
-
-
+		if( $posts_page_id = get_option( 'page_for_posts' ) ){
+			return home_url( get_page_uri( $posts_page_id ) );
+		} else {
+			return home_url();
+		}
+	}
 
 	// http://webdevstudios.com/2013/04/03/how-to-quickly-grab-post-fields-outside-the-loop-with-get_post_field-in-wordpress/
 	// http://codex.wordpress.org/Function_Reference/get_post#Return
@@ -443,19 +420,14 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 	}
 
 
-
-
-
 	// adapt!
-    function getUsers( $all_fields = false )
-    {
-        $users = get_users( array(
-            'blog_id' => '', // TODO : add option to include entire network users / what if it changes and then the stored user id points to ???
-            'orderby' => 'display_name',
-            'fields' => ( $all_fields ? 'all_with_meta' : 'all' ),
-        ) );
-        return gPluginForm::reKey( $users, 'ID' );
-    }
-
-
+	public static function getUsers( $all_fields = false )
+	{
+		$users = get_users( array(
+			'blog_id' => '', // TODO : add option to include entire network users / what if it changes and then the stored user id points to ???
+			'orderby' => 'display_name',
+			'fields' => ( $all_fields ? 'all_with_meta' : 'all' ),
+		) );
+		return gPluginUtils::reKey( $users, 'ID' );
+	}
 } }

@@ -1,7 +1,7 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 if ( ! class_exists( 'gPluginHashed' ) ) { class gPluginHashed
 {
-	/**
+	/*
 
 	http://www.fileformat.info/tool/hash.htm
 
@@ -15,7 +15,7 @@ if ( ! class_exists( 'gPluginHashed' ) ) { class gPluginHashed
 
 	http://blog.kevburnsjr.com/php-unique-hash
 
-	**/
+	*/
 
 	/** ---------------------------------------------------------------------------------
 						USED FUNCTION: Modyfy with Caution!
@@ -28,16 +28,9 @@ if ( ! class_exists( 'gPluginHashed' ) ) { class gPluginHashed
 		return md5( uniqid( microtime().rand(), true ) );
 	}
 
-
-
-
-
-
 	/** ---------------------------------------------------------------------------------
 									NOT USED YET
 	--------------------------------------------------------------------------------- **/
-
-
 
 	//http://programanddesign.com/php/base62-encode/
 	// If you have large integers and you want to shrink them down in size for whatever reason, you can use this code. Should be easy enough to extend if you want even higher bases (just add a few more chars and increase the base).
@@ -258,14 +251,14 @@ if ( ! class_exists( 'gPluginHashed' ) ) { class gPluginHashed
 
 
 // http://www.sitepoint.com/php-random-number-generator/
-/**
+/*
 gPluginHashedRandom::seed(42); // set seed
 
 // echo 10 numbers between 1 and 100
 for ($i = 0; $i < 10; $i++) {
 	echo gPluginHashedRandom::num(1, 100) . '<br />';
 }
-**/
+*/
 if ( ! class_exists( 'gPluginHashedRandom' ) ) { class gPluginHashedRandom
 {
 	private static $RSeed = 0; // random seed

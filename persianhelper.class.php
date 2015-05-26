@@ -47,8 +47,6 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 		return strtr( $text, $pairs );
 	}
 
-
-
 	/** ---------------------------------------------------------------------------------
 									NOT USED YET
 	--------------------------------------------------------------------------------- **/
@@ -59,7 +57,6 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 	{
 		return mb_convert_encoding( '&#'.intval( $u ).';', 'UTF-8', 'HTML-ENTITIES' );
 	}
-
 
 	public static function fa_alphabet()
 	{
@@ -82,16 +79,12 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 		return $ordinal;
 	}
 
-
-
-
 	// http://stackoverflow.com/questions/4764244/tinymce-blank-content-on-ajax-form-submit
 	// http://wordpress.stackexchange.com/questions/73257/bridging-tinymce-js-and-wordpress-php
 	// http://devwp.eu/overcome-the-wordpress-autosave-limitations/
 	// http://stackoverflow.com/questions/14468129/using-jquerys-ajax-functionality-within-wordpress-tinymce-editor
 
 	// http://wordpress.org/plugins/sem-autolink-uri/
-
 
 	var $i = 0;
 	var $urls = array();
@@ -204,8 +197,8 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 	}
 
 	// based on : https://github.com/aziz/virastar | http://virastar.heroku.com/
-    function cleanup( $text, $urls = true )
-    {
+	function cleanup( $text, $urls = true )
+	{
 
 		//gPluginUtils::dump( $matches ); die();
 
@@ -248,7 +241,7 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 		# in case you can not read it: \s+(tar(i(n)?)?|ha(ye)?)\s+
 		$text = preg_replace( '/\s+(تر(ی(ن)?)?|ها(ی)?)\s+/u', '‌$1 ', $text );
 
-        # replace more than one ! or ? mark with just one
+		# replace more than one ! or ? mark with just one
 		$text = preg_replace( '/(!){2,}/u', '$1', $text );
 		$text = preg_replace( '/(؟){2,}/u', '$1', $text );
 
@@ -282,32 +275,31 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 		# remove spaces, tabs, and new lines from the beginning and enf of file
 		// $text = trim( $text ); // interfere with html_cleanup
 
-      /**
+	  /*
 
-      # removing URLS bringing them back at the end of process
-      urls = []
-      i = 0
-      text.gsub!(/https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?/) do |s|
-        urls[i] = s.dup
-        i += 1
-        "__urls__#{i}__"
-      end
+	  # removing URLS bringing them back at the end of process
+	  urls = []
+	  i = 0
+	  text.gsub!(/https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?/) do |s|
+		urls[i] = s.dup
+		i += 1
+		"__urls__#{i}__"
+	  end
 
 
 	  # bringing back urls
-      text.gsub!(/__urls__\d+__/) do |s|
-        urls[s.split("__").last.to_i - 1]
-      end
-**/
+	  text.gsub!(/__urls__\d+__/) do |s|
+		urls[s.split("__").last.to_i - 1]
+	  end
+
+	*/
 
 
 		return $text;
-    }
+	}
 
 	function repelace_character( $matches )
 	{
-		//gPluginUtils::dump( $matches ); die();
-
 		return strtr( $text, $this->persian_numbers, $this->english_numbers );
 	}
 
@@ -459,7 +451,4 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 			if( $v <= $fr )
 				return $t;
 	}
-
-
-
 } }

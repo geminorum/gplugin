@@ -16,7 +16,7 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 				FROM $wpdb->postmeta
 				WHERE meta_key = %s
 				GROUP BY post_id
-	 			LIMIT %d
+				 LIMIT %d
 			", $meta_key, $limit );
 		else
 			$query = $wpdb->prepare( "
@@ -59,13 +59,11 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 		return $wpdb->query( $query );
 	}
 
-
-
 	// USED WHEN: admin edit table
 	public static function get_admin_terms_edit( $post_id, $post_type, $taxonomy, $glue = ', ', $empty = '&#8212;' )
 	{
 		$taxonomy_object = get_taxonomy( $taxonomy );
-		//gnetwork_dump( $taxonomy ); die();
+
 		if ( $terms = get_the_terms( $post_id, $taxonomy ) ) {
 			$out = array();
 			foreach ( $terms as $t ) {
@@ -84,7 +82,6 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 					esc_html( sanitize_term_field( 'name', $t->name, $t->term_id, $taxonomy, 'display' ) )
 				);
 			}
-			//echo join( __( ', ' ), $out );
 			return join( $glue, $out );
 		} else {
 			return $empty;
@@ -121,20 +118,20 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 		if ( is_null( $terms ) )
 			$terms = get_terms( $taxonomy, array_merge( array(
 				'hide_empty' => false,
-				'orderby' => 'name',
-				'order' => 'ASC'
+				'orderby'    => 'name',
+				'order'      => 'ASC'
 			), $args ) );
 
 		foreach( $terms as $term ) {
 			$new = array(
-				'name' => $term->name,
+				'name'        => $term->name,
 				'description' => $term->description,
-				'excerpt' => $term->description,
-				'link' => get_term_link( $term, $taxonomy ),
-				'count' => $term->count,
-				'parent' => $term->parent,
-				'slug' => $term->slug,
-				'id' => $term->term_id,
+				'excerpt'     => $term->description,
+				'link'        => get_term_link( $term, $taxonomy ),
+				'count'       => $term->count,
+				'parent'      => $term->parent,
+				'slug'        => $term->slug,
+				'id'          => $term->term_id,
 				);
 			$new_terms[$term->{$key}] = $obj ? (object) $new : $new;
 		}
@@ -269,9 +266,6 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 			return $term;
 		}
 	}
-
-
-
 
 	// http://wordpress.mfields.org/2010/remove-taxonomy-box-from-wordpress-administration-panels/
 	function mfields_hide_taxonomies_from_admin() {

@@ -81,7 +81,7 @@ if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper
 		}
 
 		return $rows;
-    }
+	}
 
 	// http://www.php.net/manual/en/function.copy.php#103732
 	// 'cp -R' written in PHP.
@@ -117,8 +117,6 @@ if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper
 		return false;
 	}
 
-
-
 	// http://www.paulund.co.uk/html5-download-attribute
 	function download( $file_path, $mime = 'application/octet-stream' )
 	{
@@ -143,10 +141,9 @@ if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper
 		}
 	}
 
-	/**
 	// https://gist.github.com/chrisguitarguy/6096271
 	// Remove BOM from a string
-	function remove_bom()
+	public static function remove_bom()
 	{
 		$file = new \SplFileObject('some_file_with_bom.csv');
 
@@ -164,9 +161,7 @@ if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper
 			// your lines don't have a BOM, do you shit
 		}
 	}
-	**/
+
+	// http://christopherdavis.me/blog/extracting-gzip-files.html
 
 } }
-
-
-// http://christopherdavis.me/blog/extracting-gzip-files.html

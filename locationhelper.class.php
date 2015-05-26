@@ -1,12 +1,10 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
+
 if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 {
 	// http://countrycode.org/
 	// http://en.wikipedia.org/wiki/ISO_3166-1
 	// https://www.iso.org/obp/ui/
-
-
-
 
 	/** ---------------------------------------------------------------------------------
 						USED FUNCTION: Modyfy with Caution!
@@ -81,7 +79,7 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 			"ID" => "\d{5}",
 			"IE" => "((D|DUBLIN)?([1-9]|6[wW]|1[0-8]|2[024]))?",
 			"IL" => "\d{5}",
-			"IN"=> "^[1-9][0-9][0-9][0-9][0-9][0-9]$", //india
+			"IN" => "^[1-9][0-9][0-9][0-9][0-9][0-9]$", //india
 			"IO" => "BBND 1ZZ",
 			"IQ" => "\d{5}",
 			"IS" => "\d{3}",
@@ -1390,8 +1388,7 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 		);
 	}
 
-
-   	/** ---------------------------------------------------------------------------------
+   /** ---------------------------------------------------------------------------------
 									NOT USED YET
 	--------------------------------------------------------------------------------- **/
 
@@ -1404,49 +1401,49 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 
 	function get_location_by_ip( $ip )
 	{
-        if ( ! is_string( $ip )
+		if ( ! is_string( $ip )
 			|| strlen( $ip ) < 1
 			|| $ip == '127.0.0.1'
 			|| $ip == 'localhost' )
 				$ip = '8.8.8.8';
 
-        $ch = curl_init();
+		$ch = curl_init();
 		curl_setopt_array( $ch, array(
-            CURLOPT_FOLLOWLOCATION => 1,
-            CURLOPT_HEADER => 0,
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2) Gecko/20100115 Firefox/3.6 (.NET CLR 3.5.30729)',
-            CURLOPT_URL => 'http://ipinfodb.com/ip_locator.php?ip='.urlencode( $ip ),
-            CURLOPT_TIMEOUT => 1,
-            CURLOPT_REFERER => 'http://'.$_SERVER['HTTP_HOST'],
-        ) );
-        $content = curl_exec( $ch );
+			CURLOPT_FOLLOWLOCATION => 1,
+			CURLOPT_HEADER => 0,
+			CURLOPT_RETURNTRANSFER => 1,
+			CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2) Gecko/20100115 Firefox/3.6 (.NET CLR 3.5.30729)',
+			CURLOPT_URL => 'http://ipinfodb.com/ip_locator.php?ip='.urlencode( $ip ),
+			CURLOPT_TIMEOUT => 1,
+			CURLOPT_REFERER => 'http://'.$_SERVER['HTTP_HOST'],
+		) );
+		$content = curl_exec( $ch );
 
-        //if ( ! is_null( $curl_info ) )
-            //$curl_info = curl_getinfo( $ch );
+		//if ( ! is_null( $curl_info ) )
+			//$curl_info = curl_getinfo( $ch );
 
-        curl_close( $ch );
+		curl_close( $ch );
 
-        if ( preg_match( '{<li>City : ([^<]*)</li>}i', $content, $regs ) )
-            $city = $regs[1];
+		if ( preg_match( '{<li>City : ([^<]*)</li>}i', $content, $regs ) )
+			$city = $regs[1];
 
-        if ( preg_match( '{<li>State/Province : ([^<]*)</li>}i', $content, $regs ) )
-            $state = $regs[1];
+		if ( preg_match( '{<li>State/Province : ([^<]*)</li>}i', $content, $regs ) )
+			$state = $regs[1];
 
 		if ( preg_match( '{<li>Country : ([^<]*)</li>}i', $content, $regs ) )
-            $country = $regs[1];
+			$country = $regs[1];
 
 		if ( $city && $state && $country )
 			return array( $city, $state, preg_replace( '/<img[^>]+\>/i', '', $country ) );
 
 		return false;
-    }
+	}
 
 
 
 	// http://www.catswhocode.com/blog/snippets/calculate-the-distance-between-two-points-in-php
 	// http://www.inkplant.com/code/calculate-the-distance-between-two-points.php
-	/**
+	/*
 		Usage:
 		$point1 = array('lat' => 40.770623, 'long' => -73.964367);
 		$point2 = array('lat' => 40.758224, 'long' => -73.917404);
@@ -1454,7 +1451,7 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 		foreach ($distance as $unit => $value) {
 			echo $unit.': '.number_format($value,4).'<br />';
 		}
-	**/
+	*/
 	function getDistanceBetweenPointsNew( $latitude1, $longitude1, $latitude2, $longitude2 )
 	{
 		$theta = $longitude1 - $longitude2;
@@ -1468,27 +1465,6 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 		$meters = $kilometers * 1000;
 		return compact('miles','feet','yards','kilometers','meters');
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	// SEE : http://en.wikipedia.org/wiki/Haversine_formula
@@ -1577,16 +1553,6 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 
 		return $geopointDistance;
 	}
-
-
-
-
-
-
-
-
-
-
 
 	// http://ip.codehelper.io/
 

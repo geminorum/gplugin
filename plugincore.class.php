@@ -5,14 +5,14 @@ if ( ! class_exists( 'gPluginPluginCore' ) ) {
 // http://stackoverflow.com/a/6386309
 interface gPluginPluginCoreInterface
 {
-    static function instance( $constants = array(), $args = array() );
+	static function instance( $constants = array(), $args = array() );
 }
 
 class gPluginPluginCore implements gPluginPluginCoreInterface
 {
-    public static final function instance( $class = 'gPluginPluginCore', $constants = array(), $args = array() )
+	public static final function instance( $class = 'gPluginPluginCore', $constants = array(), $args = array() )
 	{
-        static $instance;
+		static $instance;
 		if ( ! isset( $instance ) )	{
 			$instance = new $class();
 			$instance->setup_globals( $constants, $args );
@@ -24,16 +24,16 @@ class gPluginPluginCore implements gPluginPluginCoreInterface
 			//$$class = self::$instance;
 		}
 		return $instance;
-    }
+	}
 
 	// A dummy constructor to prevent loading more than once.
 	protected function __construct() { /* Do nothing here */ }
 
 	public function setup_globals( $constants = array(), $args = array() )
 	{
-		$this->modules = new stdClass();
+		$this->modules   = new stdClass();
 		$this->constants = $constants;
-		$this->args = $args; // TODO : set defaults
+		$this->args      = $args; // TODO : set defaults
 	}
 
 	public function setup_actions()
@@ -63,7 +63,6 @@ class gPluginPluginCore implements gPluginPluginCoreInterface
 				$this->$mod_name->init();
 	}
 
-
 	// must dep
 	// shortcode_atts() mock-up
 	public function set_args( $defaults, $args ) {
@@ -77,6 +76,4 @@ class gPluginPluginCore implements gPluginPluginCoreInterface
 		}
 		$this->args = $out;
 	}
-
-
 } }

@@ -3,42 +3,19 @@
 class gPluginCacheHelper extends gPluginClassCore
 {
 
-	// public function setup_globals( $constants = array(), $args = array() ) { $this->constants = $constants; $this->args = $args; }
-
-	//public function setup_actions() { }
-
-
 	/** ---------------------------------------------------------------------------------
 						USED FUNCTION: Modyfy with Caution!
 	--------------------------------------------------------------------------------- **/
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	/** ---------------------------------------------------------------------------------
 									NOT USED YET
 	--------------------------------------------------------------------------------- **/
 
-
-	/**
-	 * Get a unique ID key for current $wp_the_query object.
-	 *
-	 * @return string|int unique key on success, 0 on failure
-	 */
+	// Get a unique ID key for current $wp_the_query object.
 	// https://gist.github.com/tollmanz/2760476
-	function zdt_get_object_key()
+	public static function getObjectKey()
 	{
-		$queried_object = get_queried_object();
+		$queried_object    = get_queried_object();
 		$queried_object_id = get_queried_object_id();
 
 		if ( ! is_null( $queried_object ) && $queried_object_id > 0 )
@@ -46,8 +23,6 @@ class gPluginCacheHelper extends gPluginClassCore
 		else
 			return 0;
 	}
-
-
 
 	// http://tollmanz.com/invalidation-schemes/
 	// http://tollmanz.com/grokking-the-wp-object-cache/
@@ -326,5 +301,4 @@ class gPluginCacheHelper extends gPluginClassCore
 
 		return $html;
 	}
-
 }

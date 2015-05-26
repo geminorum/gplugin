@@ -1,6 +1,6 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
-defined( 'GPLUGIN_VERSION' ) or define( 'GPLUGIN_VERSION', 'r20' );
+defined( 'GPLUGIN_VERSION' ) or define( 'GPLUGIN_VERSION', 'r21' );
 defined( 'DS' ) or define( 'DS', DIRECTORY_SEPARATOR );
 defined( 'GPLUGIN_TEXTDOMAIN' ) or define( 'GPLUGIN_TEXTDOMAIN', 'gplugin' );
 defined( 'GPLUGIN_DEBUG' ) or define( 'GPLUGIN_DEBUG', constant( 'WP_DEBUG' ) );

@@ -14,15 +14,15 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 	public function setup_globals( $constants = array(), $args = array() )
 	{
 		$this->args = gPluginUtils::parse_args_r( $args, array(
-			'domain' => 'gplugin',
-			'title' => __( 'gPlugin', GPLUGIN_TEXTDOMAIN ),
+			'domain'      => 'gplugin',
+			'title'       => __( 'gPlugin', GPLUGIN_TEXTDOMAIN ),
 			'logger_args' => array(
-				'name' => __( 'Logs', GPLUGIN_TEXTDOMAIN ),
-				'post_type' => 'gplugin_log',
-				'taxonomy' => 'gplugin_log_type',
+				'name'        => __( 'Logs', GPLUGIN_TEXTDOMAIN ),
+				'post_type'   => 'gplugin_log',
+				'taxonomy'    => 'gplugin_log_type',
 				'meta_prefix' => '_gplugin_log_',
 				'hook_prefix' => 'gplugin_log_',
-				'types' => array( 'error', 'event' ),
+				'types'       => array( 'error', 'event' ),
 			),
 		) );
 
@@ -41,14 +41,14 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 	{
 		register_post_type( $this->args['logger_args']['post_type'],
 			apply_filters( $this->args['logger_args']['hook_prefix'].'post_type_args', array(
-				'labels' => array( 'name' => $this->args['logger_args']['name'] ),
-				'public' => false,
-				'query_var' => false,
-				'rewrite' => false,
+				'labels'          => array( 'name' => $this->args['logger_args']['name'] ),
+				'public'          => false,
+				'query_var'       => false,
+				'rewrite'         => false,
 				'capability_type' => 'post',
-				'supports' => array( 'title', 'editor' ),
-				'can_export' => false,
-				//'show_ui' => true,
+				'supports'        => array( 'title', 'editor' ),
+				'can_export'      => false,
+				// 'show_ui'         => true,
 		) ) );
 
 		register_taxonomy( $this->args['logger_args']['taxonomy'], $this->args['logger_args']['post_type'] );
@@ -74,21 +74,21 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 	public static function add( $title = '', $message = '', $parent = 0, $type = null )
 	{
 		return $this->insert( array(
-			'post_title' => $title,
+			'post_title'   => $title,
 			'post_content' => $message,
-			'post_parent' => $parent,
-			'log_type' => $type
+			'post_parent'  => $parent,
+			'log_type'     => $type
 		) );
 	}
 
 	public static function insert( $log_data = array(), $log_meta = array() )
 	{
 		$defaults = array(
-			'post_type' => $this->args['logger_args']['post_type'],
-			'post_status' => 'publish',
-			'post_parent' => 0,
+			'post_type'    => $this->args['logger_args']['post_type'],
+			'post_status'  => 'publish',
+			'post_parent'  => 0,
 			'post_content' => '',
-			'log_type' => false
+			'log_type'     => false
 		);
 
 		$args = wp_parse_args( $log_data, $defaults );
@@ -115,7 +115,7 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 		do_action( $this->args['logger_args']['hook_prefix'].'pre_update', $log_id );
 
 		$defaults = array(
-			'post_type' => $this->args['logger_args']['post_type'],
+			'post_type'   => $this->args['logger_args']['post_type'],
 			'post_status' => 'publish',
 			'post_parent' => 0
 		);
@@ -139,8 +139,8 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 	{
 		return $this->connected( array(
 			'post_parent' => $object_id,
-			'paged' => $paged,
-			'log_type' => $type,
+			'paged'       => $paged,
+			'log_type'    => $type,
 		) );
 	}
 
@@ -150,12 +150,12 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 	function connected( $args = array() )
 	{
 		$defaults = array(
-			'post_parent' => 0,
-			'post_type' => $this->args['logger_args']['post_type'],
+			'post_parent'    => 0,
+			'post_type'      => $this->args['logger_args']['post_type'],
 			'posts_per_page' => 10,
-			'post_status' => 'publish',
-			'paged' => get_query_var( 'paged' ),
-			'log_type' => false
+			'post_status'    => 'publish',
+			'paged'          => get_query_var( 'paged' ),
+			'log_type'       => false
 		);
 
 		$query_args = wp_parse_args( $args, $defaults );
@@ -163,8 +163,8 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 		if( $query_args['log_type'] && $this->valid_type( $query_args['log_type'] ) ) {
 			$query_args['tax_query'] = array( array(
 				'taxonomy' => $this->args['logger_args']['taxonomy'],
-				'field' => 'slug',
-				'terms' => $query_args['log_type']
+				'field'    => 'slug',
+				'terms'    => $query_args['log_type']
 			) );
 		}
 
@@ -179,17 +179,17 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 	function count( $object_id = 0, $type = null, $meta_query = null )
 	{
 		$query_args = array(
-			'post_parent' => $object_id,
-			'post_type' => $this->args['logger_args']['post_type'],
+			'post_parent'    => $object_id,
+			'post_type'      => $this->args['logger_args']['post_type'],
 			'posts_per_page' => -1,
-			'post_status' => 'publish'
+			'post_status'    => 'publish'
 		);
 
 		if( ! empty( $type ) && $this->valid_type( $type ) ) {
 			$query_args['tax_query'] = array( array(
 				'taxonomy' => $this->args['logger_args']['taxonomy'],
-				'field' => 'slug',
-				'terms' => $type
+				'field'    => 'slug',
+				'terms'    => $type
 			) );
 		}
 

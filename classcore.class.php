@@ -13,7 +13,7 @@ if ( ! class_exists( 'gPluginClassCore' ) ) {
 // http://stackoverflow.com/a/6386309
 interface gPluginClassCoreInterface
 {
-    static function instance( $constants = array(), $args = array() );
+	static function instance( $constants = array(), $args = array() );
 }
 
 // based on WP_Deregister_Users by John James Jacoby : http://wordpress.org/extend/plugins/deregister-users/
@@ -21,16 +21,16 @@ class gPluginClassCore implements gPluginClassCoreInterface
 {
 	protected $data;
 
-    public static final function instance( $class = 'gPluginClassCore', $constants = array(), $args = array() )
+	public static final function instance( $class = 'gPluginClassCore', $constants = array(), $args = array() )
 	{
-        static $instance;
+		static $instance;
 		if ( ! isset( $instance ) )	{
 			$instance = new $class();
 			$instance->setup_globals( $constants, $args );
 			$instance->setup_actions();
 		}
 		return $instance;
-    }
+	}
 
 	// A dummy constructor to prevent loading more than once.
 	protected function __construct() { /* Do nothing here */ }

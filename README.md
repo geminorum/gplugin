@@ -10,5 +10,9 @@ Based on structure of [wp-scb-framework](https://github.com/scribu/wp-scb-framew
 
 ## Changelog
 
+### r21
+* using [GitHub Updater](https://github.com/afragen/github-updater)
+* cleanup
+
 ### r20
 * first public release

@@ -2,6 +2,7 @@
 
 if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore extends gPluginClassCore
 {
+
 	public function setup_globals( $constants = array(), $args = array() )
 	{
 		$this->current_blog = get_current_blog_id();
@@ -9,18 +10,18 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 		$this->page = ( isset( $args['page'] ) && $args['page'] ? $args['page'] : 'general' );
 
 		$this->constants = array_merge( array(
-			'plugin_dir' => GPLUGIN_DIR,
-			'plugin_url' => GPLUGIN_URL,
+			'plugin_dir'    => GPLUGIN_DIR,
+			'plugin_url'    => GPLUGIN_URL,
 			'class_filters' => 'gPluginFiltersCore',
 		), apply_filters( $this->domain.'_settings_constants', $constants ) );
 
 		$this->args = array_merge( array(
-			'plugin_class' => false,
-			'plugin_args' => array(),
+			'plugin_class'      => false,
+			'plugin_args'       => array(),
 			'settings_sanitize' => null, // null for default, false for disable
-			'field_callback' => false,
-			'site_options' => false, // site wide or blog option storing
-			'register_hook' => false, // hook that runs on settings page load
+			'field_callback'    => false,
+			'site_options'      => false, // site wide or blog option storing
+			'register_hook'     => false, // hook that runs on settings page load
 		), $args );
 
 		$this->options = self::get_options();
@@ -95,8 +96,8 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 					$page_name,
 					$section_name,
 					array_merge( $field_args, array(
-						'field' => $field_name,
-						'label_for' => $this->option_group.'['.$field_name.']',
+						'field'        => $field_name,
+						'label_for'    => $this->option_group.'['.$field_name.']',
 						'option_group' => $this->option_group,
 					) )
 				);
@@ -106,18 +107,17 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 	public function do_settings_field( $r )
 	{
 		$args = shortcode_atts( array(
-			'type' => 'enabled',
-			'field' => false,
-			'values' => array(),
-			'filter' => false, // will use via sanitize
-			'dir' => false,
-			'default' => '',
-			'desc' => '',
-			'class' => '',
-			'label_for' => '',
+			'type'         => 'enabled',
+			'field'        => false,
+			'values'       => array(),
+			'filter'       => false, // will use via sanitize
+			'dir'          => false,
+			'default'      => '',
+			'desc'         => '',
+			'class'        => '',
+			'label_for'    => '',
 			'option_group' => $this->option_group,
-
-			'rekey' => false, // use value as key on select
+			'rekey'        => false, // use value as key on select
 		), $r );
 
 		if ( ! $args['field'] )
@@ -131,19 +131,19 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 			case 'enabled' :
 
 				$html = gPluginFormHelper::html( 'option', array(
-					'value' => '0',
+					'value'    => '0',
 					'selected' => '0' == $value,
 				), esc_html__( 'Disabled' ) );
 
 				$html .= gPluginFormHelper::html( 'option', array(
-					'value' => '1',
+					'value'    => '1',
 					'selected' => '1' == $value,
 				), esc_html__( 'Enabled' ) );
 
 				echo gPluginFormHelper::html( 'select', array(
 					'class' => $args['class'],
-					'name' => $name,
-					'id' => $id,
+					'name'  => $name,
+					'id'    => $id,
 				), $html );
 
 				if ( $args['desc'] )
@@ -155,12 +155,12 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 
 			case 'text' :
 				echo gPluginFormHelper::html( 'input', array(
-					'type' => 'text',
+					'type'  => 'text',
 					'class' => array( 'regular-text', 'c1ode', $args['class'] ),
-					'name' => $name,
-					'id' => $id,
+					'name'  => $name,
+					'id'    => $id,
 					'value' => $value,
-					'dir' => $args['dir'],
+					'dir'   => $args['dir'],
 				) );
 
 				if ( $args['desc'] )
@@ -174,13 +174,13 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 				if ( count( $args['values'] ) ) {
 					foreach( $args['values'] as $value_name => $value_title ) {
 						$html = gPluginFormHelper::html( 'input', array(
-							'type' => 'checkbox',
-							'class' => $args['class'],
-							'name' => $name.'['.$value_name.']',
-							'id' => $id.'-'.$value_name,
-							'value' => '1',
+							'type'    => 'checkbox',
+							'class'   => $args['class'],
+							'name'    => $name.'['.$value_name.']',
+							'id'      => $id.'-'.$value_name,
+							'value'   => '1',
 							'checked' => in_array( $value_name, ( array ) $value ),
-							'dir' => $args['dir'],
+							'dir'     => $args['dir'],
 						) );
 
 						echo '<p>'.gPluginFormHelper::html( 'label', array(
@@ -189,13 +189,13 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 					}
 				} else {
 					$html = gPluginFormHelper::html( 'input', array(
-						'type' => 'checkbox',
-						'class' => $args['class'],
-						'name' => $name,
-						'id' => $id,
-						'value' => '1',
+						'type'    => 'checkbox',
+						'class'   => $args['class'],
+						'name'    => $name,
+						'id'      => $id,
+						'value'   => '1',
 						'checked' => $value,
-						'dir' => $args['dir'],
+						'dir'     => $args['dir'],
 					) );
 
 					echo '<p>'.gPluginFormHelper::html( 'label', array(
@@ -216,14 +216,14 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 					$html = '';
 					foreach ( $args['values'] as $value_name => $value_title )
 						$html .= gPluginFormHelper::html( 'option', array(
-							'value' => ( $args['rekey'] ? $value_title : $value_name ),
+							'value'    => ( $args['rekey'] ? $value_title : $value_name ),
 							'selected' => $value_name == $value,
 						), esc_html( $value_title ) );
 
 					echo gPluginFormHelper::html( 'select', array(
 						'class' => $args['class'],
-						'name' => $name,
-						'id' => $id,
+						'name'  => $name,
+						'id'    => $id,
 					), $html );
 
 					if ( $args['desc'] )
@@ -361,16 +361,16 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 	}
 } }
 
-/**
+/*
 	SAMPLE ARGUMENTS :
 
-    $args = array(
-        'plugin_class' => false,
-        'option_group' => 'gpluginsettings',
+	$args = array(
+		'plugin_class' => false,
+		'option_group' => 'gpluginsettings',
 		'settings_sanitize' => false, // override sanitization
 		'field_callback' => false, // oberride field print
 		'page' => 'general',
-        'sections' => array(
+		'sections' => array(
 			'default' => array(
 			//'date' => array(
 				'title' => false,
@@ -388,11 +388,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 				),
 			),
 		),
-    );
-**/
+	);
+*/
 
-/** ALSO :
-
-See: https://github.com/gilbitron/WordPress-Settings-Framework
-
-**/
+// ALSO : https://github.com/gilbitron/WordPress-Settings-Framework

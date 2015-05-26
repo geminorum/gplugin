@@ -2,21 +2,22 @@
 
 if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends gPluginClassCore
 {
+
 	public function setup_globals( $constants = array(), $args = array() )
 	{
 		$this->args = gPluginUtils::parse_args_r( $args, array(
-			'domain' => 'gplugin',
-			'title' => __( 'gPlugin Network', GPLUGIN_TEXTDOMAIN ),
-			'network' => true,
+			'title'     => __( 'gPlugin Network', GPLUGIN_TEXTDOMAIN ),
+			'domain'    => 'gplugin',
+			'network'   => true,
 			'term_meta' => false,
-			'options' => array(),
+			'options'   => array(),
 		) );
 
-		$this->constants = apply_filters( $this->args['domain'].'_network_constants', $constants );
-		$this->blog_map = get_site_option( $this->args['domain'].'_blog_map', array() );
+		$this->constants    = apply_filters( $this->args['domain'].'_network_constants', $constants );
+		$this->blog_map     = get_site_option( $this->args['domain'].'_blog_map', array() );
 		$this->current_blog = get_current_blog_id();
 
-		$this->root = false;
+		$this->root   = false;
 		$this->remote = false;
 
 		if ( isset( $this->constants['class_filters'] ) )
@@ -102,16 +103,16 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 	public function network_settings()
 	{
 		$settings_uri = 'settings.php?page='.$this->args['domain'];
-		$sub = isset( $_GET['sub'] ) ? trim( $_GET['sub'] ) : 'general';
-		$messages = $this->getFilters( 'network_settings_messages' );
-		$subs = $this->getFilters( 'network_settings_subs', array(
+		$sub          = isset( $_GET['sub'] ) ? trim( $_GET['sub'] ) : 'general';
+		$messages     = $this->getFilters( 'network_settings_messages' );
+		$subs         = $this->getFilters( 'network_settings_subs', array(
 			'overview' => __( 'Overview', GPLUGIN_TEXTDOMAIN ),
-			'general' => __( 'General', GPLUGIN_TEXTDOMAIN ),
-			'console' => __( 'Console', GPLUGIN_TEXTDOMAIN ),
+			'general'  => __( 'General', GPLUGIN_TEXTDOMAIN ),
+			'console'  => __( 'Console', GPLUGIN_TEXTDOMAIN ),
 		) );
 
-		?><div class="wrap"><h2><?php
-			printf( _x( '%s Network Settings', 'Network Settings Page Title', GPLUGIN_TEXTDOMAIN ), $this->args['title'] ); ?></h2><?php
+		?><div class="wrap"><h2> <?php
+			printf( _x( '%s Network Settings', 'Network Settings Page Title', GPLUGIN_TEXTDOMAIN ), $this->args['title'] ); ?></h2> <?php
 			gPluginFormHelper::headerNav( $settings_uri, $sub, $subs );
 
 			if ( isset( $_GET['message'] ) ) {
@@ -128,7 +129,7 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 			else
 				do_action( $this->args['domain'].'_network_settings_sub_'.$sub, $settings_uri, $sub );
 
-		?><div class="clear"></div></div><?php
+		?><div class="clear"></div></div> <?php
 	}
 
 	// called by extended class as default settings page html
