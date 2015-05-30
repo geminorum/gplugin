@@ -34,7 +34,7 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper
 		foreach ( $sub_pages as $page_slug => $sub_page )
 			$html .= self::html( 'a', array(
 				'class' => 'nav-tab '.$class_prefix.$page_slug.( $page_slug == $active ? ' nav-tab-active' : '' ),
-				'href' => add_query_arg( 'sub', $page_slug, $settings_uri ),
+				'href'  => add_query_arg( 'sub', $page_slug, $settings_uri ),
 			), esc_html( $sub_page ) );
 
 		echo self::html( $tag, array(
@@ -42,7 +42,27 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper
 		), $html );
 	}
 
-	// must dep
+	public static function headerTabs( $tabs, $active = 'manual', $class_prefix = 'nav-tab-', $tag = 'h3' )
+	{
+		if ( ! count( $tabs ) )
+			return;
+
+		$html = '';
+
+		foreach ( $tabs as $tab => $title )
+			$html .= self::html( 'a', array(
+				'class'    => 'nav-tab '.$class_prefix.$tab.( $tab == $active ? ' nav-tab-active' : '' ),
+				'href'     => '#',
+				'rel'      => $tab, // back comp
+				'data-tab' => $tab,
+			), esc_html( $title ) );
+
+		echo self::html( $tag, array(
+			'class' => 'nav-tab-wrapper',
+		), $html );
+	}
+
+	// DEPRECATED: use gPluginFormHelper::headerTabs()
 	public static function wpNavTabs( $tabs, $active = 'manual', $class_prefix = 'nav-tab-', $tag = 'h3' )
 	{
 		echo '<'.$tag.' class="nav-tab-wrapper">';
@@ -51,9 +71,14 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper
 		echo '</'.$tag.'>';
 	}
 
-	public static function linkStyleSheet( $url )
+	public static function linkStyleSheet( $url, $version = GPLUGIN_VERSION, $media = false )
 	{
-		echo '<link rel="stylesheet" href="'.esc_url( $url ).'" type="text/css" />'."\n";
+		echo "\t".self::html( 'link', array(
+			'rel' => 'stylesheet',
+			'href' => add_query_arg( 'ver', $version, $url ),
+			'type' => 'text/css',
+			'media' => $media,
+		) )."\n";
 	}
 
 	private static function _tag_open( $tag, $atts, $content = true )
@@ -82,7 +107,9 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper
 			if ( 'class' == $key )
 				//$att = sanitize_html_class( $att, false );
 				$att = $att;
-			else if ( 'href' == $key || 'src' == $key )
+			else if ( 'href' == $key && '#' != $att )
+				$att = esc_url( $att );
+			else if ( 'src' == $key )
 				$att = esc_url( $att );
 			//else if ( 'input' == $tag && 'value' == $key )
 				//$att = $att;
