@@ -32,7 +32,7 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
 		add_action( 'init', array( $this, 'define_table' ) );
 	}
 
-	function activation_hook( $table_db_version = '1' )
+	public static function activation_hook( $table_db_version = '1' )
 	{
 		global $wpdb;
 		$table_name = $wpdb->prefix.'termmeta';
@@ -57,7 +57,7 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
 		update_option( 'gtermmeta_db_version', $table_db_version );
 	}
 
-	function uninstall_hook()
+	public function uninstall_hook()
 	{
 		global $wpdb;
 		$table_name = $wpdb->prefix.'termmeta';
@@ -65,7 +65,7 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
 		delete_option( 'gtermmeta_db_version' );
 	}
 
-	function define_table()
+	public function define_table()
 	{
 		global $wpdb;
 		$wpdb->termmeta = $wpdb->prefix.'termmeta';
