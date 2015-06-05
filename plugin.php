@@ -36,4 +36,3 @@ define( 'GPLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 require( GPLUGIN_DIR.'/includes/load.php' );
 gplugin_init();
-
