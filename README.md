@@ -10,9 +10,10 @@ Based on structure of [wp-scb-framework](https://github.com/scribu/wp-scb-framew
 
 ## Changelog
 
-### r21
-* using [GitHub Updater](https://github.com/afragen/github-updater)
-* cleanup
+See [CHANGES.md](CHANGES.md).
 
-### r20
-* first public release
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+Please log issues at [here](https://github.com/geminorum/gplugin/issues)
