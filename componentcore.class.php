@@ -5,6 +5,11 @@
 
 if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore extends gPluginClassCore
 {
+
+	var $_init_priority       = 10;
+	var $_admin_init_priority = 10;
+	var $_plugins_loaded      = 10;
+
 	public function setup_globals( $constants = array(), $args = array() )
 	{
 		$this->args = gPluginUtils::parse_args_r( $args, array(
@@ -28,7 +33,7 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 			'plugin_dir'          => GPLUGIN_DIR,
 			'plugin_url'          => GPLUGIN_URL,
 			'class_filters'       => 'gPluginFiltersCore',
-			'meta_key'            => '_gplugin',
+			'meta_key'            => '_'.$this->args['domain'],
 			'theme_templates_dir' => 'gplugin_templates',
 		) );
 
@@ -47,11 +52,11 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 
 	public function setup_actions()
 	{
-		add_action( 'init', array( $this, 'init' ) );
-		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ) );
+		add_action( 'init', array( &$this, 'init' ), $this->_init_priority );
+		add_action( 'plugins_loaded', array( &$this, 'plugins_loaded' ), $this->_plugins_loaded );
 
 		if ( is_admin() ) {
-			add_action( 'admin_init', array( $this, 'admin_init' ) );
+			add_action( 'admin_init', array( &$this, 'admin_init' ), $this->_admin_init_priority );
 		}
 	}
 
@@ -157,7 +162,7 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 		$options = get_option( $this->args['option_group'], false );
 		if ( $options === false ) {
 			// must uncommnet after the Settings UI finished.
-			//add_action( 'admin_notices', array( $this, 'admin_notices_configure' ) );
+			//add_action( 'admin_notices', array( &$this, 'admin_notices_configure' ) );
 			$options = $defaults;
 		} else {
 			foreach ( $defaults as $key => $value )
@@ -176,38 +181,45 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 
 	public function get_postmeta( $post_id, $field = false, $default = '', $key = null )
 	{
-		return self::get_meta( 'post', $post_id, $field, $default, $key );
+		return $this->get_meta( 'post', $post_id, $field, $default, $key );
 	}
 
 	public function get_termmeta( $term_id, $field = false, $default = '', $key = null )
 	{
-		return self::get_meta( 'term', $term_id, $field, $default, $key );
+		return $this->get_meta( 'term', $term_id, $field, $default, $key );
 	}
 
 	public function sanitize_meta_key( $key, $from = 'post' )
 	{
 		if ( is_null( $key ) ) {
+
 			if ( isset( $this->constants[$from.'_meta_key'] ) )
 				$key = $this->constants[$from.'_meta_key'];
+
 			else if ( isset( $this->constants[$this->args['component'].'_meta_key'] ) )
 				$key = $this->constants[$this->args['component'].'_meta_key'];
+
 			else
 				$key = $this->constants['meta_key'];
 		}
+
 		return $key;
 	}
 
 	public function get_meta( $from, $id, $field = false, $default = '', $key = null )
 	{
-		$key = self::sanitize_meta_key( $key, $from );
-		//echo $key;
+		$key = $this->sanitize_meta_key( $key, $from );
+
 		switch( $from ) {
+
 			case 'user' :
 				$meta = get_user_meta( $id, $key, false );
 			break;
+
 			case 'term' :
 				$meta = gPluginTermMeta::get_term_meta( $id, $key, true );
 			break;
+
 			case 'post' :
 			default :
 				$meta = get_metadata( 'post', $id, $key, true );
@@ -227,17 +239,17 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 
 	public function update_postmeta( $post_id, $value, $field = false, $key = null )
 	{
-		return self::update_meta( 'post', $post_id, $value, $field, $key );
+		return $this->update_meta( 'post', $post_id, $value, $field, $key );
 	}
 
 	public function update_meta( $to, $id, $value, $field = false, $key = null )
 	{
-		$key = self::sanitize_meta_key( $key, $to );
+		$key = $this->sanitize_meta_key( $key, $to );
 
 		if ( false === $field ) {
 			$meta = $value;
 		} else {
-			$meta = self::get_meta( $to, $id, false, array(), $key );
+			$meta = $this->get_meta( $to, $id, false, array(), $key );
 			$meta[$field] = $value;
 		}
 

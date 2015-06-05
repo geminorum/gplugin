@@ -79,12 +79,26 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 		return gPluginPersianHelper::cleanup( trim( $string ) );
 	}
 
-	//helper
+	// helper
 	function str( $string )
 	{
 		$string = str_ireplace( array( "\n", "\t" ), ' ', $string );
 
 		return $string;
+	}
+
+	// strips accents from string
+	public function normalize( $accent )
+	{
+		// https://github.com/jbroadway/urlify
+		// return URLify::filter( $accent, 255, 'fa' );
+		// return URLify::downcode( $accent );
+
+		// http://stackoverflow.com/a/3542752
+		// return iconv( 'UTF-8', 'UTF-8//TRANSLIT', $accent );
+		// http://stackoverflow.com/questions/3371697/replacing-accented-characters-php
+
+		return preg_replace( '/\p{Mn}/u', '', Normalizer::normalize( $accent, Normalizer::FORM_KD ) ); // http://stackoverflow.com/a/3542752
 	}
 
 	// DEPRECATD use self::selectAttachment()

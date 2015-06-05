@@ -1,6 +1,6 @@
 <?php
 
-$GLOBALS['_gplugin'] = array( 21, __FILE__, array(
+$GLOBALS['_gplugin'] = array( 22, __FILE__, array(
 	'gPluginFactory',
 	'gPluginClassCore',
 
@@ -15,6 +15,7 @@ $GLOBALS['_gplugin'] = array( 21, __FILE__, array(
 
 	'gPluginAdminCore',
 	'gPluginMetaCore',
+	'gPluginAjaxCore',
 
 	'gPluginTemplateCore',
 	'gPluginListTableCore',

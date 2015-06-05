@@ -41,6 +41,13 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 		echo '<pre dir="ltr" style="text-align:left;direction:ltr;">'.( $htmlSafe ? htmlspecialchars( $result ) : $result).'</pre>';
 	}
 
+	public static function dump_get( & $var, $htmlSafe = true )
+	{
+		$result = var_export( $var, true );
+		return '<pre dir="ltr" style="text-align:left;direction:ltr;">'.( $htmlSafe ? htmlspecialchars( $result ) : $result).'</pre>';
+	}
+
+
 	function dump_n( $var, $htmlSafe = true )
 	{
 		$result = var_export( $var, true );

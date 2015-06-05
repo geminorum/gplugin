@@ -6,6 +6,33 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 						USED FUNCTION: Modyfy with Caution!
 	--------------------------------------------------------------------------------- **/
 
+	// FROM: gEditorialHelper
+	public static function getPostIDbySlug( $slug, $post_type, $url = false )
+	{
+		global $wpdb;
+
+		if ( $url ) {
+			$slug = rawurlencode( urldecode( $slug ) );
+			$slug = sanitize_title( basename( $slug ) );
+		}
+
+		$post_id = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT ID FROM $wpdb->posts WHERE post_name = %s AND post_type = %s",
+				trim( $slug ),
+				$post_type
+			)
+		);
+
+		if ( is_array( $post_id ) )
+			return $post_id[0];
+
+		elseif ( ! empty( $post_id ) )
+			return $post_id;
+
+		return false;
+	}
+
 	// Checks for the current post type
 	// FROM: EditFlow 0.7
 	// @return string|null $post_type The post type we've found, or null if no post type
@@ -122,6 +149,36 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 		return esc_url( $page_url );
 	}
 
+	public static function isDebug()
+	{
+		if ( WP_DEBUG && WP_DEBUG_DISPLAY && ! self::isDev() )
+			return true;
+
+		return false;
+	}
+
+	public static function isDev()
+	{
+		if ( defined( 'WP_STAGE' )
+			&& 'development' == constant( 'WP_STAGE' ) )
+				return true;
+
+		return false;
+	}
+
+	// TODO: use nonce
+	public static function isFlush()
+	{
+		if ( isset( $_GET['flush'] ) )
+			return true;
+
+		if ( defined( 'GTHEME_FLUSH' ) && GTHEME_FLUSH )
+			return true;
+
+		return false;
+	}
+
+	// DEPRECATED
 	// FROM: gTheme 2
 	// debug on production env
 	public static function is_debug()
@@ -132,6 +189,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 		return false;
 	}
 
+	// DEPRECATED
 	// FROM: gTheme 2
 	// debug on developmnet env
 	public static function is_dev()

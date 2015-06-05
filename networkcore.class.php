@@ -3,6 +3,11 @@
 if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends gPluginClassCore
 {
 
+	var $_asset_styles = false;
+	var $_asset_config = false;
+	var $_asset_object = 'gPlugin';
+	var $_asset_args   = array();
+
 	public function setup_globals( $constants = array(), $args = array() )
 	{
 		$this->args = gPluginUtils::parse_args_r( $args, array(
@@ -38,9 +43,19 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 			add_filter( 'gplugin_settings_args_'.strtolower( $this->constants['class_network_settings'] ), array( $this, 'settings_args_late' ) );
 
 		if ( is_network_admin() ) {
+
 			add_action( 'network_admin_menu', array( $this, 'network_admin_menu' ) );
+			add_action( 'admin_print_footer_scripts', array( $this, 'footer_asset_config' ), 99 );
+
 		} else {
-			add_action( 'admin_init', array( $this, 'admin_init' ) );
+
+			if ( is_admin() ) {
+				add_action( 'admin_init', array( $this, 'admin_init' ) );
+				add_action( 'admin_print_footer_scripts', array( $this, 'footer_asset_config' ), 99 );
+			} else {
+				add_action( 'wp_footer' , array( $this, 'footer_asset_config'  ), 99 );
+			}
+
 			$this->setup_network();
 		}
 
@@ -150,6 +165,56 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 				return $filtred->get( $context, $fallback );
 		}
 		return $fallback;
+	}
+
+	public function enqueue_asset_config( $args = array(), $scope = null )
+	{
+		$this->_asset_config = true;
+
+		if ( count( $args ) ) {
+			if ( is_null( $scope ) )
+				$temp = array_merge( $this->_asset_args, $args );
+			else
+				$temp = array_merge( $this->_asset_args, array( $scope => $args ) );
+			$this->_asset_args = $temp;
+		}
+	}
+
+	// front & admin
+	public function footer_asset_config()
+	{
+		if ( ! $this->_asset_config )
+			return;
+
+		$args = $this->_asset_args;
+		$args['api'] = defined( 'GNETWORK_AJAX_ENDPOINT' ) && GNETWORK_AJAX_ENDPOINT ? GNETWORK_AJAX_ENDPOINT : admin_url( 'admin-ajax.php' );
+
+	?> <script type="text/javascript">
+/* <![CDATA[ */
+	var <?php echo $this->_asset_object; ?> = <?php echo wp_json_encode( $args ); ?>;
+
+	<?php if ( gPluginWPHelper::isDev() ) echo 'console.log('.$this->_asset_object.');'; ?>
+
+/* ]]> */
+</script> <?php
+	}
+
+	// TODO: extend by child to use network option
+	public function get_site_user_id( $fallback = true )
+	{
+		if ( defined( 'GNETWORK_SITE_USER_ID' ) && constant( 'GNETWORK_SITE_USER_ID' ) )
+			return GNETWORK_SITE_USER_ID;
+
+		if ( function_exists( 'gtheme_get_option' ) ) {
+			$gtheme_user = gtheme_get_option( 'default_user', 0 );
+			if ( $gtheme_user )
+				return $gtheme_user;
+		}
+
+		if ( $fallback )
+			return get_current_user_id();
+
+		return 0;
 	}
 
 	public function get_option( $name, $default = false )

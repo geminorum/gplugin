@@ -111,7 +111,13 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 		return true;
 	}
 
+	// DEPRECATED: use self::prepareTerms()
 	public static function prepare_terms( $taxonomy, $args = array(), $terms = null, $key = 'term_id', $obj = true )
+	{
+		return self::prepareTerms( $taxonomy, $args, $terms, $key, $obj );
+	}
+
+	public static function prepareTerms( $taxonomy, $args = array(), $terms = null, $key = 'term_id', $obj = true )
 	{
 		$new_terms = array();
 
@@ -139,6 +145,52 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 		// TODO : use cache
 
 		return $new_terms;
+	}
+
+	public static function theTerm( $taxonomy, $post_ID, $object = false )
+	{
+		$terms = get_the_terms( $post_ID, $taxonomy );
+
+		if ( $terms && ! is_wp_error( $terms ) ) {
+			foreach ( $terms as $term ) {
+				if ( $object ) {
+					return $term;
+				} else {
+					return $term->term_id;
+				}
+			}
+		}
+
+		return '0';
+	}
+
+	public static function getTerms( $taxonomy = 'category', $post_id = false, $object = false, $key = 'term_id' )
+	{
+		$the_terms = array();
+
+		if ( false === $post_id ) {
+			$terms = get_terms( $taxonomy, array(
+				'hide_empty' => false,
+				'orderby' => 'name',
+				'order' => 'ASC'
+			) );
+		} else {
+			$terms = get_the_terms( $post_id, $taxonomy );
+		}
+
+		if ( is_wp_error( $terms ) || false === $terms )
+			return $the_terms;
+
+		$the_list = wp_list_pluck( $terms, $key );
+		$terms = array_combine( $the_list, $terms );
+
+		if ( $object )
+			return $terms;
+
+		foreach ( $terms as $term )
+			$the_terms[] = $term->term_id;
+
+		return $the_terms;
 	}
 
 	/** ---------------------------------------------------------------------------------
