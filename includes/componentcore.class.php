@@ -119,7 +119,7 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 	}
 
 	// CAUTION : must not use for the first time calling the class
-	public function getOption( $name, $default = false )
+	public function getOption( $name, $default = FALSE )
 	{
 		//$class= get_class();
 		//$the_class = $class::getInstance();
@@ -131,7 +131,7 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 		return $default;
 	}
 
-	public function get_option( $name, $default = false )
+	public function get_option( $name, $default = FALSE )
 	{
 		return ( isset( $this->options[$name] ) ? $this->options[$name] : $default ) ;
 	}
@@ -139,8 +139,8 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 	public function update_option( $name, $value )
 	{
 		$this->options[$name] = $value;
-		$options = get_option( $this->args['option_group'], false );
-		if ( $options === false ) $options = array();
+		$options = get_option( $this->args['option_group'], FALSE );
+		if ( $options === FALSE ) $options = array();
 		$options[$name] = $value;
 		return update_option( $this->args['option_group'], $options );
 	}
@@ -148,7 +148,7 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 	public function delete_option( $name )
 	{
 		$options = get_option( $this->args['option_group'] );
-		if ( $options === false ) $options = array();
+		if ( $options === FALSE ) $options = array();
 		unset( $this->options[$name] );
 		unset( $options[$name] );
 		return update_option( $this->args['option_group'], $options );
@@ -159,8 +159,8 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 		$defaults = $this->getFilters( $this->args['option_group'].'_defaults' );
 		//gPeopleComponentCore::dump($defaults); die();
 
-		$options = get_option( $this->args['option_group'], false );
-		if ( $options === false ) {
+		$options = get_option( $this->args['option_group'], FALSE );
+		if ( $options === FALSE ) {
 			// must uncommnet after the Settings UI finished.
 			//add_action( 'admin_notices', array( &$this, 'admin_notices_configure' ) );
 			$options = $defaults;
@@ -179,12 +179,12 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 		echo '<div class="error"><p><a href="options-general.php?page='.$this->args['domain'].'">'.sprintf( __( '%s is not configured yet.', GPLUGIN_TEXTDOMAIN ), $this->args['title'] ).'</a></p></div>';
 	}
 
-	public function get_postmeta( $post_id, $field = false, $default = '', $key = null )
+	public function get_postmeta( $post_id, $field = FALSE, $default = '', $key = null )
 	{
 		return $this->get_meta( 'post', $post_id, $field, $default, $key );
 	}
 
-	public function get_termmeta( $term_id, $field = false, $default = '', $key = null )
+	public function get_termmeta( $term_id, $field = FALSE, $default = '', $key = null )
 	{
 		return $this->get_meta( 'term', $term_id, $field, $default, $key );
 	}
@@ -206,14 +206,14 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 		return $key;
 	}
 
-	public function get_meta( $from, $id, $field = false, $default = '', $key = null )
+	public function get_meta( $from, $id, $field = FALSE, $default = '', $key = null )
 	{
 		$key = $this->sanitize_meta_key( $key, $from );
 
 		switch( $from ) {
 
 			case 'user' :
-				$meta = get_user_meta( $id, $key, false );
+				$meta = get_user_meta( $id, $key, FALSE );
 			break;
 
 			case 'term' :
@@ -228,7 +228,7 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 		if ( empty( $meta ) )
 			return $default;
 
-		if ( false === $field )
+		if ( FALSE === $field )
 			return $meta;
 
 		if ( isset( $meta[$field] ) )
@@ -237,33 +237,33 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 		return $default;
 	}
 
-	public function update_postmeta( $post_id, $value, $field = false, $key = null )
+	public function update_postmeta( $post_id, $value, $field = FALSE, $key = null )
 	{
 		return $this->update_meta( 'post', $post_id, $value, $field, $key );
 	}
 
-	public function update_meta( $to, $id, $value, $field = false, $key = null )
+	public function update_meta( $to, $id, $value, $field = FALSE, $key = null )
 	{
 		$key = $this->sanitize_meta_key( $key, $to );
 
-		if ( false === $field ) {
+		if ( FALSE === $field ) {
 			$meta = $value;
 		} else {
-			$meta = $this->get_meta( $to, $id, false, array(), $key );
+			$meta = $this->get_meta( $to, $id, FALSE, array(), $key );
 			$meta[$field] = $value;
 		}
 
 		switch( $to ) {
 
 			case 'user' :
-				if ( false === $value )
+				if ( FALSE === $value || ( is_array( $value ) && ! count( $value ) ) )
 					delete_user_meta( $id, $key );
 				else
 					update_user_meta( $id, $key, $meta );
 			break;
 
 			case 'term' :
-				if ( false === $value )
+				if ( FALSE === $value || ( is_array( $value ) && ! count( $value ) ) )
 					gPluginTermMeta::delete_term_meta( $id, $key );
 				else
 					gPluginTermMeta::update_term_meta( $id, $key, $meta );
@@ -271,7 +271,7 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 
 			case 'post' :
 			default :
-				if ( false === $value )
+				if ( FALSE === $value || ( is_array( $value ) && ! count( $value ) ) )
 					delete_post_meta( $id, $key );
 				else
 					update_post_meta( $id, $key, $meta );

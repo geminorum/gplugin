@@ -6,6 +6,38 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 						USED FUNCTION: Modyfy with Caution!
 	--------------------------------------------------------------------------------- **/
 
+	// this must be wp core future!!
+	// support post-thumbnails for CPT
+	// call this late on after_setup_theme
+	public static function themeThumbnails( $post_types )
+	{
+		global $_wp_theme_features;
+		$feature = 'post-thumbnails';
+		// $post_types = (array) $post_types;
+
+		if ( isset( $_wp_theme_features[$feature] )
+			&& true !== $_wp_theme_features[$feature]
+			&& is_array( $_wp_theme_features[$feature][0] ) ) {
+				$_wp_theme_features[$feature][0] = array_merge( $_wp_theme_features[$feature][0], $post_types );
+		} else {
+			$_wp_theme_features[$feature] = array( $post_types );
+		}
+	}
+
+	// this must be wp core future!!
+	// core duplication with post_type : add_image_size()
+	public static function addImageSize( $name, $width = 0, $height = 0, $crop = FALSE, $post_type = array( 'post' ) )
+	{
+		global $_wp_additional_image_sizes;
+
+		$_wp_additional_image_sizes[ $name ] = array(
+			'width'     => absint( $width ),
+			'height'    => absint( $height ),
+			'crop'      => $crop,
+			'post_type' => $post_type,
+		);
+	}
+
 	// FROM: gEditorialHelper
 	public static function getPostIDbySlug( $slug, $post_type, $url = false )
 	{
@@ -231,9 +263,15 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 		return $default;
 	}
 
-	public static function get_user_edit_link( $user_ID )
+	public static function getUserEditLink( $user_ID )
 	{
 		return add_query_arg( 'wp_http_referer', urlencode( stripslashes( $_SERVER['REQUEST_URI'] ) ), 'user-edit.php?user_id='.$user_ID );
+	}
+
+	// DEPRECATED: use : gPluginWPHelper::getUserEditLink();
+	public static function get_user_edit_link( $user_ID )
+	{
+		return self::getUserEditLink( $user_ID );
 	}
 
 	// https://gist.github.com/boonebgorges/4165099

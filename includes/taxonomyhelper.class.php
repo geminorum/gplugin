@@ -6,7 +6,7 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 	--------------------------------------------------------------------------------- **/
 
 	// Originally from : Custom Field Taxonomies : https://github.com/scribu/wp-custom-field-taxonomies
-	public static function getMetaRows( $meta_key, $limit = false )
+	public static function getMetaRows( $meta_key, $limit = false, $offset = 0 )
 	{
 		global $wpdb;
 
@@ -16,8 +16,9 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 				FROM $wpdb->postmeta
 				WHERE meta_key = %s
 				GROUP BY post_id
-				 LIMIT %d
-			", $meta_key, $limit );
+				LIMIT %d
+				OFFSET %d
+			", $meta_key, $limit, $offset );
 		else
 			$query = $wpdb->prepare( "
 				SELECT post_id, GROUP_CONCAT( meta_value ) as meta
