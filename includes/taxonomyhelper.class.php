@@ -36,10 +36,11 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 	{
 		global $wpdb;
 
-		// TODO: use $table, prepare
+		$from = $wpdb->{$table};
+
 		return $wpdb->get_col( "
 			SELECT meta_key
-			FROM $wpdb->postmeta
+			FROM $from
 			GROUP BY meta_key
 			HAVING meta_key NOT LIKE '\_%'
 			ORDER BY meta_key ASC
@@ -48,14 +49,16 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 
 	// Originally from : Custom Field Taxonomies : https://github.com/scribu/wp-custom-field-taxonomies
 	// here because we used this to convert meta into terms
-	public static function deleteMetaKeys( $meta_key, $limit = false )
+	public static function deleteMetaKeys( $meta_key, $limit = false, $table = 'postmeta' )
 	{
 		global $wpdb;
 
+		$from = $wpdb->{$table};
+
 		if ( $limit )
-			$query = $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key = %s LIMIT %d", $meta_key, $limit );
+			$query = $wpdb->prepare( "DELETE FROM $from WHERE meta_key = %s LIMIT %d", $meta_key, $limit );
 		else
-			$query = $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE meta_key = %s", $meta_key );
+			$query = $wpdb->prepare( "DELETE FROM $from WHERE meta_key = %s", $meta_key );
 
 		return $wpdb->query( $query );
 	}
