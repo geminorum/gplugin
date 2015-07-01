@@ -39,6 +39,8 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 
 		$this->options = $this->init_options();
 
+		$this->setup_settings();
+
 		// bail if the plugin is in network mode
 		if ( $this->args['network'] )
 			return;
@@ -48,6 +50,16 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 
 		if ( isset( $this->args['term_meta'] ) && $this->args['term_meta'] )
 			gPluginFactory( 'gPluginTermMeta', $constants, $args ); // no point passing the arguments!
+	}
+
+	public function setup_settings()
+	{
+		if ( isset( $this->constants['class_'.$this->args['component'].'_settings'] ) )
+			$this->settings = gPluginFactory(
+				$this->constants['class_'.$this->args['component'].'_settings'],
+				$this->constants,
+				$this->getFilters( $this->args['component'].'_settings_args' )
+			);
 	}
 
 	public function setup_actions()
