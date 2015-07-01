@@ -8,6 +8,7 @@ class gPluginAdminCore extends gPluginClassCore
 	public function setup_actions()
 	{
 		add_action( 'init', array( $this, 'init' ) );
+
 		if ( is_admin() ) {
 			add_action( 'admin_init', array( $this, 'admin_init' ) );
 			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
@@ -77,6 +78,21 @@ class gPluginAdminCore extends gPluginClassCore
 				do_action( $this->args['domain'].'_'.$this->_component.'_settings_sub_'.$sub, $settings_uri, $sub );
 
 		echo '<div class="clear"></div></div>';
+	}
+
+	// called by extended class as default settings page html
+	public function admin_settings_html( $settings_uri, $sub )
+	{
+		echo '<form method="post" action="">';
+			settings_fields( $this->args['domain'].'_'.$this->_component.'_'.$sub );
+			do_settings_sections( $this->args['domain'].'_'.$this->_component.'_'.$sub );
+			submit_button();
+		echo '</form>';
+
+		// if ( gPluginWPHelper::isDev() ) {
+		// 	$options = $this->settings->get_options();
+		// 	gPluginUtils::dump( $options );
+		// }
 	}
 
 	// usually overrides by the child class
