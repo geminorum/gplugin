@@ -19,7 +19,7 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 		) );
 
 		$this->constants    = apply_filters( $this->args['domain'].'_network_constants', $constants );
-		$this->blog_map     = get_site_option( $this->args['domain'].'_blog_map', array() );
+		// $this->blog_map     = get_site_option( $this->args['domain'].'_blog_map', array() ); // NOT USED YET, MUST CAN BE DISABLED
 		$this->current_blog = get_current_blog_id();
 
 		$this->root   = false;
@@ -62,15 +62,28 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 		$this->setup_modules();
 	}
 
-	// currently called manually
 	public function setup_settings()
 	{
 		if ( isset( $this->constants['class_network_settings'] ) )
-			$this->settings = gPluginFactory( $this->constants['class_network_settings'], $this->constants, $this->getFilters( 'network_settings_args' ) );
+			$this->settings = gPluginFactory(
+				$this->constants['class_network_settings'],
+				$this->constants,
+				$this->getFilters( 'network_settings_args' )
+			);
+
 		if ( isset( $this->constants['class_component_settings'] ) )
-			$this->components = gPluginFactory( $this->constants['class_component_settings'], $this->constants, $this->getFilters( 'component_settings_args' ) );
+			$this->components = gPluginFactory(
+				$this->constants['class_component_settings'],
+				$this->constants,
+				$this->getFilters( 'component_settings_args' )
+			);
+
 		if ( isset( $this->constants['class_module_settings'] ) )
-			$this->modules = gPluginFactory( $this->constants['class_module_settings'], $this->constants, $this->getFilters( 'module_settings_args' ) );
+			$this->modules = gPluginFactory(
+				$this->constants['class_module_settings'],
+				$this->constants,
+				$this->getFilters( 'module_settings_args' )
+			);
 	}
 
 	public function init()
