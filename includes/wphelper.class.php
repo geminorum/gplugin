@@ -16,7 +16,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 		// $post_types = (array) $post_types;
 
 		if ( isset( $_wp_theme_features[$feature] )
-			&& true !== $_wp_theme_features[$feature]
+			&& TRUE !== $_wp_theme_features[$feature]
 			&& is_array( $_wp_theme_features[$feature][0] ) ) {
 				$_wp_theme_features[$feature][0] = array_merge( $_wp_theme_features[$feature][0], $post_types );
 		} else {
@@ -39,7 +39,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 	}
 
 	// FROM: gEditorialHelper
-	public static function getPostIDbySlug( $slug, $post_type, $url = false )
+	public static function getPostIDbySlug( $slug, $post_type, $url = FALSE )
 	{
 		global $wpdb;
 
@@ -62,7 +62,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 		elseif ( ! empty( $post_id ) )
 			return $post_id;
 
-		return false;
+		return FALSE;
 	}
 
 	// Checks for the current post type
@@ -81,12 +81,12 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 		elseif ( isset( $_REQUEST['post_type'] ) )
 			$post_type = sanitize_key( $_REQUEST['post_type'] );
 		else
-			$post_type = null;
+			$post_type = NULL;
 
 		return $post_type;
 	}
 
-	public static function notice( $notice, $class = 'updated fade', $echo = true )
+	public static function notice( $notice, $class = 'updated fade', $echo = TRUE )
 	{
 		$html = sprintf( '<div id="message" class="%s"><p>%s</p></div>', $class, $notice );
 		if ( ! $echo )
@@ -106,7 +106,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 
 	// http://kovshenin.com/2011/attachments-filename-and-directory-in-wordpress/
 	// an absolute path (filesystem path, not URL) to the location of your attachment file.
-	public static function get_attachmnet_path( $post_id, $uploads = null )
+	public static function get_attachmnet_path( $post_id, $uploads = NULL )
 	{
 		if ( is_null( $uploads ) )
 			$uploads = wp_upload_dir();
@@ -119,9 +119,9 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 	/**
 	 * @param int $id Optional. Post ID.
 	 * @param string $more_link_text Optional. Content for when there is more text.
-	 * @param bool $stripteaser Optional. Strip teaser content before the more text. Default is false.
+	 * @param bool $stripteaser Optional. Strip teaser content before the more text. Default is FALSE.
 	 */
-	public static function the_content_by_id( $post_id = 0, $more_link_text = null, $stripteaser = false )
+	public static function the_content_by_id( $post_id = 0, $more_link_text = NULL, $stripteaser = FALSE )
 	{
 		global $post;
 		$post = get_post( $post_id );

@@ -3,18 +3,18 @@
 if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends gPluginClassCore
 {
 
-	var $_asset_styles = false;
-	var $_asset_config = false;
+	var $_asset_styles = FALSE;
+	var $_asset_config = FALSE;
 	var $_asset_object = 'gPlugin';
 	var $_asset_args   = array();
 
 	public function setup_globals( $constants = array(), $args = array() )
 	{
 		$this->args = gPluginUtils::parse_args_r( $args, array(
-			'title'     => __( 'gPlugin Network', GPLUGIN_TEXTDOMAIN ),
+			'title'     => 'gPlugin',
 			'domain'    => 'gplugin',
-			'network'   => true,
-			'term_meta' => false,
+			'network'   => TRUE,
+			'term_meta' => FALSE,
 			'options'   => array(),
 		) );
 
@@ -22,8 +22,8 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 		// $this->blog_map     = get_site_option( $this->args['domain'].'_blog_map', array() ); // NOT USED YET, MUST CAN BE DISABLED
 		$this->current_blog = get_current_blog_id();
 
-		$this->root   = false;
-		$this->remote = false;
+		$this->root   = FALSE;
+		$this->remote = FALSE;
 
 		if ( isset( $this->constants['class_filters'] ) )
 			gPluginFactory( $this->constants['class_filters'], $constants, $args );
@@ -36,24 +36,29 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 
 	public function setup_actions()
 	{
-		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ) );
-		add_action( 'init', array( $this, 'init' ) );
+		if ( method_exists( $this, 'load_textdomain' ) )
+			add_action( 'plugins_loaded', array( &$this, 'load_textdomain' ) );
+		
+		add_action( 'init', array( &$this, 'init' ) );
 
 		if( isset( $this->constants['class_network_settings'] ) && method_exists( $this, 'settings_args_late' ) )
-			add_filter( 'gplugin_settings_args_'.strtolower( $this->constants['class_network_settings'] ), array( $this, 'settings_args_late' ) );
+			add_filter( 'gplugin_settings_args_'.strtolower( $this->constants['class_network_settings'] ), array( &$this, 'settings_args_late' ) );
 
 		if ( is_network_admin() ) {
 
-			add_action( 'network_admin_menu', array( $this, 'network_admin_menu' ) );
-			add_action( 'admin_print_footer_scripts', array( $this, 'footer_asset_config' ), 99 );
+			// bail if extended class not ready to have a network settings page
+			if ( method_exists( $this, 'network_settings_save' ) )
+				add_action( 'network_admin_menu', array( &$this, 'network_admin_menu' ) );
+				
+			add_action( 'admin_print_footer_scripts', array( &$this, 'footer_asset_config' ), 99 );
 
 		} else {
 
 			if ( is_admin() ) {
-				add_action( 'admin_init', array( $this, 'admin_init' ) );
-				add_action( 'admin_print_footer_scripts', array( $this, 'footer_asset_config' ), 99 );
+				add_action( 'admin_init', array( &$this, 'admin_init' ) );
+				add_action( 'admin_print_footer_scripts', array( &$this, 'footer_asset_config' ), 99 );
 			} else {
-				add_action( 'wp_footer' , array( $this, 'footer_asset_config'  ), 99 );
+				add_action( 'wp_footer' , array( &$this, 'footer_asset_config'  ), 99 );
 			}
 
 			$this->setup_network();
@@ -89,59 +94,59 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 	public function init()
 	{
 		// gPlugin Locale:
-		if ( ! is_textdomain_loaded( GPLUGIN_TEXTDOMAIN ) )
-			load_plugin_textdomain( GPLUGIN_TEXTDOMAIN, false, 'gplugin/languages' );
+		// if ( ! is_textdomain_loaded( GPLUGIN_TEXTDOMAIN ) )
+		// 	load_plugin_textdomain( GPLUGIN_TEXTDOMAIN, FALSE, 'gplugin/languages' );
 
 		// Parent Plugin Locale:
-		//if ( ! is_textdomain_loaded( $this->args['domain'] ) )
-			//$this->load_textdomain();
+		// if ( ! is_textdomain_loaded( $this->args['domain'] ) )
+		// 	$this->load_textdomain();
 
 		// init here to help filtering the templates
 		if ( isset( $this->constants['class_mustache'] ) )
 			call_user_func( array( $this->constants['class_mustache'], 'init' ) );
 	}
 
+	// FIXME: DEPRECATE THIS
 	public function plugins_loaded()
 	{
-		$this->load_textdomain();
+		gPluginError( __FUNCTION__, sprintf( '%s: unneccary fire on plugins_loaded', $this->args['title'] ) );
+		
+		// $this->load_textdomain();
 	}
 
-	public function load_textdomain() {}
+	// public function load_textdomain() {}
 	public function admin_init() {}
 	public function setup_network() {}
 	public function setup_modules() {}
 
 	public function network_admin_menu()
 	{
-		// bail if extended class not ready to have a network settings page
-		if ( ! method_exists( $this, 'network_settings_save' ) )
-			return;
+		$titles = $this->getFilters( 'network_settings_titles', array() );
 
 		$hook = add_submenu_page( 'settings.php',
-			sprintf( _x( '%s Network', 'Network Settings Page Title', GPLUGIN_TEXTDOMAIN ), $this->args['title'] ), // Page HTML Title
-			sprintf( _x( '%s', 'Network Menu Title', GPLUGIN_TEXTDOMAIN ), $this->args['title'] ), // Menu Title
+			( isset( $titles['title'] ) ? $titles['title'] : $this->args['title'] ),
+			( isset( $titles['menu'] ) ? $titles['menu'] : $this->args['title'] ),
 			'manage_network_options',
 			$this->args['domain'],
-			array( $this, 'network_settings' )
+			array( &$this, 'network_settings' )
 		);
 
-		add_action( 'load-'.$hook, array( $this, 'network_settings_save' ) );
+		add_action( 'load-'.$hook, array( &$this, 'network_settings_save' ) );
 	}
 
 	public function network_settings()
 	{
-		$settings_uri = 'settings.php?page='.$this->args['domain'];
-		$sub          = isset( $_GET['sub'] ) ? trim( $_GET['sub'] ) : 'general';
-		$messages     = $this->getFilters( 'network_settings_messages' );
-		$subs         = $this->getFilters( 'network_settings_subs', array(
-			'overview' => __( 'Overview', GPLUGIN_TEXTDOMAIN ),
-			'general'  => __( 'General', GPLUGIN_TEXTDOMAIN ),
-			'console'  => __( 'Console', GPLUGIN_TEXTDOMAIN ),
-		) );
+		$uri = 'settings.php?page='.$this->args['domain'];
+		$sub = isset( $_GET['sub'] ) ? trim( $_GET['sub'] ) : 'general';
+		
+		$messages = $this->getFilters( 'network_settings_messages', array() );
+		$subs     = $this->getFilters( 'network_settings_subs', array() );
+		$titles   = $this->getFilters( 'network_settings_titles', array() );
 
-		?><div class="wrap"><h2> <?php
-			printf( _x( '%s Network Settings', 'Network Settings Page Title', GPLUGIN_TEXTDOMAIN ), $this->args['title'] ); ?></h2> <?php
-			gPluginFormHelper::headerNav( $settings_uri, $sub, $subs );
+		echo '<div class="wrap">';
+			printf( '<h2>%s</h2>', ( isset( $titles['title'] ) ? $titles['title'] : $this->args['title'] ) );
+			
+			gPluginFormHelper::headerNav( $uri, $sub, $subs );
 
 			if ( isset( $_GET['message'] ) ) {
 				if ( isset( $messages[$_REQUEST['message']] ) ) {
@@ -155,13 +160,13 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 			if ( file_exists( $this->constants['plugin_dir'].'admin/network.'.$sub.'.php' ) )
 				require_once( $this->constants['plugin_dir'].'admin/network.'.$sub.'.php' );
 			else
-				do_action( $this->args['domain'].'_network_settings_sub_'.$sub, $settings_uri, $sub );
+				do_action( $this->args['domain'].'_network_settings_sub_'.$sub, $uri, $sub );
 
-		?><div class="clear"></div></div> <?php
+		echo '<div class="clear"></div></div>';
 	}
 
 	// called by extended class as default settings page html
-	public function network_settings_html( $settings_uri, $sub )
+	public function network_settings_html( $uri, $sub )
 	{
 		echo '<form method="post" action="">';
 			settings_fields( $this->args['domain'].'_'.$sub );
@@ -180,9 +185,9 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 		return $fallback;
 	}
 
-	public function enqueue_asset_config( $args = array(), $scope = null )
+	public function enqueue_asset_config( $args = array(), $scope = NULL )
 	{
-		$this->_asset_config = true;
+		$this->_asset_config = TRUE;
 
 		if ( count( $args ) ) {
 			if ( is_null( $scope ) )
@@ -202,18 +207,18 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 		$args = $this->_asset_args;
 		$args['api'] = defined( 'GNETWORK_AJAX_ENDPOINT' ) && GNETWORK_AJAX_ENDPOINT ? GNETWORK_AJAX_ENDPOINT : admin_url( 'admin-ajax.php' );
 
-	?> <script type="text/javascript">
+	?><script type="text/javascript">
 /* <![CDATA[ */
 	var <?php echo $this->_asset_object; ?> = <?php echo wp_json_encode( $args ); ?>;
 
 	<?php if ( gPluginWPHelper::isDev() ) echo 'console.log('.$this->_asset_object.');'; ?>
 
 /* ]]> */
-</script> <?php
+</script><?php
 	}
 
 	// TODO: extend by child to use network option
-	public function get_site_user_id( $fallback = true )
+	public function get_site_user_id( $fallback = TRUE )
 	{
 		if ( defined( 'GNETWORK_SITE_USER_ID' ) && constant( 'GNETWORK_SITE_USER_ID' ) )
 			return GNETWORK_SITE_USER_ID;
@@ -230,26 +235,29 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 		return 0;
 	}
 
-	public function get_option( $name, $default = false )
+	// DEPRECATED
+	public function get_option( $name, $default = FALSE )
 	{
-		$options = get_site_option( $this->args['domain'], false );
-		if ( $options === false ) $options = array();
+		$options = get_site_option( $this->args['domain'], FALSE );
+		if ( $options === FALSE ) $options = array();
 		if ( !isset( $options[$name] ) ) $options[$name] = $default;
 		return $options[$name];
 	}
 
+	// DEPRECATED
 	public function update_option( $name, $value )
 	{
-		$options = get_site_option( $this->args['domain'], false );
-		if ( $options === false ) $options = array();
+		$options = get_site_option( $this->args['domain'], FALSE );
+		if ( $options === FALSE ) $options = array();
 		$options[$name] = $value;
 		return update_site_option( $this->args['domain'], $options );
 	}
 
+	// DEPRECATED
 	public function delete_option( $name )
 	{
-		$options = get_site_option( $this->args['domain'], false );
-		if ( $options === false ) $options = array();
+		$options = get_site_option( $this->args['domain'], FALSE );
+		if ( $options === FALSE ) $options = array();
 		unset( $options[$name] );
 		return update_option( $this->args['domain'], $options );
 	}

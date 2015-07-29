@@ -1,11 +1,11 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
-if ( ! function_exists( 'gPluginFactory' ) ) : function gPluginFactory( $class = 'gPluginClassCore', $constants = array(), $args = array() ){
+if ( ! function_exists( 'gPluginFactory' ) ) : function gPluginFactory( $class = 'gPluginClassCore', $constants = array(), $args = array() ) {
 	if ( class_exists( $class ) )
 		return call_user_func_array( array( $class, 'instance' ), array( $class, $constants, $args ) );
 	else if ( WP_DEBUG )
 		_doing_it_wrong( __FUNCTION__, sprintf( '%s class not exists!', $class ), GPLUGIN_VERSION );
-	return false;
+	return FALSE;
 } endif;
 
 if ( ! class_exists( 'gPluginClassCore' ) ) {
@@ -34,7 +34,7 @@ class gPluginClassCore implements gPluginClassCoreInterface
 
 	// A dummy constructor to prevent loading more than once.
 	protected function __construct() { /* Do nothing here */ }
-	protected function __distruct() { $this->data = null; }
+	protected function __distruct() { $this->data = NULL; }
 	// A dummy magic method to prevent cloning
 	// public function __clone() { _doing_it_wrong( __FUNCTION__, 'Doing it wrong, chief.', GPLUGIN_VERSION ); }
 	// A dummy magic method to prevent unserialization
@@ -42,16 +42,25 @@ class gPluginClassCore implements gPluginClassCoreInterface
 	// Magic method for checking the existence of a certain custom field
 	public function __isset( $key ) { return isset( $this->data[$key] ); }
 	// Magic method for getting varibles
-	public function __get( $key ) { return isset( $this->data[$key] ) ? $this->data[$key] : null; }
+	public function __get( $key ) { return isset( $this->data[$key] ) ? $this->data[$key] : NULL; }
 	// Magic method for setting varibles
 	public function __set( $key, $value ) { $this->data[$key] = $value; }
 	public function __unset( $key ) { if ( isset( $this->data[$key] ) ) unset( $this->data[$key] ); }
 	// Magic method to prevent notices and errors from invalid method calls
-	public function __call( $name = '', $args = array() ) { unset( $name, $args ); return null; }
+	public function __call( $name = '', $args = array() ) { unset( $name, $args ); return NULL; }
 
 	// workaround to avoid : "Indirect modification of overloaded property"
-	public function inject( $key, $value ) { $this->{$key} = array_merge( $this->{$key}, (array) $value ); }
-	public function append( $key, $arr_key, $arr_val ) { $temp = $this->{$key}; $temp[$arr_key] = $arr_val; $this->{$key} = $temp; }
+	public function inject( $key, $value ) 
+	{ 
+		$this->{$key} = array_merge( $this->{$key}, (array) $value ); 
+	}
+	
+	public function append( $key, $arr_key, $arr_val ) 
+	{ 
+		$temp           = $this->{$key}; 
+		$temp[$arr_key] = $arr_val; 
+		$this->{$key}   = $temp;
+	}
 
 	// must dep
 	// shortcode_atts() mock-up
@@ -68,7 +77,12 @@ class gPluginClassCore implements gPluginClassCoreInterface
 	}
 
 	// Set some smart defaults to class variables. Allow some of them to be filtered to allow for early overriding.
-	public function setup_globals( $constants = array(), $args = array() ) { $this->constants = $constants; $this->args = $args; }
+	public function setup_globals( $constants = array(), $args = array() ) 
+	{ 
+		$this->constants = $constants; 
+		$this->args      = $args; 
+	}
+	
 	// Setup the default hooks and actions
 	public function setup_actions() { }
 
@@ -79,7 +93,7 @@ class gPluginClassCore implements gPluginClassCoreInterface
 	public static function atts( $pairs, $atts )
 	{
 		$atts = (array) $atts;
-		$out = array();
+		$out  = array();
 
 		foreach( $pairs as $name => $default ) {
 			if ( array_key_exists( $name, $atts ) )
@@ -90,6 +104,4 @@ class gPluginClassCore implements gPluginClassCoreInterface
 
 		return $out;
 	}
-}
-
-}
+} }

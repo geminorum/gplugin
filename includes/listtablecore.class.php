@@ -11,7 +11,7 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 	{
 		$this->args = gPluginUtils::parse_args_r( $args, array(
 			'domain'   => 'gplugin',
-			'title'    => __( 'gPlugin', GPLUGIN_TEXTDOMAIN ),
+			'title'    => 'gPlugin',
 			'plural'   => '',
 			'singular' => '',
 			'ajax'     => false,

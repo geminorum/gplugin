@@ -1,18 +1,32 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
+
 if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper
 {
 
-	/** ---------------------------------------------------------------------------------
-						USED FUNCTIONS: Modyfy with Caution!
-	--------------------------------------------------------------------------------- **/
-
 	public static function mime( $extension )
 	{
-		switch ( $extension ) {
-			case 'xlsx' : return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-			case 'csv' : return 'text/csv';
-			case 'xml' : return 'text/xml';
-		}
+		$mimes = array(
+			'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+			'ppt'  => 'application/vnd.ms-powerpoint',
+			'doc'  => 'application/msword',
+			'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+			'xls'  => 'application/vnd.ms-excel',
+			'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+			'csv'  => 'text/csv',
+			'xml'  => 'text/xml',
+			'webm' => 'video/webm',
+			'flv'  => 'video/x-flv',
+			'ac3'  => 'audio/ac3',
+			'mpa'  => 'audio/MPA',
+			'mp4'  => 'video/mp4',
+			'mpg4' => 'video/mp4',
+			'flv'  => 'video/x-flv',
+			'svg'  => 'image/svg+xml',
+		);
+
+		if ( isset( $mimes[$extension] ) )
+			return $mimes[$extension];
+
 		return '';
 	}
 
@@ -27,8 +41,7 @@ if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper
 	// Checks if the string (filename) provided is an image URL
 	public static function is_image_url( $string )
 	{
-		$ext = self::extension( $string );
-		switch ( strtolower( $ext ) ) {
+		switch ( strtolower( self::extension( $string ) ) ) {
 			case 'jpg': return true;
 			case 'png': return true;
 			case 'gif': return true;

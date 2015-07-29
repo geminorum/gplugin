@@ -2,11 +2,6 @@
 
 if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 {
-
-	/** ---------------------------------------------------------------------------------
-						USED FUNCTION: Modyfy with Caution!
-	--------------------------------------------------------------------------------- **/
-
 	// https://gist.github.com/geminorum/5eec57816adb003ccefb
 	public static function joinString( $parts, $between, $last )
 	{
@@ -85,6 +80,13 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 	/** ---------------------------------------------------------------------------------
 									NOT USED YET
 	--------------------------------------------------------------------------------- **/
+
+	// Removing JavaScript tags
+	// https://gist.github.com/tommcfarlin/2959778
+	public static function removeScript( $html )
+	{
+		return preg_replace( '/<script\b[^>]*>(.*?)<\/script>/is', '', $html );
+	}
 
 	// https://www.addedbytes.com/blog/code/php-querystring-functions/
 	public static function removeQueryVar( $url, $key )

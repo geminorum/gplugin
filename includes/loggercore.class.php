@@ -15,9 +15,9 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 	{
 		$this->args = gPluginUtils::parse_args_r( $args, array(
 			'domain'      => 'gplugin',
-			'title'       => __( 'gPlugin', GPLUGIN_TEXTDOMAIN ),
+			'title'       => 'gPlugin',
 			'logger_args' => array(
-				'name'        => __( 'Logs', GPLUGIN_TEXTDOMAIN ),
+				'name'        => 'Logs',
 				'post_type'   => 'gplugin_log',
 				'taxonomy'    => 'gplugin_log_type',
 				'meta_prefix' => '_gplugin_log_',

@@ -13,7 +13,7 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 	public function setup_globals( $constants = array(), $args = array() )
 	{
 		$this->args = gPluginUtils::parse_args_r( $args, array(
-			'title'        => __( 'gPlugin', GPLUGIN_TEXTDOMAIN ),
+			'title'        => 'gPlugin',
 			'domain'       => 'gplugin',
 			'network'      => false,
 			'component'    => 'default',
@@ -79,8 +79,8 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 			return;
 
 		// gPlugin Local:
-		if ( ! is_textdomain_loaded( GPLUGIN_TEXTDOMAIN ) )
-			load_plugin_textdomain( GPLUGIN_TEXTDOMAIN, false, 'gplugin/languages' );
+		// if ( ! is_textdomain_loaded( GPLUGIN_TEXTDOMAIN ) )
+		// 	load_plugin_textdomain( GPLUGIN_TEXTDOMAIN, false, 'gplugin/languages' );
 
 		// Parent Plugin Local:
 		if ( ! is_textdomain_loaded( $this->args['domain'] ) )
@@ -173,8 +173,6 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 
 		$options = get_option( $this->args['option_group'], FALSE );
 		if ( $options === FALSE ) {
-			// must uncommnet after the Settings UI finished.
-			//add_action( 'admin_notices', array( &$this, 'admin_notices_configure' ) );
 			$options = $defaults;
 		} else {
 			foreach ( $defaults as $key => $value )
@@ -184,19 +182,12 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 		return $options;
 	}
 
-	public function admin_notices_configure()
-	{
-		if ( WP_DEBUG )
-			return;
-		echo '<div class="error"><p><a href="options-general.php?page='.$this->args['domain'].'">'.sprintf( __( '%s is not configured yet.', GPLUGIN_TEXTDOMAIN ), $this->args['title'] ).'</a></p></div>';
-	}
-
-	public function get_postmeta( $post_id, $field = FALSE, $default = '', $key = null )
+	public function get_postmeta( $post_id, $field = FALSE, $default = '', $key = NULL )
 	{
 		return $this->get_meta( 'post', $post_id, $field, $default, $key );
 	}
 
-	public function get_termmeta( $term_id, $field = FALSE, $default = '', $key = null )
+	public function get_termmeta( $term_id, $field = FALSE, $default = '', $key = NULL )
 	{
 		return $this->get_meta( 'term', $term_id, $field, $default, $key );
 	}
@@ -218,7 +209,7 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 		return $key;
 	}
 
-	public function get_meta( $from, $id, $field = FALSE, $default = '', $key = null )
+	public function get_meta( $from, $id, $field = FALSE, $default = '', $key = NULL )
 	{
 		$key = $this->sanitize_meta_key( $key, $from );
 
@@ -249,12 +240,12 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 		return $default;
 	}
 
-	public function update_postmeta( $post_id, $value, $field = FALSE, $key = null )
+	public function update_postmeta( $post_id, $value, $field = FALSE, $key = NULL )
 	{
 		return $this->update_meta( 'post', $post_id, $value, $field, $key );
 	}
 
-	public function update_meta( $to, $id, $value, $field = FALSE, $key = null )
+	public function update_meta( $to, $id, $value, $field = FALSE, $key = NULL )
 	{
 		$key = $this->sanitize_meta_key( $key, $to );
 
@@ -311,7 +302,7 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 		return false;
 	}
 
-	public function get_template_part( $slug, $name = null, $load = true )
+	public function get_template_part( $slug, $name = NULL, $load = true )
 	{
 		do_action( 'get_template_part_'.$slug, $slug, $name ); // standard WP action
 

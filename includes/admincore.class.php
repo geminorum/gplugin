@@ -7,20 +7,19 @@ class gPluginAdminCore extends gPluginClassCore
 
 	public function setup_actions()
 	{
-		add_action( 'init', array( $this, 'init' ) );
+		add_action( 'init', array( &$this, 'init' ) );
 
 		if ( is_admin() ) {
-			add_action( 'admin_init', array( $this, 'admin_init' ) );
-			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
-			add_action( 'admin_print_styles', array( $this, 'admin_print_styles' ) );
-			add_action( 'admin_print_styles', array( $this, 'admin_print_styles_settings' ) ); // for settings page
+			add_action( 'admin_init', array( &$this, 'admin_init' ) );
+			add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
+			add_action( 'admin_print_styles', array( &$this, 'admin_print_styles' ) );
+			add_action( 'admin_print_styles', array( &$this, 'admin_print_styles_settings' ) ); // for settings page
 
-			add_action( 'admin_footer', array( $this, 'admin_footer' ) );
+			add_action( 'admin_footer', array( &$this, 'admin_footer' ) );
 
 			// no need for network
-			if ( ! $this->args['network'] ) {
-				add_action( 'plugin_action_links_'.$this->args['domain'].'/'.$this->args['domain'].'.php', array( $this, 'settings_link' ), 10, 4 );
-			}
+			if ( ! $this->args['network'] )
+				add_action( 'plugin_action_links_'.$this->args['domain'].'/'.$this->args['domain'].'.php', array( &$this, 'settings_link' ), 10, 4 );
 		}
 	}
 
@@ -35,32 +34,32 @@ class gPluginAdminCore extends gPluginClassCore
 		if ( ! method_exists( $this, 'admin_settings_load' ) )
 			return;
 
+		$titles = $this->getFilters( $this->_component.'_settings_titles', array() );
+
 		$hook = add_submenu_page( 'options-general.php',
-			sprintf( _x( '%s Settings', 'Admin Settings Page Title', GPLUGIN_TEXTDOMAIN ), $this->args['title'] ),
-			sprintf( _x( '%s', 'Admin Menu Title', GPLUGIN_TEXTDOMAIN ), $this->args['title'] ),
+			( isset( $titles['title'] ) ? $titles['title'] : $this->args['title'] ),
+			( isset( $titles['menu'] ) ? $titles['menu'] : $this->args['title'] ),
 			'manage_options',
 			$this->args['domain'],
-			array( $this, 'admin_settings' )
+			array( &$this, 'admin_settings' )
 		);
 
-		add_action( 'load-'.$hook, array( $this, 'admin_settings_load' ) );
+		add_action( 'load-'.$hook, array( &$this, 'admin_settings_load' ) );
 	}
 
 	public function admin_settings()
 	{
-		$settings_uri = 'options-general.php?page='.$this->args['domain'];
+		$uri = 'options-general.php?page='.$this->args['domain'];
 		$sub = isset( $_GET['sub'] ) ? trim( $_GET['sub'] ) : 'general';
-		$subs = $this->getFilters( $this->_component.'_settings_subs', array(
-			'overview' => __( 'Overview', GPLUGIN_TEXTDOMAIN ),
-			'general'  => __( 'General', GPLUGIN_TEXTDOMAIN ),
-		) );
+		
+		$subs     = $this->getFilters( $this->_component.'_settings_subs', array() );
+		$messages = $this->getFilters( $this->_component.'_settings_messages', array() );
+		$titles   = $this->getFilters( $this->_component.'_settings_titles', array() );
 
-		$messages = $this->getFilters( $this->_component.'_settings_messages' );
-
-		echo '<div class="wrap"><h2>';
-			printf( _x( '%s Settings', 'Admin Settings Page Title', GPLUGIN_TEXTDOMAIN ), $this->args['title'] );
-			echo '</h2>';
-			gPluginFormHelper::headerNav( $settings_uri, $sub, $subs );
+		echo '<div class="wrap">';
+			printf( '<h2>%s</h2>', ( isset( $titles['title'] ) ? $titles['title'] : $this->args['title'] ) );
+			
+			gPluginFormHelper::headerNav( $uri, $sub, $subs );
 
 			if ( isset( $_GET['message'] ) ) {
 				if ( isset( $messages[$_REQUEST['message']] ) ) {
@@ -75,13 +74,13 @@ class gPluginAdminCore extends gPluginClassCore
 			if ( file_exists( $file ) )
 				require_once( $file );
 			else
-				do_action( $this->args['domain'].'_'.$this->_component.'_settings_sub_'.$sub, $settings_uri, $sub );
+				do_action( $this->args['domain'].'_'.$this->_component.'_settings_sub_'.$sub, $uri, $sub );
 
 		echo '<div class="clear"></div></div>';
 	}
 
 	// called by extended class as default settings page html
-	public function admin_settings_html( $settings_uri, $sub )
+	public function admin_settings_html( $uri, $sub )
 	{
 		echo '<form method="post" action="">';
 			settings_fields( $this->args['domain'].'_'.$this->_component.'_'.$sub );
@@ -121,7 +120,7 @@ class gPluginAdminCore extends gPluginClassCore
 
 	public function settings_link( $links )
 	{
-		array_unshift( $links, '<a href="options-general.php?page='.$this->args['domain'].'">'.__( 'Settings', GPLUGIN_TEXTDOMAIN ).'</a>' );
+		array_unshift( $links, '<a href="options-general.php?page='.$this->args['domain'].'">'.__( 'Settings' ).'</a>' );
 		return $links;
 	}
 
@@ -131,7 +130,7 @@ class gPluginAdminCore extends gPluginClassCore
 		return gPluginWPHelper::getCurrentPostType();
 	}
 
-	function getFilters( $context, $fallback = array() )
+	public function getFilters( $context, $fallback = array() )
 	{
 		if ( isset( $this->constants['class_filters'] )
 			&& class_exists( $this->constants['class_filters'] ) ) {
