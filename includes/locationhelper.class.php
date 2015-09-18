@@ -1,20 +1,17 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
+// http://countrycode.org/
+// http://en.wikipedia.org/wiki/ISO_3166-1
+// https://www.iso.org/obp/ui/
+
 if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 {
-	// http://countrycode.org/
-	// http://en.wikipedia.org/wiki/ISO_3166-1
-	// https://www.iso.org/obp/ui/
-
-	/** ---------------------------------------------------------------------------------
-						USED FUNCTION: Modyfy with Caution!
-	--------------------------------------------------------------------------------- **/
 
 	public static function validate_zipcode( $zip = 0, $country_code = '' )
 	{
 		if ( empty( $zip )
 			|| empty( $country_code ) )
-				return false;
+				return FALSE;
 
 		$zip_regex = array(
 			"AD" => "AD\d{3}",
@@ -176,28 +173,29 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 
 		if ( ! isset ( $zip_regex[ $country_code ] )
 			|| preg_match( "/" . $zip_regex[ $country_code ] . "/i", $zip ) )
-				$ret = true;
+				$ret = TRUE;
 
-		return false;
+		return FALSE;
 	}
 
 	// Originally from Easy Digital Downloads
-	public static function get_states( $country = null )
+	public static function get_states( $country = NULL )
 	{
 		if ( ! empty( $country ) && method_exists( 'gPluginLocationHelper', 'get_states_'.$country ) )
 			return call_user_func( array( 'gPluginLocationHelper', 'get_states_'.$country ) );
+
 		return array();
 	}
 
-	public static function get_cities( $country = null, $state = null )
+	public static function get_cities( $country = NULL, $state = NULL )
 	{
 		if ( ! empty( $country ) && ! empty( $state )
 			&& method_exists( 'gPluginLocationHelper', 'get_cities_'.$country ) ) {
 				$cities = call_user_func( array( 'gPluginLocationHelper', 'get_cities_'.$country ) );
-				if ( isset( $cities[$state] ) ) {
+				if ( isset( $cities[$state] ) )
 					return $cities[$state];
-				}
 			}
+
 		return array();
 	}
 
@@ -896,7 +894,6 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 		) );
 	}
 
-
 	// Iran
 	public static function get_states_IR()
 	{
@@ -973,7 +970,8 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 
 		if ( isset( $array[$state] ) )
 			return $array[$state];
-		return false;
+
+		return FALSE;
 	}
 
 
@@ -1408,15 +1406,17 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 				$ip = '8.8.8.8';
 
 		$ch = curl_init();
+
 		curl_setopt_array( $ch, array(
 			CURLOPT_FOLLOWLOCATION => 1,
-			CURLOPT_HEADER => 0,
+			CURLOPT_HEADER         => 0,
 			CURLOPT_RETURNTRANSFER => 1,
-			CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2) Gecko/20100115 Firefox/3.6 (.NET CLR 3.5.30729)',
-			CURLOPT_URL => 'http://ipinfodb.com/ip_locator.php?ip='.urlencode( $ip ),
-			CURLOPT_TIMEOUT => 1,
-			CURLOPT_REFERER => 'http://'.$_SERVER['HTTP_HOST'],
+			CURLOPT_USERAGENT      => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2) Gecko/20100115 Firefox/3.6 (.NET CLR 3.5.30729)',
+			CURLOPT_URL            => 'http://ipinfodb.com/ip_locator.php?ip='.urlencode( $ip ),
+			CURLOPT_TIMEOUT        => 1,
+			CURLOPT_REFERER        => 'http://'.$_SERVER['HTTP_HOST'],
 		) );
+
 		$content = curl_exec( $ch );
 
 		//if ( ! is_null( $curl_info ) )
@@ -1436,10 +1436,8 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 		if ( $city && $state && $country )
 			return array( $city, $state, preg_replace( '/<img[^>]+\>/i', '', $country ) );
 
-		return false;
+		return FALSE;
 	}
-
-
 
 	// http://www.catswhocode.com/blog/snippets/calculate-the-distance-between-two-points-in-php
 	// http://www.inkplant.com/code/calculate-the-distance-between-two-points.php
@@ -1454,18 +1452,18 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 	*/
 	function getDistanceBetweenPointsNew( $latitude1, $longitude1, $latitude2, $longitude2 )
 	{
-		$theta = $longitude1 - $longitude2;
-		$miles = (sin(deg2rad($latitude1)) * sin(deg2rad($latitude2))) + (cos(deg2rad($latitude1)) * cos(deg2rad($latitude2)) * cos(deg2rad($theta)));
-		$miles = acos($miles);
-		$miles = rad2deg($miles);
-		$miles = $miles * 60 * 1.1515;
-		$feet = $miles * 5280;
-		$yards = $feet / 3;
+		$theta      = $longitude1 - $longitude2;
+		$miles      = (sin(deg2rad($latitude1)) * sin(deg2rad($latitude2))) + (cos(deg2rad($latitude1)) * cos(deg2rad($latitude2)) * cos(deg2rad($theta)));
+		$miles      = acos($miles);
+		$miles      = rad2deg($miles);
+		$miles      = $miles * 60 * 1.1515;
+		$feet       = $miles * 5280;
+		$yards      = $feet / 3;
 		$kilometers = $miles * 1.609344;
-		$meters = $kilometers * 1000;
-		return compact('miles','feet','yards','kilometers','meters');
-	}
+		$meters     = $kilometers * 1000;
 
+		return compact( 'miles','feet','yards','kilometers','meters' );
+	}
 
 	// SEE : http://en.wikipedia.org/wiki/Haversine_formula
 	// http://www.codecodex.com/wiki/Calculate_Distance_Between_Two_Points_on_a_Globe
@@ -1515,20 +1513,20 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 	{
 
 		$theta = $lon1 - $lon2;
-		$dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
-		$dist = acos($dist);
-		$dist = rad2deg($dist);
+		$dist  = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+		$dist  = acos($dist);
+		$dist  = rad2deg($dist);
 		$miles = $dist * 60 * 1.1515;
-		$unit = strtoupper($unit);
+		$unit  = strtoupper($unit);
 
 		if ( $unit == "K" )
 			return ( $miles * 1.609344 );
+
 		if ( $unit == "N" )
 			return ( $miles * 0.8684 );
+
 		return $miles;
 	}
-
-
 
 	// http://stackoverflow.com/a/9046008
 	// http://en.wikipedia.org/wiki/Geographical_distance
@@ -1560,5 +1558,4 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
 
 	// http://ipinfo.io/developers
 	// http://jsfiddle.net/zK5FN/2/
-
 } }

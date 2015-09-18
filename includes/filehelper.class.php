@@ -1,18 +1,32 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
+
 if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper
 {
 
-	/** ---------------------------------------------------------------------------------
-						USED FUNCTIONS: Modyfy with Caution!
-	--------------------------------------------------------------------------------- **/
-
 	public static function mime( $extension )
 	{
-		switch ( $extension ) {
-			case 'xlsx' : return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-			case 'csv' : return 'text/csv';
-			case 'xml' : return 'text/xml';
-		}
+		$mimes = array(
+			'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+			'ppt'  => 'application/vnd.ms-powerpoint',
+			'doc'  => 'application/msword',
+			'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+			'xls'  => 'application/vnd.ms-excel',
+			'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+			'csv'  => 'text/csv',
+			'xml'  => 'text/xml',
+			'webm' => 'video/webm',
+			'flv'  => 'video/x-flv',
+			'ac3'  => 'audio/ac3',
+			'mpa'  => 'audio/MPA',
+			'mp4'  => 'video/mp4',
+			'mpg4' => 'video/mp4',
+			'flv'  => 'video/x-flv',
+			'svg'  => 'image/svg+xml',
+		);
+
+		if ( isset( $mimes[$extension] ) )
+			return $mimes[$extension];
+
 		return '';
 	}
 
@@ -27,13 +41,12 @@ if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper
 	// Checks if the string (filename) provided is an image URL
 	public static function is_image_url( $string )
 	{
-		$ext = self::extension( $string );
-		switch ( strtolower( $ext ) ) {
-			case 'jpg': return true;
-			case 'png': return true;
-			case 'gif': return true;
+		switch ( strtolower( self::extension( $string ) ) ) {
+			case 'jpg': return TRUE;
+			case 'png': return TRUE;
+			case 'gif': return TRUE;
 		}
-		return false;
+		return FALSE;
 	}
 
 	// FROM : edd
@@ -44,9 +57,10 @@ if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper
 		return end( $parts );
 	}
 
-	/** ---------------------------------------------------------------------------------
-									NOT USED YET
-	--------------------------------------------------------------------------------- **/
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/// NOT USED YET ---------------------------------------------------------------
 
 	// TESTED : not working very well with UTF
 	// http://www.scriptville.in/parse-csv-data-to-array/
@@ -87,19 +101,19 @@ if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper
 	// 'cp -R' written in PHP.
 	public static function copy( $path, $dest, $ds = DIRECTORY_SEPARATOR )
 	{
-		if( is_dir( $path ) ) {
+		if ( is_dir( $path ) ) {
 
 			@ mkdir( $dest );
 			$objects = scandir( $path );
 
-			if( sizeof( $objects ) > 0 ) {
+			if ( sizeof( $objects ) > 0 ) {
 
-				foreach( $objects as $file ) {
+				foreach ( $objects as $file ) {
 
-					if( $file == "." || $file == ".." )
+					if ( $file == "." || $file == ".." )
 						continue;
 
-					if( is_dir( $path.$ds.$file ) )
+					if ( is_dir( $path.$ds.$file ) )
 						self::copy( $path.$ds.$file, $dest.$ds.$file );
 					else
 						copy( $path.$ds.$file, $dest.$ds.$file );
@@ -108,13 +122,13 @@ if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper
 
 			return true;
 
-		} elseif( is_file( $path ) ) {
+		} else if ( is_file( $path ) ) {
 
 			return copy( $path, $dest );
 
 		}
 
-		return false;
+		return FALSE;
 	}
 
 	// http://www.paulund.co.uk/html5-download-attribute
@@ -125,7 +139,7 @@ if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper
 			header( 'Pragma: public' ); // required
 			header( 'Expires: 0' );	// no cache
 			header( 'Cache-Control: must-revalidate, post-check=0, pre-check=0' );
-			header( 'Cache-Control: private', false );
+			header( 'Cache-Control: private', FALSE );
 			header( 'Content-Type: '.$mime );
 			header( 'Content-Length: '.filesize( $file_path ) );
 			header( 'Content-Disposition: attachment; filename="'.basename( $file_path ).'"' );

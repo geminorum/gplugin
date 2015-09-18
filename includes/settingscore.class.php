@@ -7,25 +7,25 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 	{
 		$this->current_blog = get_current_blog_id();
 		$this->option_group = isset( $args['option_group'] ) ? $args['option_group'] : 'gpluginsettings';
-		$this->page = ( isset( $args['page'] ) && $args['page'] ? $args['page'] : 'general' );
+		$this->page         = ( isset( $args['page'] ) && $args['page'] ? $args['page'] : 'general' );
 
 		$this->constants = array_merge( array(
 			'plugin_dir'    => GPLUGIN_DIR,
 			'plugin_url'    => GPLUGIN_URL,
 			'class_filters' => 'gPluginFiltersCore',
-		), apply_filters( $this->domain.'_settings_constants', $constants ) );
+		), $constants );
 
 		$this->args = array_merge( array(
-			'plugin_class'      => false,
+			'plugin_class'      => FALSE,
 			'plugin_args'       => array(),
-			'settings_sanitize' => null, // null for default, false for disable
-			'field_callback'    => false,
-			'site_options'      => false, // site wide or blog option storing
-			'register_hook'     => false, // hook that runs on settings page load
+			'settings_sanitize' => NULL, // NULL for default, FALSE for disable
+			'field_callback'    => FALSE,
+			'site_options'      => FALSE, // site wide or blog option storing
+			'register_hook'     => FALSE, // hook that runs on settings page load
 		), $args );
 
 		$this->options = self::get_options();
-		$this->enabled = isset( $this->options['enabled'] ) ? $this->options['enabled'] : false;
+		$this->enabled = isset( $this->options['enabled'] ) ? $this->options['enabled'] : FALSE;
 
 		// for something like old gMember Restricted class
 		// when we have to initiate a plugin module if enabled option
@@ -36,12 +36,12 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 
 	public function setup_actions()
 	{
-		add_action( 'init', array( & $this, 'init_late' ), 999 );
+		add_action( 'init', array( &$this, 'init_late' ), 999 );
 
 		if ( $this->args['register_hook'] )
-			add_action( $this->args['register_hook'], array( & $this, 'register_hook' ) );
+			add_action( $this->args['register_hook'], array( &$this, 'register_hook' ) );
 		else
-			add_action( 'admin_init', array( & $this, 'register_hook' ) );
+			add_action( 'admin_init', array( &$this, 'register_hook' ) );
 	}
 
 	public function init_late()
@@ -73,7 +73,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 
 		if ( $this->args['settings_sanitize'] && is_callable( $this->args['settings_sanitize'] ) )
 			add_filter( 'sanitize_option_'.$this->option_group, $this->args['settings_sanitize'], 10, 2 );
-		else if ( false !== $this->args['settings_sanitize'] )
+		else if ( FALSE !== $this->args['settings_sanitize'] )
 			add_filter( 'sanitize_option_'.$this->option_group, array( $this, 'settings_sanitize' ), 10, 2 );
 	}
 
@@ -81,12 +81,12 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 	{
 		register_setting( $page_name, $this->option_group );  // we added the sanitization manually
 
-		$field_callback = $this->args['field_callback'] ? $this->args['field_callback'] : array( $this, 'do_settings_field' );
+		$field_callback = $this->args['field_callback'] ? $this->args['field_callback'] : array( &$this, 'do_settings_field' );
 
 		foreach ( $sections as $section_name => $section_args ) {
 			if ( 'gplugin' == $section_name )
-				add_settings_section( 'gplugin', '&nbsp;', false, $page_name );
-			else if ( false !== $section_args['title'] )
+				add_settings_section( 'gplugin', '&nbsp;', FALSE, $page_name );
+			else if ( FALSE !== $section_args['title'] )
 				add_settings_section( $section_name, $section_args['title'], $section_args['callback'],	$page_name );
 
 			foreach ( $section_args['fields'] as $field_name => $field_args )
@@ -104,33 +104,35 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 		}
 	}
 
-	public function do_settings_field( $r )
+	public function do_settings_field( $field )
 	{
 		$args = shortcode_atts( array(
 			'type'         => 'enabled',
-			'field'        => false,
+			'field'        => FALSE,
 			'values'       => array(),
-			'filter'       => false, // will use via sanitize
-			'dir'          => false,
+			'filter'       => FALSE, // will use via sanitize
+			'dir'          => FALSE,
 			'default'      => '',
 			'desc'         => '',
-			'class'        => '',
+			'field_class'  => '', // formally just class!
+			'class'        => '', // now used on wrapper
 			'label_for'    => '',
 			'option_group' => $this->option_group,
-			'rekey'        => false, // use value as key on select
-		), $r );
+			'rekey'        => FALSE, // use value as key on select
+		), $field );
 
 		if ( ! $args['field'] )
 			return;
 
-		$name = $args['option_group'].'['.esc_attr( $args['field'] ).']';
-		$id = $args['option_group'].'-'.esc_attr( $args['field'] );
+		$html = '';
+		$name  = $args['option_group'].'['.esc_attr( $args['field'] ).']';
+		$id    = $args['option_group'].'-'.esc_attr( $args['field'] );
 		$value = isset( $this->options[$args['field']] ) ? $this->options[$args['field']] : $args['default'];
 
 		switch ( $args['type'] ) {
 			case 'enabled' :
 
-				$html = gPluginFormHelper::html( 'option', array(
+				$html .= gPluginFormHelper::html( 'option', array(
 					'value'    => '0',
 					'selected' => '0' == $value,
 				), esc_html__( 'Disabled' ) );
@@ -141,41 +143,34 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 				), esc_html__( 'Enabled' ) );
 
 				echo gPluginFormHelper::html( 'select', array(
-					'class' => $args['class'],
+					'class' => $args['field_class'],
 					'name'  => $name,
 					'id'    => $id,
 				), $html );
 
-				if ( $args['desc'] )
-					echo gPluginFormHelper::html( 'p', array(
-						'class' => 'description',
-					), $args['desc'] );
-
 			break;
-
 			case 'text' :
+
+				if ( ! $args['field_class'] )
+					$args['field_class'] = 'regular-text';
+
 				echo gPluginFormHelper::html( 'input', array(
 					'type'  => 'text',
-					'class' => array( 'regular-text', 'c1ode', $args['class'] ),
+					'class' => $args['field_class'],
 					'name'  => $name,
 					'id'    => $id,
 					'value' => $value,
 					'dir'   => $args['dir'],
 				) );
 
-				if ( $args['desc'] )
-					echo gPluginFormHelper::html( 'p', array(
-						'class' => 'description',
-					), $args['desc'] );
-
 			break;
-
 			case 'checkbox' :
+
 				if ( count( $args['values'] ) ) {
-					foreach( $args['values'] as $value_name => $value_title ) {
+					foreach ( $args['values'] as $value_name => $value_title ) {
 						$html = gPluginFormHelper::html( 'input', array(
 							'type'    => 'checkbox',
-							'class'   => $args['class'],
+							'class'   => $args['field_class'],
 							'name'    => $name.'['.$value_name.']',
 							'id'      => $id.'-'.$value_name,
 							'value'   => '1',
@@ -190,7 +185,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 				} else {
 					$html = gPluginFormHelper::html( 'input', array(
 						'type'    => 'checkbox',
-						'class'   => $args['class'],
+						'class'   => $args['field_class'],
 						'name'    => $name,
 						'id'      => $id,
 						'value'   => '1',
@@ -203,17 +198,10 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 					), $html.'&nbsp;'.esc_html( $value_title ) ).'</p>';
 				}
 
-				if ( $args['desc'] )
-					echo gPluginFormHelper::html( 'p', array(
-						'class' => 'description',
-					), $args['desc'] );
-
 			break;
-
 			case 'select' :
 
-				if ( false !== $args['values'] ) { // alow hiding
-					$html = '';
+				if ( FALSE !== $args['values'] ) { // alow hiding
 					foreach ( $args['values'] as $value_name => $value_title )
 						$html .= gPluginFormHelper::html( 'option', array(
 							'value'    => ( $args['rekey'] ? $value_title : $value_name ),
@@ -221,30 +209,26 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 						), esc_html( $value_title ) );
 
 					echo gPluginFormHelper::html( 'select', array(
-						'class' => $args['class'],
+						'class' => $args['field_class'],
 						'name'  => $name,
 						'id'    => $id,
 					), $html );
-
-					if ( $args['desc'] )
-						echo gPluginFormHelper::html( 'p', array(
-							'class' => 'description',
-						), $args['desc'] );
 				}
+
 			break;
-
-
 			default :
-				echo 'Error: setting type\'s not defind';
-				if ( $args['desc'] )
-					echo gPluginFormHelper::html( 'p', array(
-						'class' => 'description',
-					), $args['desc'] );
+
+				echo 'Error: setting type not defind';
 		}
 
+		if ( $args['desc'] ) {
+			echo gPluginFormHelper::html( 'p', array(
+				'class' => 'description',
+			), $args['desc'] );
+		}
 	}
 
-	public function get( $field, $default = false )
+	public function get( $field, $default = FALSE )
 	{
 		if ( isset( $this->options[$field] ) )
 			return $this->options[$field];
@@ -252,17 +236,9 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 	}
 
 	// DEPRECATED : use get()
-	public function get_option( $field, $default = false )
+	public function get_option( $field, $default = FALSE )
 	{
 		return $this->get( $field, $default );
-	}
-
-	public function get_option_OLD( $field, $default = false )
-	{
-		$options = self::get_options();
-		if ( isset( $options[$field] ) )
-			return $options[$field];
-		return $default;
 	}
 
 	public function get_options()
@@ -275,7 +251,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 		return gPluginUtils::parse_args_r( $options, self::get_option_defaults() );
 	}
 
-	public function update_options( $options = null )
+	public function update_options( $options = NULL )
 	{
 		if ( is_null( $options ) )
 			$options = $this->options;
@@ -294,15 +270,15 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 			foreach ( $this->page as $page_name => $sections ) {
 				foreach ( $sections as $section_name => $section_args ) {
 					foreach ( $section_args['fields'] as $field_name => $field_args ) {
-						//if ( 'checkbox' == $field_args['type'] && isset( $field_args['values'] ) )
-						$defaults[$field_name] = $field_args['default'];
+						// if ( 'checkbox' == $field_args['type'] && isset( $field_args['values'] ) )
+						$defaults[$field_name] = isset( $field_args['default'] ) ? $field_args['default'] : '';
 					}
 				}
 			}
 		} else {
 			foreach ( $this->args['sections'] as $section_name => $section_args ) {
 				foreach ( $section_args['fields'] as $field_name => $field_args ) {
-					$defaults[$field_name] = $field_args['default'];
+					$defaults[$field_name] = isset( $field_args['default'] ) ? $field_args['default'] : '';
 				}
 			}
 		}
@@ -337,7 +313,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 						$output[$field] = call_user_func_array( $field_args['filter'], array( $input[$field] ) );
 
 					// disabled select
-					} else if ( isset( $field_args['values'] ) && false === $field_args['values'] ){
+				} else if ( isset( $field_args['values'] ) && FALSE === $field_args['values'] ){
 						$output[$field] = $field_args['default'];
 
 					// multiple checkboxes

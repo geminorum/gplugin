@@ -2,12 +2,89 @@
 
 if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 {
-	/** ---------------------------------------------------------------------------------
-						USED FUNCTION: Modyfy with Caution!
-	--------------------------------------------------------------------------------- **/
+
+	public static function log( $error = '{NO Error Code}', $data = array(), $wp_error = NULL )
+	{
+		if ( ! WP_DEBUG_LOG )
+			return;
+
+		$log = array_merge( array(
+			'error'   => $error,
+			'time'    => current_time( 'mysql' ),
+			'ip'      => gPluginUtils::IP(),
+			'message' => ( is_null( $wp_error ) ? '{NO WP_Error Object}' : $wp_error->get_error_message() ),
+		), $data );
+
+		error_log( print_r( $log, TRUE ) );
+	}
+
+	// this must be wp core future!!
+	// support post-thumbnails for CPT
+	// call this late on after_setup_theme
+	public static function themeThumbnails( $post_types )
+	{
+		global $_wp_theme_features;
+
+		$feature    = 'post-thumbnails';
+		$post_types = (array) $post_types;
+
+		if ( isset( $_wp_theme_features[$feature] ) ) {
+
+			// registered for all types
+			if ( TRUE === $_wp_theme_features[$feature] ) {
+
+				// WORKING: but if it is true, it's true!
+				// $post_types[] = 'post';
+				// $_wp_theme_features[$feature] = array( $post_types );
+
+			} else if ( is_array( $_wp_theme_features[$feature][0] ) ){
+				$_wp_theme_features[$feature][0] = array_merge( $_wp_theme_features[$feature][0], $post_types );
+			}
+
+		} else {
+			$_wp_theme_features[$feature] = array( $post_types );
+		}
+	}
+
+	// this must be wp core future!!
+	// core duplication with post_type & title : add_image_size()
+	public static function registerImageSize( $name, $atts = array() )
+	{
+		global $_wp_additional_image_sizes;
+
+		$args = self::atts( array(
+			'n' => 'Undefined',
+			'w' => 0,
+			'h' => 0,
+			'c' => 0,
+			'p' => array( 'post' ),
+		), $atts );
+
+		$_wp_additional_image_sizes[$name] = array(
+			'width'     => absint( $args['w'] ),
+			'height'    => absint( $args['h'] ),
+			'crop'      => $args['c'],
+			'post_type' => $args['p'],
+			'title'     => $args['n'],
+		);
+	}
+
+	// DEPRECATED: use: gPluginWPHelper::registerImageSize()
+	// core duplication with post_type : add_image_size()
+	public static function addImageSize( $name, $width = 0, $height = 0, $crop = FALSE, $post_type = array( 'post' ) )
+	{
+		global $_wp_additional_image_sizes;
+
+		$_wp_additional_image_sizes[ $name ] = array(
+			'width'     => absint( $width ),
+			'height'    => absint( $height ),
+			'crop'      => $crop,
+			'post_type' => $post_type,
+		);
+	}
 
 	// FROM: gEditorialHelper
-	public static function getPostIDbySlug( $slug, $post_type, $url = false )
+	public static function getPostIDbySlug( $slug, $post_type, $url = FALSE )
 	{
 		global $wpdb;
 
@@ -27,38 +104,38 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 		if ( is_array( $post_id ) )
 			return $post_id[0];
 
-		elseif ( ! empty( $post_id ) )
+		else if ( ! empty( $post_id ) )
 			return $post_id;
 
-		return false;
+		return FALSE;
 	}
 
-	// Checks for the current post type
-	// FROM: EditFlow 0.7
-	// @return string|null $post_type The post type we've found, or null if no post type
 	public static function getCurrentPostType()
 	{
 		global $post, $typenow, $pagenow, $current_screen;
 
 		if ( $post && $post->post_type )
-			$post_type = $post->post_type;
-		elseif ( $typenow )
-			$post_type = $typenow;
-		elseif ( $current_screen && isset( $current_screen->post_type ) )
-			$post_type = $current_screen->post_type;
-		elseif ( isset( $_REQUEST['post_type'] ) )
-			$post_type = sanitize_key( $_REQUEST['post_type'] );
-		else
-			$post_type = null;
+			return $post->post_type;
 
-		return $post_type;
+		if ( $typenow )
+			return $typenow;
+
+		if ( $current_screen && isset( $current_screen->post_type ) )
+			return $current_screen->post_type;
+
+		if ( isset( $_REQUEST['post_type'] ) )
+			return sanitize_key( $_REQUEST['post_type'] );
+
+		return NULL;
 	}
 
-	public static function notice( $notice, $class = 'updated fade', $echo = true )
+	public static function notice( $notice, $class = 'updated fade', $echo = TRUE )
 	{
-		$html = sprintf( '<div id="message" class="%s"><p>%s</p></div>', $class, $notice );
+		$html = sprintf( '<div id="message" class="%s notice is-dismissible"><p>%s</p></div>', $class, $notice );
+
 		if ( ! $echo )
 			return $html;
+
 		echo $html;
 	}
 
@@ -74,7 +151,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 
 	// http://kovshenin.com/2011/attachments-filename-and-directory-in-wordpress/
 	// an absolute path (filesystem path, not URL) to the location of your attachment file.
-	public static function get_attachmnet_path( $post_id, $uploads = null )
+	public static function get_attachmnet_path( $post_id, $uploads = NULL )
 	{
 		if ( is_null( $uploads ) )
 			$uploads = wp_upload_dir();
@@ -87,9 +164,9 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 	/**
 	 * @param int $id Optional. Post ID.
 	 * @param string $more_link_text Optional. Content for when there is more text.
-	 * @param bool $stripteaser Optional. Strip teaser content before the more text. Default is false.
+	 * @param bool $stripteaser Optional. Strip teaser content before the more text. Default is FALSE.
 	 */
-	public static function the_content_by_id( $post_id = 0, $more_link_text = null, $stripteaser = false )
+	public static function the_content_by_id( $post_id = 0, $more_link_text = NULL, $stripteaser = FALSE )
 	{
 		global $post;
 		$post = get_post( $post_id );
@@ -152,30 +229,30 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 	public static function isDebug()
 	{
 		if ( WP_DEBUG && WP_DEBUG_DISPLAY && ! self::isDev() )
-			return true;
+			return TRUE;
 
-		return false;
+		return FALSE;
 	}
 
 	public static function isDev()
 	{
 		if ( defined( 'WP_STAGE' )
 			&& 'development' == constant( 'WP_STAGE' ) )
-				return true;
+				return TRUE;
 
-		return false;
+		return FALSE;
 	}
 
 	// TODO: use nonce
 	public static function isFlush()
 	{
 		if ( isset( $_GET['flush'] ) )
-			return true;
+			return TRUE;
 
 		if ( defined( 'GTHEME_FLUSH' ) && GTHEME_FLUSH )
-			return true;
+			return TRUE;
 
-		return false;
+		return FALSE;
 	}
 
 	// DEPRECATED
@@ -184,9 +261,9 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 	public static function is_debug()
 	{
 		if ( WP_DEBUG && WP_DEBUG_DISPLAY && ! self::is_dev() )
-			return true;
+			return TRUE;
 
-		return false;
+		return FALSE;
 	}
 
 	// DEPRECATED
@@ -196,9 +273,9 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 	{
 		if ( defined( 'WP_STAGE' )
 			&& 'development' == constant( 'WP_STAGE' ) )
-				return true;
+				return TRUE;
 
-		return false;
+		return FALSE;
 	}
 
 	// FROM: EDD
@@ -208,11 +285,11 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 		//return apply_filters( 'edd_is_caching_plugin_active', $caching );
 	}
 
-	public static function getUserRols( $object = false )
+	public static function getUserRols( $object = FALSE )
 	{
 		$roles = ( $object ? new stdClass : array() );
 		$wp_roles = get_editable_roles();
-		foreach( $wp_roles as $role_name => $role )
+		foreach ( $wp_roles as $role_name => $role )
 			if ( $object )
 				$roles->{$role_name} = translate_user_role( $role['name'] );
 			else
@@ -221,7 +298,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 	}
 
 	// Originally From : http://wp.tutsplus.com/tutorials/creative-coding/add-a-custom-column-in-posts-and-custom-post-types-admin-screen/
-	public static function get_featured_image_src( $post_id, $size = 'thumbnail', $default = false )
+	public static function get_featured_image_src( $post_id, $size = 'thumbnail', $default = FALSE )
 	{
 		$post_thumbnail_id = get_post_thumbnail_id( $post_id );
 		if ( $post_thumbnail_id ) {
@@ -231,9 +308,15 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 		return $default;
 	}
 
-	public static function get_user_edit_link( $user_ID )
+	public static function getUserEditLink( $user_ID )
 	{
 		return add_query_arg( 'wp_http_referer', urlencode( stripslashes( $_SERVER['REQUEST_URI'] ) ), 'user-edit.php?user_id='.$user_ID );
+	}
+
+	// DEPRECATED: use : gPluginWPHelper::getUserEditLink();
+	public static function get_user_edit_link( $user_ID )
+	{
+		return self::getUserEditLink( $user_ID );
 	}
 
 	// https://gist.github.com/boonebgorges/4165099
@@ -270,7 +353,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 		return $url;
 	}
 
-	function redirect_whitelist( $request_uri = null )
+	function redirect_whitelist( $request_uri = NULL )
 	{
 		if ( is_null( $request_uri ) )
 			$request_uri = $_SERVER['REQUEST_URI'];
@@ -284,19 +367,19 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 		) );
 	}
 
-
-	/** ---------------------------------------------------------------------------------
-									NOT USED YET
-	--------------------------------------------------------------------------------- **/
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/// NOT USED YET ---------------------------------------------------------------
 
 	// img : spinner / wpspin_light
-	public static function imgSpin( $img = 'spinner', $large = false  )
+	public static function imgSpin( $img = 'spinner', $large = FALSE  )
 	{
 		return esc_url( admin_url( 'images/'.$img.( $large ? '-2x' : '' ).'.gif' ) );
 	}
 
 	// based on bp
-	public static function username_from_email( $email, $strict = true )
+	public static function username_from_email( $email, $strict = TRUE )
 	{
 		return preg_replace( '/\s+/', '', sanitize_user( preg_replace( '/([^@]*).*/', '$1', $email ), $strict ) );
 	}
@@ -315,7 +398,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 
 	// http://tommcfarlin.com/save-custom-post-meta/
 	// https://gist.github.com/tommcfarlin/4468321
-	// if( user_can_save( $post_id, 'meta_data_nonce' ) )
+	// if ( user_can_save( $post_id, 'meta_data_nonce' ) )
 	/**
 	* An example function used to demonstrate how to use the `user_can_save` function
 	* that provides boilerplate security checks when saving custom post meta data.
@@ -353,26 +436,26 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 	function is_plugin_active_for_network( $plugin )
 	{
 		if ( ! is_multisite() )
-			return false;
+			return FALSE;
 
 		$plugins = get_site_option( 'active_sitewide_plugins' );
 		if ( isset( $plugins[$plugin] ) )
-			return true;
+			return TRUE;
 
-		return false;
+		return FALSE;
 	}
 
 	// NOT WORKING!!!! ON ADMIN
 	// http://kovshenin.com/2012/current-url-in-wordpress/
 	// http://www.stephenharris.info/2012/how-to-get-the-current-url-in-wordpress/
-	function getCurrentURL( $trailingslashit = false )
+	function getCurrentURL( $trailingslashit = FALSE )
 	{
 		global $wp;
 
 		if ( is_admin() )
 			$current_url = add_query_arg( $wp->query_string, '', home_url( $wp->request ) );
 		else
-			$current_url = home_url( add_query_arg( array(), ( empty( $wp->request ) ? false : $wp->request ) ) );
+			$current_url = home_url( add_query_arg( array(), ( empty( $wp->request ) ? FALSE : $wp->request ) ) );
 
 		if ( $trailingslashit )
 			return trailingslashit( $current_url );
@@ -391,7 +474,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 	// So here is a quick function I came up with to find it.
 	function get_blog_url()
 	{
-		if( $posts_page_id = get_option( 'page_for_posts' ) ){
+		if ( $posts_page_id = get_option( 'page_for_posts' ) ){
 			return home_url( get_page_uri( $posts_page_id ) );
 		} else {
 			return home_url();
@@ -425,7 +508,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 			//echo '</strong></p></div>';
 			return $update->update->new_version;
 		}
-		return false;
+		return FALSE;
 	}
 
 	// Originally from : http://wordpress.org/extend/plugins/kimili-flash-embed/
@@ -446,7 +529,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 	}
 
 	// UNFINISHED!!
-	function hashify( $text, $callback = false )
+	function hashify( $text, $callback = FALSE )
 	{
 		// http://stackoverflow.com/a/7408417/642752
 		// Assuming your strings are common CSS names (alphanumeric + dash)
@@ -457,7 +540,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 	}
 
 	// UNFINISHED!!
-	function mentionify( $text, $callback = false )
+	function mentionify( $text, $callback = FALSE )
 	{
 		// http://stackoverflow.com/a/10384173/642752
 		// $text = preg_replace('/@([^@ ]+)/', '<a href="/$1">@$1</a> ', $text );
@@ -479,7 +562,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 
 
 	// adapt!
-	public static function getUsers( $all_fields = false )
+	public static function getUsers( $all_fields = FALSE )
 	{
 		$users = get_users( array(
 			'blog_id' => '', // TODO : add option to include entire network users / what if it changes and then the stored user id points to ???

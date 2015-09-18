@@ -1,13 +1,13 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
-//if ( ! defined( 'GTERMMETA_DB_VERSION' ) ) define( 'GTERMMETA_DB_VERSION', '1' );
-//if ( ! defined( 'GTERMMETA_FILE' ) ) define( 'GTERMMETA_FILE', constant( 'GPEOPLE_FILE' ) );
+// if ( ! defined( 'GTERMMETA_DB_VERSION' ) ) define( 'GTERMMETA_DB_VERSION', '1' );
+// if ( ! defined( 'GTERMMETA_FILE' ) ) define( 'GTERMMETA_FILE', constant( 'GPEOPLE_FILE' ) );
+
+// Based on Simple Term Meta by Jacob M Goldman
+// http://www.cmurrayconsulting.com/software/wordpress-simple-term-meta/
 
 if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPluginClassCore
 {
-	/*
-	 * Based on Simple Term Meta by Jacob M Goldman : http://www.cmurrayconsulting.com/software/wordpress-simple-term-meta/
-	 */
 
 	public function setup_globals( $constants = array(), $args = array() )
 	{
@@ -37,7 +37,7 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
 		global $wpdb;
 		$table_name = $wpdb->prefix.'termmeta';
 
-		if( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) != $table_name ) :
+		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) != $table_name ) :
 
 			$sql = "CREATE TABLE ".$table_name." (
 			meta_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -95,7 +95,7 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
 	* @param bool $unique Optional, default is false. Whether the same key should not be added.
 	* @return bool False for failure. True for success.
 	*/
-	public static function add_term_meta( $term_id, $meta_key, $meta_value, $unique = false )
+	public static function add_term_meta( $term_id, $meta_key, $meta_value, $unique = FALSE )
 	{
 		return add_metadata( 'term', $term_id, $meta_key, $meta_value, $unique );
 	}
@@ -126,7 +126,7 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
 	* @return mixed Will be an array if $single is false. Will be value of meta data field if $single
 	*  is true.
 	*/
-	public static function get_term_meta( $term_id, $key, $single = false )
+	public static function get_term_meta( $term_id, $key, $single = FALSE )
 	{
 		return get_metadata( 'term', $term_id, $key, $single );
 	}
@@ -158,24 +158,32 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
 	*/
 	public static function delete_term_meta_by_key( $term_meta_key )
 	{
-		if ( !$term_meta_key )
-			return false;
+		if ( ! $term_meta_key )
+			return FALSE;
 
 		global $wpdb;
+
 		$term_ids = $wpdb->get_col($wpdb->prepare("SELECT DISTINCT term_id FROM $wpdb->termmeta WHERE meta_key = %s", $term_meta_key));
+
 		if ( $term_ids ) {
+
 			$termmetaids = $wpdb->get_col( $wpdb->prepare( "SELECT meta_id FROM $wpdb->termmeta WHERE meta_key = %s", $term_meta_key ) );
+
 			$in = implode( ',', array_fill(1, count($termmetaids), '%d'));
+
 			do_action( 'delete_termmeta', $termmetaids );
+
 			$wpdb->query( $wpdb->prepare("DELETE FROM $wpdb->termmeta WHERE meta_id IN($in)", $termmetaids ));
+
 			do_action( 'deleted_termmeta', $termmetaids );
+
 			foreach ( $term_ids as $term_id )
 				wp_cache_delete($term_id, 'term_meta');
-			return true;
-		}
-		return false;
-	}
 
+			return TRUE;
+		}
+		return FALSE;
+	}
 
 	/**
 	* Retrieve term meta fields, based on term ID.
@@ -196,7 +204,6 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
 
 		return wp_cache_get( $term_id, 'term_meta' );
 	}
-
 
 	/**
 	* Retrieve meta field names for a term.
@@ -230,17 +237,17 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
 	public static function get_term_custom_values( $key = '', $term_id )
 	{
 		if ( !$key )
-			return null;
+			return NULL;
 
 		$custom = self::get_term_custom($term_id);
-		return isset( $custom[$key] ) ? $custom[$key] : null;
+		return isset( $custom[$key] ) ? $custom[$key] : NULL;
 	}
 } }
 
 if ( ! function_exists( 'update_termmeta_cache' ) ) : function update_termmeta_cache( $term_ids ) { return gPluginTermMeta::update_termmeta_cache( $term_ids ); } endif;
-if ( ! function_exists( 'add_term_meta' ) ) : function add_term_meta( $term_id, $meta_key, $meta_value, $unique = false ) { return gPluginTermMeta::add_term_meta( $term_id, $meta_key, $meta_value, $unique ); } endif;
+if ( ! function_exists( 'add_term_meta' ) ) : function add_term_meta( $term_id, $meta_key, $meta_value, $unique = FALSE ) { return gPluginTermMeta::add_term_meta( $term_id, $meta_key, $meta_value, $unique ); } endif;
 if ( ! function_exists( 'delete_term_meta' ) ) : function delete_term_meta( $term_id, $meta_key, $meta_value = '' ) { return gPluginTermMeta::delete_term_meta( $term_id, $meta_key, $meta_value ); } endif;
-if ( ! function_exists( 'get_term_meta' ) ) : function get_term_meta( $term_id, $key, $single = false ) { return gPluginTermMeta::get_term_meta( $term_id, $key, $single ); } endif;
+if ( ! function_exists( 'get_term_meta' ) ) : function get_term_meta( $term_id, $key, $single = FALSE ) { return gPluginTermMeta::get_term_meta( $term_id, $key, $single ); } endif;
 if ( ! function_exists( 'update_term_meta' ) ) : function update_term_meta( $term_id, $meta_key, $meta_value, $prev_value = '' ) { return gPluginTermMeta::update_term_meta( $term_id, $meta_key, $meta_value, $prev_value ); } endif;
 if ( ! function_exists( 'delete_term_meta_by_key' ) ) : function delete_term_meta_by_key( $term_meta_key ) { return gPluginTermMeta::delete_term_meta_by_key( $term_meta_key ); } endif;
 if ( ! function_exists( 'get_term_custom' ) ) : function get_term_custom( $term_id ) { return gPluginTermMeta::get_term_custom( $term_id ); } endif;

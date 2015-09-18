@@ -3,10 +3,6 @@
 if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 {
 
-	/** ---------------------------------------------------------------------------------
-						USED FUNCTION: Modyfy with Caution!
-	--------------------------------------------------------------------------------- **/
-
 	public static function IP()
 	{
 		if ( getenv( 'HTTP_CLIENT_IP' ) )
@@ -27,6 +23,12 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 		return $_SERVER['REMOTE_ADDR'];
 	}
 
+	// DEPRECATED: use: gPluginUtils::IP()
+	public static function getIP()
+	{
+		return self::IP();
+	}
+
 	public static function roundArray( $array, $precision = -3, $mode = PHP_ROUND_HALF_UP )
 	{
 		$new = array();
@@ -35,22 +37,22 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 		return $new;
 	}
 
-	public static function dump( & $var, $htmlSafe = true )
+	public static function dump( & $var, $htmlSafe = TRUE )
 	{
-		$result = var_export( $var, true );
+		$result = var_export( $var, TRUE );
 		echo '<pre dir="ltr" style="text-align:left;direction:ltr;">'.( $htmlSafe ? htmlspecialchars( $result ) : $result).'</pre>';
 	}
 
-	public static function dump_get( & $var, $htmlSafe = true )
+	public static function dump_get( & $var, $htmlSafe = TRUE )
 	{
-		$result = var_export( $var, true );
+		$result = var_export( $var, TRUE );
 		return '<pre dir="ltr" style="text-align:left;direction:ltr;">'.( $htmlSafe ? htmlspecialchars( $result ) : $result).'</pre>';
 	}
 
 
-	function dump_n( $var, $htmlSafe = true )
+	public static function dump_n( $var, $htmlSafe = TRUE )
 	{
-		$result = var_export( $var, true );
+		$result = var_export( $var, TRUE );
 		echo '<pre dir="ltr" style="text-align:left;direction:ltr;">'.( $htmlSafe ? htmlspecialchars( $result ) : $result).'</pre>';
 	}
 
@@ -85,32 +87,15 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 
 	public static function strpos_arr( $haystack, $needle )
 	{
-		if( ! is_array( $needle ) )
+		if ( ! is_array( $needle ) )
 			$needle = array( $needle );
 
-		foreach( $needle as $what )
-			if( ( $pos = strpos( $haystack, $what ) ) !==false )
+		foreach ( $needle as $what )
+			if ( FALSE !== ( $pos = strpos( $haystack, $what ) ) )
 				return $pos;
-		return false;
+
+		return FALSE;
 	}
-
-	// Originally from : http://wordpress.org/plugins/easy-digital-downloads/
-	public static function getIP()
-	{
-		if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
-			//check ip from share internet
-		  $ip = $_SERVER['HTTP_CLIENT_IP'];
-		} elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
-			//to check ip is pass from proxy
-		  $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-		} else {
-		  $ip = $_SERVER['REMOTE_ADDR'];
-		}
-		//return apply_filters( 'edd_get_ip', $ip );
-		return $ip;
-	}
-
-
 
 	// http://teleogistic.net/2013/05/a-recursive-sorta-version-of-wp_parse_args/
 	// https://gist.github.com/boonebgorges/5510970
@@ -161,7 +146,7 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 	{
 		if ( is_object( $args ) )
 			$r = get_object_vars( $args );
-		elseif ( is_array( $args ) )
+		else if ( is_array( $args ) )
 			$r =& $args;
 		else
 			self::parse_str( $args, $r );
@@ -187,31 +172,32 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 	{
 		if ( is_array( $value ) ) {
 			$value = array_map( array( __CLASS__, 'stripslashes_deep' ), $value );
-		} elseif ( is_object( $value ) ) {
+		} else if ( is_object( $value ) ) {
 			$vars = get_object_vars( $value );
 			foreach ( $vars as $key => $data ) {
 				$value->{$key} = self::stripslashes_deep( $data );
 			}
-		} elseif ( is_string( $value ) ) {
+		} else if ( is_string( $value ) ) {
 			$value = stripslashes( $value );
 		}
 
 		return $value;
 	}
 
-	/** ---------------------------------------------------------------------------------
-									NOT USED YET
-	--------------------------------------------------------------------------------- **/
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/// NOT USED YET ---------------------------------------------------------------
 
 	// http://php.net/manual/en/function.array-key-exists.php#77848
-	// example : if(array_key_exists_r('login|user|passwd',$_GET)) {
+	// example : if (array_key_exists_r('login|user|passwd',$_GET)) {
 	public static function array_key_exists_r( $keys, $search_r )
 	{
-		$keys_r = split('\|',$keys);
-		foreach($keys_r as $key)
-			if(!array_key_exists($key,$search_r))
-				return false;
-		return true;
+		$keys_r = split( '\|',$keys );
+		foreach ( $keys_r as $key )
+			if ( ! array_key_exists($key,$search_r) )
+				return FALSE;
+		return TRUE;
 	}
 
 	// http://stackoverflow.com/a/17620260
@@ -220,7 +206,7 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 		foreach ( $array as $k => $val )
 			if ( $val[$key] == $value )
 				return $k;
-		return null;
+		return NULL;
 	}
 
 	// http://stackoverflow.com/a/15031805
@@ -283,7 +269,6 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 		return 'data: '.( function_exists( 'mime_content_type' ) ? mime_content_type( $image ) : $mime ).';base64,'.base64_encode( file_get_contents( $image ) );
 	}
 
-
 	// recursively sort multidimentional arrays by key
 	// http://www.php.net/manual/en/function.ksort.php#105399
 	public static function deep_ksort( & $arr )
@@ -318,11 +303,9 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
 	// CAUTION : not on big arrays
 	public static function array_unshift_assoc( &$arr, $key, $val )
 	{
-		$arr = array_reverse( $arr, true );
+		$arr = array_reverse( $arr, TRUE );
 		$arr[$key] = $val;
-		$arr = array_reverse( $arr, true );
+		$arr = array_reverse( $arr, TRUE );
 		return count( $arr );
 	}
-
-}
-}
+} }

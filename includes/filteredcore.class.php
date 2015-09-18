@@ -7,13 +7,12 @@ if ( ! class_exists( 'gPluginFilteredCore' ) ) { class gPluginFilteredCore exten
 	{
 		$this->args = gPluginUtils::parse_args_r( $args, array(
 			'domain'        => 'gplugin',
-			'title'         => __( 'gPlugin Network', GPLUGIN_TEXTDOMAIN ),
-			'filter_prefix' => false,
+			'title'         => 'gPlugin',
+			'filter_prefix' => FALSE,
 		) );
 
-		if ( false === $this->args['filter_prefix'] )
+		if ( FALSE === $this->args['filter_prefix'] )
 			$this->inject( 'args', array( 'filter_prefix' => $this->args['domain'] ) );
-
 
 		$this->constants = gPluginUtils::parse_args_r( $constants, array(
 			'plugin_dir' => GPLUGIN_DIR,
@@ -25,11 +24,9 @@ if ( ! class_exists( 'gPluginFilteredCore' ) ) { class gPluginFilteredCore exten
 
 	public function get( $group, $fallback = array() )
 	{
-		//echo( $group).'<br />';
-
 		if ( isset( $this->filtered[$group] )
 			&& count( $this->filtered[$group] ) )
-			return $this->filtered[$group];
+				return $this->filtered[$group];
 
 		if ( ! method_exists( $this, $group ) ) {
 			if ( ! count( $fallback ) )
@@ -40,25 +37,37 @@ if ( ! class_exists( 'gPluginFilteredCore' ) ) { class gPluginFilteredCore exten
 		$group_defaults = call_user_func( array( $this, $group ) );
 		$this->inject( 'filtered', array( $group => apply_filters( $this->args['filter_prefix'].'_'.$group, $group_defaults ) ) );
 
-		//if ( $group == 'remote_support_post_types' )
-			//gnetwork_dump($group_defaults);
-
 		return $this->filtered[$group];
+	}
+
+	// helper
+	public static function error( $message )
+	{
+		return gPluginWPHelper::notice( $message, 'error fade', FALSE );
+	}
+
+	// helper
+	public static function updated( $message )
+	{
+		return gPluginWPHelper::notice( $message, 'updated fade', FALSE );
 	}
 
 	// gPlugin default group filters
 
-	//public function admin_settings_subs() { return array(); }
-	//public function admin_settings_messages() { return array(); }
-	//public function root_settings_subs() { return array(); }
-	//public function root_settings_messages() { return array(); }
-	//public function remote_settings_subs() { return array(); }
-	//public function remote_settings_messages() { return array(); }
-	//public function network_settings_subs() { return array(); }
-	//public function network_settings_messages() { return array(); }
+	// protected function admin_settings_subs() { return array(); }
+	// protected function admin_settings_messages() { return array(); }
+	// protected function root_settings_subs() { return array(); }
+	// protected function root_settings_messages() { return array(); }
+	// protected function remote_settings_subs() { return array(); }
+	// protected function remote_settings_messages() { return array(); }
+	// protected function network_settings_subs() { return array(); }
+	// protected function network_settings_messages() { return array(); }
 
-	//public function network_settings_args() { return array(); }
-	//public function component_settings_args() { return array(); }
-	//public function module_settings_args() { return array(); }
+	// protected function network_settings_args() { return array(); }
+	// protected function component_settings_args() { return array(); }
+	// protected function module_settings_args() { return array(); }
 
+	// protected function root_settings_titles() { return array(); }
+	// protected function remote_settings_titles() { return array(); }
+	// protected function network_settings_titles() { return array(); }
 } }

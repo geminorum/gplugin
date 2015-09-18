@@ -3,46 +3,37 @@
 if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper
 {
 
-	public static function hideIf( $print = true )
+	public static function hideIf( $print = TRUE )
 	{
 		if ( $print )
 			echo ' style="display:none;"';
 	}
 
-	// DEPRECATED : use gPluginFormHelper::headerNav()
-	public static function wpSettingsHeaderNav( $settings_uri = '', $active = '', $sub_pages = array(), $class_prefix = 'nav-tab-', $tag = 'h3' )
+	// FIXME: DEPRECATED : use gPluginFormHelper::headerNav()
+	public static function wpSettingsHeaderNav( $settings_uri = '', $active = '', $sub_pages = array(), $class_prefix = 'nav-tab-', $tag = 'h2' )
 	{
-		if ( ! count( $sub_pages ) )
-			return;
-
-		echo '<'.$tag.' class="nav-tab-wrapper">';
-			foreach ( $sub_pages as $page_slug => $sub_page ) {
-				?><a href="<?php echo esc_url( add_query_arg( 'sub', $page_slug, $settings_uri ) ); ?>"
-					class="nav-tab <?php echo $class_prefix.$page_slug.( $page_slug == $active ? ' nav-tab-active' : '' ); ?>">
-					<?php echo esc_html( $sub_page ); ?></a> <?php
-			}
-		echo '</'.$tag.'>';
+		self::headerNav( $settings_uri, $active, $sub_pages, $class_prefix, $tag );
 	}
 
-	public static function headerNav( $settings_uri = '', $active = '', $sub_pages = array(), $class_prefix = 'nav-tab-', $tag = 'h3' )
+	public static function headerNav( $uri = '', $active = '', $subs = array(), $prefix = 'nav-tab-', $tag = 'h2' )
 	{
-		if ( ! count( $sub_pages ) )
+		if ( ! count( $subs ) )
 			return;
 
 		$html = '';
 
-		foreach ( $sub_pages as $page_slug => $sub_page )
+		foreach ( $subs as $slug => $page )
 			$html .= self::html( 'a', array(
-				'class' => 'nav-tab '.$class_prefix.$page_slug.( $page_slug == $active ? ' nav-tab-active' : '' ),
-				'href'  => add_query_arg( 'sub', $page_slug, $settings_uri ),
-			), esc_html( $sub_page ) );
+				'class' => 'nav-tab '.$prefix.$slug.( $slug == $active ? ' nav-tab-active' : '' ),
+				'href'  => add_query_arg( 'sub', $slug, $uri ),
+			), $page );
 
 		echo self::html( $tag, array(
 			'class' => 'nav-tab-wrapper',
 		), $html );
 	}
 
-	public static function headerTabs( $tabs, $active = 'manual', $class_prefix = 'nav-tab-', $tag = 'h3' )
+	public static function headerTabs( $tabs, $active = 'manual', $prefix = 'nav-tab-', $tag = 'h2' )
 	{
 		if ( ! count( $tabs ) )
 			return;
@@ -51,11 +42,11 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper
 
 		foreach ( $tabs as $tab => $title )
 			$html .= self::html( 'a', array(
-				'class'    => 'nav-tab '.$class_prefix.$tab.( $tab == $active ? ' nav-tab-active' : '' ),
+				'class'    => 'nav-tab '.$prefix.$tab.( $tab == $active ? ' nav-tab-active' : '' ),
 				'href'     => '#',
-				'rel'      => $tab, // back comp
 				'data-tab' => $tab,
-			), esc_html( $title ) );
+				'rel'      => $tab, // back comp
+			), $title );
 
 		echo self::html( $tag, array(
 			'class' => 'nav-tab-wrapper',
@@ -63,73 +54,94 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper
 	}
 
 	// DEPRECATED: use gPluginFormHelper::headerTabs()
-	public static function wpNavTabs( $tabs, $active = 'manual', $class_prefix = 'nav-tab-', $tag = 'h3' )
+	public static function wpNavTabs( $tabs, $active = 'manual', $class_prefix = 'nav-tab-', $tag = 'h2' )
 	{
 		echo '<'.$tag.' class="nav-tab-wrapper">';
-		foreach( $tabs as $tab => $title )
+		foreach ( $tabs as $tab => $title )
 			echo '<a href="#" class="nav-tab '.$class_prefix.$tab.( $active == $tab ? ' nav-tab-active' : '' ).'" rel="'.$tab.'" >'.$title.'</a>';
 		echo '</'.$tag.'>';
 	}
 
-	public static function linkStyleSheet( $url, $version = GPLUGIN_VERSION, $media = false )
+	public static function linkStyleSheet( $url, $version = GPLUGIN_VERSION, $media = FALSE )
 	{
 		echo "\t".self::html( 'link', array(
-			'rel' => 'stylesheet',
-			'href' => add_query_arg( 'ver', $version, $url ),
-			'type' => 'text/css',
+			'rel'   => 'stylesheet',
+			'href'  => add_query_arg( 'ver', $version, $url ),
+			'type'  => 'text/css',
 			'media' => $media,
 		) )."\n";
 	}
 
-	private static function _tag_open( $tag, $atts, $content = true )
+	private static function _tag_open( $tag, $atts, $content = TRUE )
 	{
 		$html = '<'.$tag;
-		foreach( $atts as $key => $att ) {
 
-			if ( is_array( $att ) && count( $att ) )
-				$att = implode( ' ', array_unique( $att ) );
+		foreach ( $atts as $key => $att ) {
+
+			if ( is_array( $att ) && count( $att ) ) {
+
+				if ( 'data' == $key ) {
+					foreach ( $att as $data_key => $data_val ) {
+						if ( is_array( $data_val ) )
+							$html .= ' data-'.$data_key.'=\''.json_encode( $data_val ).'\'';
+						else
+							$html .= ' data-'.$data_key.'="'.esc_attr( $data_val ).'"';
+					}
+					continue;
+
+				} else {
+					$att = implode( ' ', array_unique( $att ) );
+				}
+			}
 
 			if ( 'selected' == $key )
-				$att = ( $att ? 'selected' : false );
+				$att = ( $att ? 'selected' : FALSE );
 
 			if ( 'checked' == $key )
-				$att = ( $att ? 'checked' : false );
+				$att = ( $att ? 'checked' : FALSE );
 
 			if ( 'readonly' == $key )
-				$att = ( $att ? 'readonly' : false );
+				$att = ( $att ? 'readonly' : FALSE );
 
 			if ( 'disabled' == $key )
-				$att = ( $att ? 'disabled' : false );
+				$att = ( $att ? 'disabled' : FALSE );
 
-			if ( false === $att )
+			if ( FALSE === $att )
 				continue;
 
 			if ( 'class' == $key )
-				//$att = sanitize_html_class( $att, false );
+				//$att = sanitize_html_class( $att, FALSE );
 				$att = $att;
+
 			else if ( 'href' == $key && '#' != $att )
 				$att = esc_url( $att );
+
 			else if ( 'src' == $key )
 				$att = esc_url( $att );
-			//else if ( 'input' == $tag && 'value' == $key )
-				//$att = $att;
+
+			// else if ( 'input' == $tag && 'value' == $key )
+			// 	$att = $att;
+
 			else
 				$att = esc_attr( $att );
 
 			$html .= ' '.$key.'="'.$att.'"';
 		}
 
-		if ( false === $content )
+		if ( FALSE === $content )
 			return $html.' />';
 
 		return $html.'>';
 	}
 
-	public static function html( $tag, $atts = array(), $content = false, $sep = '' )
+	public static function html( $tag, $atts = array(), $content = FALSE, $sep = '' )
 	{
-		$html = self::_tag_open( $tag, $atts, $content );
+		if ( is_array( $atts ) )
+			$html = self::_tag_open( $tag, $atts, $content );
+		else
+			return '<'.$tag.'>'.$atts.'</'.$tag.'>'.$sep;
 
-		if ( false === $content )
+		if ( FALSE === $content )
 			return $html.$sep;
 
 		if ( is_null( $content ) )
@@ -138,64 +150,21 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper
 		return $html.$content.'</'.$tag.'>'.$sep;
 	}
 
-	function html_OLD( $tag, $atts = array(), $content = false )
+	public static function select( $list, $atts = array(), $selected = 0, $prop = FALSE, $none = FALSE, $none_val = 0 )
 	{
-		$html = '<'.$tag;
+		$html = self::_tag_open( 'select', $atts, TRUE );
 
-		foreach( $atts as $key => $att )
-			$html .= ' '.$key.'="'.$att.'"';
-
-		if ( false === $content )
-			return $html.' />';
-		else
-			$html .= '>';
-
-		if ( is_null( $content ) )
-			return $html.'</'.$tag.'>';
-
-		return $html.$content.'</'.$tag.'>';
-	}
-
-	public static function select( $list, $atts = array(), $selected = 0, $prop = false, $none = false, $none_val = 0 )
-	{
-		$html = self::_tag_open( 'select', $atts, true );
 		if ( $none )
-			$html .= '<option value="'.$none_val.'" '.selected( $selected, $none_val, false ).'>'.esc_html( $none ).'</option>';
-		foreach( $list as $key => $item )
-			$html .= '<option value="'.$key.'" '.selected( $selected, $key, false ).'>'
+			$html .= '<option value="'.$none_val.'" '.selected( $selected, $none_val, FALSE ).'>'.esc_html( $none ).'</option>';
+
+		foreach ( $list as $key => $item )
+			$html .= '<option value="'.$key.'" '.selected( $selected, $key, FALSE ).'>'
 				.esc_html( ( $prop ? $item[$prop] : $item ) ).'</option>';
+
 		return $html.'</select>';
 	}
 
-	//must dep
-	function prepareFieldOLD( $field, $saved, $name, $prefix, $ref = false, $context = 'admin' )
-	{
-		if ( ! isset( $field['type'] ) )
-			return array();
-
-		switch( $field['type'] ) {
-			case 'link' :
-				if ( isset( $field['ref'] ) && 'term' == $field['ref'] && $ref )
-					return '<a href="'.($context).'" id="'.$prefix.$name.'" name="'.$prefix.$name.'" >'.$ref->name.'</a>';
-			break;
-			case 'delete' :
-				return '<span class="field-delete gpeople-icon" id="'.$prefix.$name.'" name="'.$prefix.$name.'" title="'.$field['title'].'"></span>';
-			break;
-			case 'textarea' :
-				return '<textarea id="'.$prefix.$name.'" name="'.$prefix.$name.'" placeholder="'.$field['title'].'">'.( isset( $saved[$name] ) ? esc_textarea( $saved[$name] ) : '' ).'</textarea>';
-			break;
-			case 'select' :
-				return self::dropdown( $field['values'], $prefix.$name, false, (  isset( $saved[$name] ) ? $saved[$name] : '0' ), $field['none_title'], $field['none_value'] );
-			break;
-			default :
-			case 'text' :
-				return '<input type="text" id="'.$prefix.$name.'" name="'.$prefix.$name.'" placeholder="'.$field['title'].'" class="regular-text textInput" value="'.( isset( $saved[$name] ) ? esc_attr( $saved[$name] ) : '' ).'" />';
-			break;
-		}
-		return array();
-	}
-
-	//must dep
+	// must dep
 	function getFieldTitle( $column )
 	{
 		if ( isset( $field['type'] ) ) {
@@ -215,7 +184,7 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper
 		return $list;
 	}
 
-	public static function data_dropdown( $list, $name, $prop = false, $selected = 0, $none = false, $none_val = 0 )
+	public static function data_dropdown( $list, $name, $prop = FALSE, $selected = 0, $none = FALSE, $none_val = 0 )
 	{
 		$data = array(
 			'select-id'   => $name,
@@ -228,14 +197,14 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper
 		if ( $none )
 			$options[] = array(
 				'option-val'  => $none_val,
-				'option-atts' => selected( $selected, $none_val, false ),
+				'option-atts' => selected( $selected, $none_val, FALSE ),
 				'option-html' => esc_html( $none )
 			);
 
-		foreach( $list as $key => $item )
+		foreach ( $list as $key => $item )
 			$options[] = array(
 				'option-val'  => $key,
-				'option-atts' => selected( $selected, $key, false ),
+				'option-atts' => selected( $selected, $key, FALSE ),
 				'option-html' => esc_html( ( $prop ? $item->$prop : $item ) )
 			);
 
@@ -243,26 +212,28 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper
 		return $data;
 	}
 
-	public static function dropdown( $list, $name, $prop = false, $selected = 0, $none = false, $none_val = 0, $obj = false )
+	public static function dropdown( $list, $name, $prop = FALSE, $selected = 0, $none = FALSE, $none_val = 0, $obj = FALSE )
 	{
 		$html = '<select name="'.$name.'" id="'.$name.'">';
+
 		if ( $none )
-			$html .= '<option value="'.$none_val.'" '.selected( $selected, $none_val, false ).'>'.esc_html( $none ).'</option>';
-		foreach( $list as $key => $item ) {
-			$html .= '<option value="'.$key.'" '.selected( $selected, $key, false ).'>'
+			$html .= '<option value="'.$none_val.'" '.selected( $selected, $none_val, FALSE ).'>'.esc_html( $none ).'</option>';
+
+		foreach ( $list as $key => $item ) {
+			$html .= '<option value="'.$key.'" '.selected( $selected, $key, FALSE ).'>'
 				.esc_html( ( $prop ? ( $obj ? $item->{$prop} : $item[$prop] ) : $item ) ).'</option>';
 		}
+
 		return $html.'</select>';
 	}
 
-	function dropdown_e( $list, $name, $prop = false, $selected = 0, $none = false, $none_val = 0 )
+	function dropdown_e( $list, $name, $prop = FALSE, $selected = 0, $none = FALSE, $none_val = 0 )
 	{
 		?><select name="<?php echo $name; ?>" id="<?php echo $name; ?>"><?php
 		if ( $none )
-			echo '<option value="'.$none_val.'" '.selected( $selected, $none_val, false ).'>'.esc_html( $none ).'</option>';
-		foreach( $list as $key => $item )
-			echo '<option value="'.$key.'" '.selected( $selected, $key, false ).'>'.esc_html( ( $prop ? $item->$prop : $item ) ).'</option>';
+			echo '<option value="'.$none_val.'" '.selected( $selected, $none_val, FALSE ).'>'.esc_html( $none ).'</option>';
+		foreach ( $list as $key => $item )
+			echo '<option value="'.$key.'" '.selected( $selected, $key, FALSE ).'>'.esc_html( ( $prop ? $item->$prop : $item ) ).'</option>';
 		?></select> <?php
 	}
-
 } }

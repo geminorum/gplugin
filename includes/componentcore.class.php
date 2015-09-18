@@ -13,16 +13,16 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 	public function setup_globals( $constants = array(), $args = array() )
 	{
 		$this->args = gPluginUtils::parse_args_r( $args, array(
-			'title'        => __( 'gPlugin', GPLUGIN_TEXTDOMAIN ),
+			'title'        => 'gPlugin',
 			'domain'       => 'gplugin',
-			'network'      => false,
+			'network'      => FALSE,
 			'component'    => 'default',
-			'term_meta'    => false,
+			'term_meta'    => FALSE,
 			'options'      => array(),
-			'option_group' => false,
+			'option_group' => FALSE,
 		) );
 
-		if ( false === $this->args['option_group'] )
+		if ( FALSE === $this->args['option_group'] )
 			$this->inject( 'args', array( 'option_group' => $this->args['domain'] ) );
 
 		$this->current_blog = get_current_blog_id();
@@ -39,6 +39,8 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 
 		$this->options = $this->init_options();
 
+		$this->setup_settings();
+
 		// bail if the plugin is in network mode
 		if ( $this->args['network'] )
 			return;
@@ -48,6 +50,16 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 
 		if ( isset( $this->args['term_meta'] ) && $this->args['term_meta'] )
 			gPluginFactory( 'gPluginTermMeta', $constants, $args ); // no point passing the arguments!
+	}
+
+	public function setup_settings()
+	{
+		if ( isset( $this->constants['class_'.$this->args['component'].'_settings'] ) )
+			$this->settings = gPluginFactory(
+				$this->constants['class_'.$this->args['component'].'_settings'],
+				$this->constants,
+				$this->getFilters( $this->args['component'].'_settings_args' )
+			);
 	}
 
 	public function setup_actions()
@@ -67,8 +79,8 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 			return;
 
 		// gPlugin Local:
-		if ( ! is_textdomain_loaded( GPLUGIN_TEXTDOMAIN ) )
-			load_plugin_textdomain( GPLUGIN_TEXTDOMAIN, false, 'gplugin/languages' );
+		// if ( ! is_textdomain_loaded( GPLUGIN_TEXTDOMAIN ) )
+		// 	load_plugin_textdomain( GPLUGIN_TEXTDOMAIN, FALSE, 'gplugin/languages' );
 
 		// Parent Plugin Local:
 		if ( ! is_textdomain_loaded( $this->args['domain'] ) )
@@ -119,7 +131,7 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 	}
 
 	// CAUTION : must not use for the first time calling the class
-	public function getOption( $name, $default = false )
+	public function getOption( $name, $default = FALSE )
 	{
 		//$class= get_class();
 		//$the_class = $class::getInstance();
@@ -131,7 +143,7 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 		return $default;
 	}
 
-	public function get_option( $name, $default = false )
+	public function get_option( $name, $default = FALSE )
 	{
 		return ( isset( $this->options[$name] ) ? $this->options[$name] : $default ) ;
 	}
@@ -139,8 +151,8 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 	public function update_option( $name, $value )
 	{
 		$this->options[$name] = $value;
-		$options = get_option( $this->args['option_group'], false );
-		if ( $options === false ) $options = array();
+		$options = get_option( $this->args['option_group'], FALSE );
+		if ( $options === FALSE ) $options = array();
 		$options[$name] = $value;
 		return update_option( $this->args['option_group'], $options );
 	}
@@ -148,7 +160,7 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 	public function delete_option( $name )
 	{
 		$options = get_option( $this->args['option_group'] );
-		if ( $options === false ) $options = array();
+		if ( $options === FALSE ) $options = array();
 		unset( $this->options[$name] );
 		unset( $options[$name] );
 		return update_option( $this->args['option_group'], $options );
@@ -159,10 +171,8 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 		$defaults = $this->getFilters( $this->args['option_group'].'_defaults' );
 		//gPeopleComponentCore::dump($defaults); die();
 
-		$options = get_option( $this->args['option_group'], false );
-		if ( $options === false ) {
-			// must uncommnet after the Settings UI finished.
-			//add_action( 'admin_notices', array( &$this, 'admin_notices_configure' ) );
+		$options = get_option( $this->args['option_group'], FALSE );
+		if ( $options === FALSE ) {
 			$options = $defaults;
 		} else {
 			foreach ( $defaults as $key => $value )
@@ -172,19 +182,12 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 		return $options;
 	}
 
-	public function admin_notices_configure()
-	{
-		if ( WP_DEBUG )
-			return;
-		echo '<div class="error"><p><a href="options-general.php?page='.$this->args['domain'].'">'.sprintf( __( '%s is not configured yet.', GPLUGIN_TEXTDOMAIN ), $this->args['title'] ).'</a></p></div>';
-	}
-
-	public function get_postmeta( $post_id, $field = false, $default = '', $key = null )
+	public function get_postmeta( $post_id, $field = FALSE, $default = '', $key = NULL )
 	{
 		return $this->get_meta( 'post', $post_id, $field, $default, $key );
 	}
 
-	public function get_termmeta( $term_id, $field = false, $default = '', $key = null )
+	public function get_termmeta( $term_id, $field = FALSE, $default = '', $key = NULL )
 	{
 		return $this->get_meta( 'term', $term_id, $field, $default, $key );
 	}
@@ -206,29 +209,31 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 		return $key;
 	}
 
-	public function get_meta( $from, $id, $field = false, $default = '', $key = null )
+	public function get_meta( $from, $id, $field = FALSE, $default = '', $key = NULL )
 	{
 		$key = $this->sanitize_meta_key( $key, $from );
 
-		switch( $from ) {
-
+		switch ( $from ) {
 			case 'user' :
-				$meta = get_user_meta( $id, $key, false );
-			break;
 
+				$meta = get_user_meta( $id, $key, FALSE );
+
+			break;
 			case 'term' :
-				$meta = gPluginTermMeta::get_term_meta( $id, $key, true );
-			break;
 
+				$meta = gPluginTermMeta::get_term_meta( $id, $key, TRUE );
+
+			break;
 			case 'post' :
 			default :
-				$meta = get_metadata( 'post', $id, $key, true );
+
+				$meta = get_metadata( 'post', $id, $key, TRUE );
 		}
 
 		if ( empty( $meta ) )
 			return $default;
 
-		if ( false === $field )
+		if ( FALSE === $field )
 			return $meta;
 
 		if ( isset( $meta[$field] ) )
@@ -237,41 +242,43 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 		return $default;
 	}
 
-	public function update_postmeta( $post_id, $value, $field = false, $key = null )
+	public function update_postmeta( $post_id, $value, $field = FALSE, $key = NULL )
 	{
 		return $this->update_meta( 'post', $post_id, $value, $field, $key );
 	}
 
-	public function update_meta( $to, $id, $value, $field = false, $key = null )
+	public function update_meta( $to, $id, $value, $field = FALSE, $key = NULL )
 	{
 		$key = $this->sanitize_meta_key( $key, $to );
 
-		if ( false === $field ) {
+		if ( FALSE === $field ) {
 			$meta = $value;
 		} else {
-			$meta = $this->get_meta( $to, $id, false, array(), $key );
+			$meta = $this->get_meta( $to, $id, FALSE, array(), $key );
 			$meta[$field] = $value;
 		}
 
-		switch( $to ) {
-
+		switch ( $to ) {
 			case 'user' :
-				if ( false === $value )
+
+				if ( FALSE === $value || ( is_array( $value ) && ! count( $value ) ) )
 					delete_user_meta( $id, $key );
 				else
 					update_user_meta( $id, $key, $meta );
-			break;
 
+			break;
 			case 'term' :
-				if ( false === $value )
+
+				if ( FALSE === $value || ( is_array( $value ) && ! count( $value ) ) )
 					gPluginTermMeta::delete_term_meta( $id, $key );
 				else
 					gPluginTermMeta::update_term_meta( $id, $key, $meta );
-			break;
 
+			break;
 			case 'post' :
 			default :
-				if ( false === $value )
+
+				if ( FALSE === $value || ( is_array( $value ) && ! count( $value ) ) )
 					delete_post_meta( $id, $key );
 				else
 					update_post_meta( $id, $key, $meta );
@@ -281,25 +288,7 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 		return $id;
 	}
 
-	// http://justintadlock.com/archives/2010/08/20/linking-terms-to-a-specific-post
-	// NO NEED : we store the people post id
-	// must move to : wphelper
-	public function get_post_id_by_slug( $slug, $post_type )
-	{
-		global $wpdb;
-		$slug = rawurlencode( urldecode( $slug ) );
-		$slug = sanitize_title( basename( $slug ) );
-		$post_id = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_name = %s AND post_type = %s", $slug, $post_type ) );
-
-		if ( is_array( $post_id ) )
-			return $post_id[0];
-		elseif ( !empty( $post_id ) );
-			return $post_id;
-
-		return false;
-	}
-
-	public function get_template_part( $slug, $name = null, $load = true )
+	public function get_template_part( $slug, $name = NULL, $load = TRUE )
 	{
 		do_action( 'get_template_part_'.$slug, $slug, $name ); // standard WP action
 
@@ -309,31 +298,31 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 		$templates[] = $slug.'.php';
 
 		$templates = apply_filters( $this->args['domain'].'_get_template_part', $templates, $slug, $name );
-		return $this->locate_template( $templates, $load, false );
+		return $this->locate_template( $templates, $load, FALSE );
 	}
 
 	// TODO : add our own load_template()
-	public function locate_template( $template_names, $load = false, $require_once = true )
+	public function locate_template( $template_names, $load = FALSE, $require_once = TRUE )
 	{
-		$located = false;
+		$located = FALSE;
 		foreach ( (array) $template_names as $template_name ) {
 			if ( empty( $template_name ) )
 				continue;
 
 			$template_name = untrailingslashit( $template_name );
-			if ( file_exists( get_stylesheet_directory().DS.$this->constants['theme_templates_dir'].DS.$template_name ) ) {
-				$located = get_stylesheet_directory().DS.$this->constants['theme_templates_dir'].DS.$template_name;
+			if ( file_exists( get_stylesheet_directory().'/'.$this->constants['theme_templates_dir'].'/'.$template_name ) ) {
+				$located = get_stylesheet_directory().'/'.$this->constants['theme_templates_dir'].'/'.$template_name;
 				break;
-			} elseif ( file_exists( get_template_directory().DS.$this->constants['theme_templates_dir'].DS.$template_name ) ) {
-				$located = get_template_directory().DS.$this->constants['theme_templates_dir'].DS.$template_name;
+			} else if ( file_exists( get_template_directory().'/'.$this->constants['theme_templates_dir'].'/'.$template_name ) ) {
+				$located = get_template_directory().'/'.$this->constants['theme_templates_dir'].'/'.$template_name;
 				break;
-			} elseif ( file_exists( $this->constants['plugin_dir'].DS.'templates'.DS.$template_name ) ) {
-				$located = $this->constants['plugin_dir'].DS.'templates'.DS.$template_name;
+			} else if ( file_exists( $this->constants['plugin_dir'].'/templates/'.$template_name ) ) {
+				$located = $this->constants['plugin_dir'].'/templates/'.$template_name;
 				break;
 			}
 		}
 
-		if ( ( true == $load ) && ! empty( $located ) )
+		if ( ( TRUE == $load ) && ! empty( $located ) )
 			load_template( $located, $require_once );
 
 		return $located;

@@ -1,5 +1,6 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
+// DEPREATED
 class gPluginMetaCore extends gPluginClassCore
 {
 
@@ -13,9 +14,9 @@ class gPluginMetaCore extends gPluginClassCore
 				<input style="width:99%;" class="geditorial-meta-prompt" type="text" autocomplete="off"
 				name="geditorial-meta-<?php echo $field; ?>" id="geditorial-meta-<?php echo $field; ?>" <?php if ( $ltr ) echo 'dir="ltr"'; ?>
 				<?php if ( ! $gEditorial->meta->user_can( 'edit', $field ) ) echo 'readonly="readonly"'; ?>
-                value="<?php echo esc_attr( $gEditorial->meta->get_postmeta( $post->ID, $field ) ); ?>"
+				value="<?php echo esc_attr( $gEditorial->meta->get_postmeta( $post->ID, $field ) ); ?>"
 				title="<?php echo esc_attr( $gEditorial->meta->get_string( $field, $post->post_type ) ); ?>"
-                placeholder="<?php echo esc_attr( $gEditorial->meta->get_string( $field, $post->post_type ) ); ?>" />
+				placeholder="<?php echo esc_attr( $gEditorial->meta->get_string( $field, $post->post_type ) ); ?>" />
 			</p> <?php
 		}
 	}
@@ -43,12 +44,12 @@ class gPluginMetaCore extends gPluginClassCore
 			'id'    => $post->ID,
 			'echo'  => true,
 			'def'   => '',
-			'sep'   => _x( ', ', 'get_term_seperator', GPLUGIN_TEXTDOMAIN ),
+			'sep'   => ', ',
 			'class' => 'term',
 		) );
 
 		$html = '';
-        $terms = get_the_terms( $args['id'], $taxonomy );
+		$terms = get_the_terms( $args['id'], $taxonomy );
 
 		if ( $terms && ! is_wp_error( $terms ) ) {
 

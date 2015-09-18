@@ -4,6 +4,7 @@ if ( ! class_exists( 'gPluginAjaxCore' ) ) { class gPluginAjaxCore extends gPlug
 {
 
 	var $_ajax_action = 'gplugin_ajax';
+	var $_ajax_nonce  = 'gplugin-ajax';
 
 	public function setup_globals( $constants = array(), $args = array() )
 	{
@@ -21,9 +22,7 @@ if ( ! class_exists( 'gPluginAjaxCore' ) ) { class gPluginAjaxCore extends gPlug
 		if ( wp_verify_nonce( $_REQUEST['_ajax_nonce'], $this->_ajax_nonce ) ) {
 
 			$post = stripslashes_deep( $_POST );
-			//gnetwork_dump( $dummy ); die();
-
-			$sub = isset( $post['sub'] ) ? $post['sub'] : 'nosub';
+			$sub  = isset( $post['sub'] ) ? $post['sub'] : 'nosub';
 
 			// if ( ! method_exists( $this, 'sub_'.$sub ) ) {
 			// 	if ( ! count( $fallback ) )
@@ -54,5 +53,4 @@ if ( ! class_exists( 'gPluginAjaxCore' ) ) { class gPluginAjaxCore extends gPlug
 	{
 		wp_send_json_error( gPluginWPHelper::notice( $message, 'error', FALSE ) );
 	}
-
 } }

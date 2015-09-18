@@ -8,16 +8,16 @@
 
 // ALSO SEE : http://wordpress.org/plugins/wordpress-logging-service/
 
-
 if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends gPluginClassCore
 {
+	
 	public function setup_globals( $constants = array(), $args = array() )
 	{
 		$this->args = gPluginUtils::parse_args_r( $args, array(
 			'domain'      => 'gplugin',
-			'title'       => __( 'gPlugin', GPLUGIN_TEXTDOMAIN ),
+			'title'       => 'gPlugin',
 			'logger_args' => array(
-				'name'        => __( 'Logs', GPLUGIN_TEXTDOMAIN ),
+				'name'        => 'Logs',
 				'post_type'   => 'gplugin_log',
 				'taxonomy'    => 'gplugin_log_type',
 				'meta_prefix' => '_gplugin_log_',
@@ -54,7 +54,7 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 		register_taxonomy( $this->args['logger_args']['taxonomy'], $this->args['logger_args']['post_type'] );
 
 		foreach ( $this->types() as $type )
-			if( ! term_exists( $type, $this->args['logger_args']['taxonomy'] ) )
+			if ( ! term_exists( $type, $this->args['logger_args']['taxonomy'] ) )
 				wp_insert_term( $type, $this->args['logger_args']['taxonomy'] );
 
 	}
@@ -88,7 +88,7 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 			'post_status'  => 'publish',
 			'post_parent'  => 0,
 			'post_content' => '',
-			'log_type'     => false
+			'log_type'     => FALSE
 		);
 
 		$args = wp_parse_args( $log_data, $defaults );
@@ -96,12 +96,12 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 		$log_id = wp_insert_post( $args );
 
 		// set the log type, if any
-		if( $log_data['log_type'] && $this->valid_type( $log_data['log_type'] ) )
+		if ( $log_data['log_type'] && $this->valid_type( $log_data['log_type'] ) )
 			wp_set_object_terms( $log_id, $log_data['log_type'], $this->args['logger_args']['taxonomy'], false );
 
 		// set log meta, if any
-		if( $log_id && ! empty( $log_meta ) )
-			foreach( (array) $log_meta as $key => $meta )
+		if ( $log_id && ! empty( $log_meta ) )
+			foreach ( (array) $log_meta as $key => $meta )
 				update_post_meta( $log_id, $this->args['logger_args']['meta_prefix'].sanitize_key( $key ), $meta );
 
 		do_action( $this->args['logger_args']['hook_prefix'].'insert', $log_id );
@@ -125,9 +125,9 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 		// store the log entry
 		$log_id = wp_update_post( $args );
 
-		if( $log_id && ! empty( $log_meta ) )
-			foreach( (array) $log_meta as $key => $meta )
-				if( ! empty( $meta ) )
+		if ( $log_id && ! empty( $log_meta ) )
+			foreach ( (array) $log_meta as $key => $meta )
+				if ( ! empty( $meta ) )
 					update_post_meta( $log_id, $this->args['logger_args']['meta_prefix'].sanitize_key( $key ), $meta );
 
 		do_action( $this->args['logger_args']['hook_prefix'].'update', $log_id );
@@ -160,7 +160,7 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 
 		$query_args = wp_parse_args( $args, $defaults );
 
-		if( $query_args['log_type'] && $this->valid_type( $query_args['log_type'] ) ) {
+		if ( $query_args['log_type'] && $this->valid_type( $query_args['log_type'] ) ) {
 			$query_args['tax_query'] = array( array(
 				'taxonomy' => $this->args['logger_args']['taxonomy'],
 				'field'    => 'slug',
@@ -170,7 +170,7 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 
 		$logs = get_posts( $query_args );
 
-		if( $logs )
+		if ( $logs )
 			return $logs;
 		return false; // no logs found
 	}
@@ -185,7 +185,7 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 			'post_status'    => 'publish'
 		);
 
-		if( ! empty( $type ) && $this->valid_type( $type ) ) {
+		if ( ! empty( $type ) && $this->valid_type( $type ) ) {
 			$query_args['tax_query'] = array( array(
 				'taxonomy' => $this->args['logger_args']['taxonomy'],
 				'field'    => 'slug',
@@ -193,7 +193,7 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 			) );
 		}
 
-		if( ! empty( $meta_query ) )
+		if ( ! empty( $meta_query ) )
 			$query_args['meta_query'] = $meta_query;
 
 		$logs = new WP_Query( $query_args );

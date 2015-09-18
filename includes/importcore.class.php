@@ -2,6 +2,7 @@
 
 if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends gPluginClassCore
 {
+
 	public function setup_actions() {}
 
 	/*
@@ -10,14 +11,14 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 			if ( $attachment_id )
 				$file_path = gPluginWPHelper::get_attachmnet_path( $attachment_id );
 	*/
-	public static function selectAttachment( $mime_type = '', $selected = null, $name = 'attach_id' )
+	public static function selectAttachment( $mime_type = '', $selected = NULL, $name = 'attach_id' )
 	{
 		$attachments = get_posts( array(
 			'post_type'      => 'attachment',
 			'numberposts'    => -1,
-			'post_status'    => null,
+			'post_status'    => NULL,
 			'post_mime_type' => $mime_type,
-			'post_parent'    => null,
+			'post_parent'    => NULL,
 			'orderby'        => 'post_date',
 			'order'          => 'DESC',
 		) );
@@ -43,7 +44,7 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 	}
 
 	// helper
-	function implode( $string, $l10n = false, $glue = '،' )
+	function implode( $string, $l10n = FALSE, $glue = '،' )
 	{
 		$results = explode( ',', str_ireplace( array( '،', '-', ',' ), ',', $string ) );
 		if ( $l10n )
@@ -55,11 +56,11 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 	// https://help.libreoffice.org/Common/List_of_Regular_Expressions
 
 	// helper
-	function explode( $string, $l10n = false, $vav = false )
+	function explode( $string, $l10n = FALSE, $vav = FALSE )
 	{
 		$dels = array( '،', '-', ',' );
 		if ( $vav )
-			$dels[] = ' و ';
+			$dels[] = chr(0x20).chr(0xD9).chr(0x88).chr(0x20); // http://www.ltg.ed.ac.uk/~richard/utf-8.cgi?input=D9+88&mode=bytes
 
 		$results = explode( ',', str_ireplace( $dels, ',', $string ) );
 		if ( ! $l10n )
@@ -98,18 +99,23 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 		// return iconv( 'UTF-8', 'UTF-8//TRANSLIT', $accent );
 		// http://stackoverflow.com/questions/3371697/replacing-accented-characters-php
 
-		return preg_replace( '/\p{Mn}/u', '', Normalizer::normalize( $accent, Normalizer::FORM_KD ) ); // http://stackoverflow.com/a/3542752
+		// SEE: pure php normalizer : https://github.com/tchwork/utf8
+
+		if ( class_exists( 'Normalizer' ) )
+			$accent = preg_replace( '/\p{Mn}/u', '', Normalizer::normalize( $accent, Normalizer::FORM_KD ) ); // http://stackoverflow.com/a/3542752
+
+		return $accent;
 	}
 
 	// DEPRECATD use self::selectAttachment()
-	function select_attachment( $name = 'attach_id', $selected = false, $mime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' )
+	function select_attachment( $name = 'attach_id', $selected = FALSE, $mime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' )
 	{
 		$args = array(
 			'post_type'      => 'attachment',
 			'numberposts'    => -1,
-			'post_status'    => null,
+			'post_status'    => NULL,
 			'post_mime_type' => $mime,
-			'post_parent'    => null,
+			'post_parent'    => NULL,
 		);
 		$attachments = get_posts( $args );
 
@@ -124,7 +130,7 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 	}
 
 	// exact copy of wp core with diffrent output
-	function media_sideload_image( $file, $post_id, $desc = null )
+	function media_sideload_image( $file, $post_id, $desc = NULL )
 	{
 		// fix file filename for query strings
 		preg_match( '/[^\?]+\.(jpe?g|jpe|gif|png)\b/i', $file, $matches );
@@ -150,9 +156,15 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 	function unpublish_post( $post_id )
 	{
 		global $wpdb;
-		$wpdb->update( $wpdb->posts, array( 'post_status' => 'pending' ), array( 'ID' => $post_id ) );
+
+		$wpdb->update( $wpdb->posts,
+			array( 'post_status' => 'pending' ),
+			array( 'ID' => $post_id )
+		);
+
 		clean_post_cache( $post_id );
-		return true;
+
+		return TRUE;
 	}
 
 	// DRAFT
