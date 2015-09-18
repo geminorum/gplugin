@@ -51,14 +51,14 @@ class gPluginAdminCore extends gPluginClassCore
 	{
 		$uri = 'options-general.php?page='.$this->args['domain'];
 		$sub = isset( $_GET['sub'] ) ? trim( $_GET['sub'] ) : 'general';
-		
+
 		$subs     = $this->getFilters( $this->_component.'_settings_subs', array() );
 		$messages = $this->getFilters( $this->_component.'_settings_messages', array() );
 		$titles   = $this->getFilters( $this->_component.'_settings_titles', array() );
 
 		echo '<div class="wrap">';
-			printf( '<h2>%s</h2>', ( isset( $titles['title'] ) ? $titles['title'] : $this->args['title'] ) );
-			
+			printf( '<h1>%s</h1>', ( isset( $titles['title'] ) ? $titles['title'] : $this->args['title'] ) );
+
 			gPluginFormHelper::headerNav( $uri, $sub, $subs );
 
 			if ( isset( $_GET['message'] ) ) {
@@ -70,7 +70,7 @@ class gPluginAdminCore extends gPluginClassCore
 				$_SERVER['REQUEST_URI'] = remove_query_arg( array( 'message' ), $_SERVER['REQUEST_URI'] );
 			}
 
-			$file = $this->constants['plugin_dir'].'admin'.DS.$this->_component.'.admin.'.$sub.'.php';
+			$file = $this->constants['plugin_dir'].'admin/'.$this->_component.'.admin.'.$sub.'.php';
 			if ( file_exists( $file ) )
 				require_once( $file );
 			else

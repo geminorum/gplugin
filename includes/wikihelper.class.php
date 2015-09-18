@@ -30,7 +30,7 @@ http://www.ibm.com/developerworks/library/x-phpwikipedia/
 		curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 6.1; he; rv:1.9.2.8) Gecko/20100722 Firefox/3.6.8");
 		$page = curl_exec($ch);
 		$xml = simplexml_load_string($page);
-		if((string)$xml->Section->Item->Description) {
+		if ( (string)$xml->Section->Item->Description) {
 			return array((string)$xml->Section->Item->Text, (string)$xml->Section->Item->Description, (string)$xml->Section->Item->Url);
 		} else {
 			return "";
@@ -55,12 +55,12 @@ http://www.ibm.com/developerworks/library/x-phpwikipedia/
 
 		$counter =0;
 
-		if($xml){
+		if ($xml) {
 
 			foreach($xml->Section->Item as $data => $value){
 
 				echo "<li>";
-				if(isset($value->Image[0]['source'])){
+				if (isset($value->Image[0]['source'])){
 					echo "<p><span><a href='" . $value->Url . "'><img src='" . $value->Image[0]['source'] . "' /></a></p>";
 				}
 				echo "<p><a href='" . $value->Url . "'>" . $value->Text . "</a> | <a class='wikipedia-widget-link' title='click to expand' onclick='javascript:if(document.getElementById(\"wikipedia_widget_" . $counter. "\").style.display==\"block\"){document.getElementById(\"wikipedia_widget_" . $counter. "\").style.display=\"none\"}else{document.getElementById(\"wikipedia_widget_" . $counter. "\").style.display=\"block\"};'>+</a>";

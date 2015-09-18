@@ -26,7 +26,7 @@ class gPluginSessionHelper
 			add_action( 'shutdown', array( __CLASS__, 'write_close' ) );
 			add_action( 'gplugin_session_garbage_collection', array( __CLASS__, 'cleanup' ) );
 
-			$gPluginSessionLoaded = true;
+			$gPluginSessionLoaded = TRUE;
 		}
 	}
 
@@ -156,7 +156,7 @@ class gPluginSessionHelper
 			$now = time();
 			$expired_sessions = array();
 			if ( GPLUGIN_SESSION_NETWORKWIDE ) {
-				foreach( $expiration_keys as $expiration ) {
+				foreach ( $expiration_keys as $expiration ) {
 					// If the session has expired
 					if ( $now > intval( $expiration->meta_value ) ) {
 						// Get the session ID by parsing the option_name
@@ -167,7 +167,7 @@ class gPluginSessionHelper
 					}
 				}
 			} else {
-				foreach( $expiration_keys as $expiration ) {
+				foreach ( $expiration_keys as $expiration ) {
 					// If the session has expired
 					if ( $now > intval( $expiration->option_value ) ) {
 						// Get the session ID by parsing the option_name
@@ -384,7 +384,7 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 	protected function __construct()
 	{
 
-		if( ! defined( 'GPLUGIN_SESSION_COOKIE' ) )
+		if ( ! defined( 'GPLUGIN_SESSION_COOKIE' ) )
 			define( 'GPLUGIN_SESSION_COOKIE', '_gp_session' );
 
 		if ( isset( $_COOKIE[GPLUGIN_SESSION_COOKIE] ) ) {

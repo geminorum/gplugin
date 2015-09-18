@@ -1,12 +1,9 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
+
 if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 {
 
-	/** ---------------------------------------------------------------------------------
-						USED FUNCTION: Modyfy with Caution!
-	--------------------------------------------------------------------------------- **/
-
-	public static function l10n( $html, $strip = false )
+	public static function l10n( $html, $strip = FALSE )
 	{
 		return self::do_string( ( $strip ? trim( strip_tags( $html ) ) : $html ) );
 	}
@@ -14,7 +11,7 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 	public static function do_string( $text )
 	{
 		if ( is_null( $text ) )
-			return null;
+			return NULL;
 
 		$pairs = array(
 			'0' => chr(0xDB).chr(0xB0),
@@ -47,9 +44,10 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 		return strtr( $text, $pairs );
 	}
 
-	/** ---------------------------------------------------------------------------------
-									NOT USED YET
-	--------------------------------------------------------------------------------- **/
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/// NOT USED YET ---------------------------------------------------------------
 
 	// get unicode char by its code
 	// http://php.net/manual/en/function.chr.php#88611
@@ -197,7 +195,7 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 	}
 
 	// based on : https://github.com/aziz/virastar | http://virastar.heroku.com/
-	function cleanup( $text, $urls = true )
+	function cleanup( $text, $urls = TRUE )
 	{
 
 		//gPluginUtils::dump( $matches ); die();
@@ -209,8 +207,6 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 		# replace double dash to ndash and triple dash to mdash
 		$text = preg_replace( '/-{3}/', '—', $text );
 		$text = preg_replace( '/-{2}/', '–', $text );
-
-
 
 		# replace three dots with ellipsis
 		$text = preg_replace( '/\s*\.{3,}/', '…', $text );
@@ -293,7 +289,6 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 	  end
 
 	*/
-
 
 		return $text;
 	}
@@ -387,9 +382,9 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 		while ( $goal < strlen( $string_nullspace ) ) {
 			$pos = strrpos( substr( $string_nullspace, 0, $goal + 1 ), "\000" );
 
-			if ( false === $pos ) {
+			if ( FALSE === $pos ) {
 				$pos = strpos( $string_nullspace, "\000", $goal + 1 );
-				if ( false === $pos ) {
+				if ( FALSE === $pos ) {
 					break;
 				}
 			}
@@ -410,9 +405,11 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 	// https://groups.google.com/d/msg/persian-computing/UjtEQjyLjfY/NuZfFziU08wJ
 	// I have a text that contains characters from the Arabic presentation form (U+FE70 - U+FEFF) like ﺵﺝﺭ
 	// Does any body have a PHP code that converts this to a normal UTF-8 text?
-	function purify_value( $v ){
+	function purify_value( $v )
+	{
 		if ( $v < 0xFE70 )
 			return $v;
+
 		if ( $v < 0xFE8F )
 			return $v;
 
@@ -447,8 +444,8 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
 			0xFEF4 => 0x649
 		);
 
-		foreach( $cv_table as $fr => $t )
-			if( $v <= $fr )
+		foreach ( $cv_table as $fr => $t )
+			if ( $v <= $fr )
 				return $t;
 	}
 } }

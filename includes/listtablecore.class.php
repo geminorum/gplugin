@@ -159,7 +159,7 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 
 			if ( 'cb' == $column_key )
 				$class[] = 'check-column';
-			elseif ( in_array( $column_key, array( 'posts', 'comments', 'links' ) ) )
+			else if ( in_array( $column_key, array( 'posts', 'comments', 'links' ) ) )
 				$class[] = 'num';
 
 			if ( isset( $sortable[$column_key] ) ) {
@@ -307,7 +307,7 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 				echo $this->column_cb( $item );
 				echo '</th>';
 
-			} elseif ( method_exists( $this, 'column_' . $column_name ) ) {
+			} else if ( method_exists( $this, 'column_' . $column_name ) ) {
 
 				echo "<td $attributes>";
 				echo call_user_func( array( $this, 'column_'.$column_name ), $item );
@@ -461,7 +461,7 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 	{
 		$pagenum = isset( $_REQUEST['paged'] ) ? absint( $_REQUEST['paged'] ) : 0;
 
-		if( isset( $this->_pagination_args['total_pages'] ) && $pagenum > $this->_pagination_args['total_pages'] )
+		if ( isset( $this->_pagination_args['total_pages'] ) && $pagenum > $this->_pagination_args['total_pages'] )
 			$pagenum = $this->_pagination_args['total_pages'];
 
 		return max( 1, $pagenum );

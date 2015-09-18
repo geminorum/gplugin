@@ -1,6 +1,22 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
+
 if ( ! class_exists( 'gPluginHashed' ) ) { class gPluginHashed
 {
+
+	// http://stackoverflow.com/a/6564310
+	// http://stackoverflow.com/a/6564274
+	public static function uniqid()
+	{
+		return md5( uniqid( microtime().rand(), TRUE ) );
+	}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/// NOT USED YET ---------------------------------------------------------------
+
+
+
 	/*
 
 	http://www.fileformat.info/tool/hash.htm
@@ -17,21 +33,6 @@ if ( ! class_exists( 'gPluginHashed' ) ) { class gPluginHashed
 
 	*/
 
-	/** ---------------------------------------------------------------------------------
-						USED FUNCTION: Modyfy with Caution!
-	--------------------------------------------------------------------------------- **/
-
-	// http://stackoverflow.com/a/6564310
-	// http://stackoverflow.com/a/6564274
-	public static function uniqid()
-	{
-		return md5( uniqid( microtime().rand(), true ) );
-	}
-
-	/** ---------------------------------------------------------------------------------
-									NOT USED YET
-	--------------------------------------------------------------------------------- **/
-
 	//http://programanddesign.com/php/base62-encode/
 	// If you have large integers and you want to shrink them down in size for whatever reason, you can use this code. Should be easy enough to extend if you want even higher bases (just add a few more chars and increase the base).
 
@@ -46,7 +47,7 @@ if ( ! class_exists( 'gPluginHashed' ) ) { class gPluginHashed
 	 */
 	public static function base_encode( $val, $base = 62, $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' )
 	{
-		if( ! isset( $base ) )
+		if ( ! isset( $base ) )
 			$base = strlen( $chars );
 		$str = '';
 
@@ -54,7 +55,7 @@ if ( ! class_exists( 'gPluginHashed' ) ) { class gPluginHashed
 			$m = bcmod( $val, $base );
 			$str = $chars[$m].$str;
 			$val = bcdiv( bcsub( $val, $m ), $base );
-		} while( bccomp( $val,0 ) > 0 );
+		} while ( bccomp( $val,0 ) > 0 );
 
 		return $str;
 	}

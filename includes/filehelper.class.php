@@ -42,11 +42,11 @@ if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper
 	public static function is_image_url( $string )
 	{
 		switch ( strtolower( self::extension( $string ) ) ) {
-			case 'jpg': return true;
-			case 'png': return true;
-			case 'gif': return true;
+			case 'jpg': return TRUE;
+			case 'png': return TRUE;
+			case 'gif': return TRUE;
 		}
-		return false;
+		return FALSE;
 	}
 
 	// FROM : edd
@@ -57,9 +57,10 @@ if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper
 		return end( $parts );
 	}
 
-	/** ---------------------------------------------------------------------------------
-									NOT USED YET
-	--------------------------------------------------------------------------------- **/
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/// NOT USED YET ---------------------------------------------------------------
 
 	// TESTED : not working very well with UTF
 	// http://www.scriptville.in/parse-csv-data-to-array/
@@ -100,19 +101,19 @@ if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper
 	// 'cp -R' written in PHP.
 	public static function copy( $path, $dest, $ds = DIRECTORY_SEPARATOR )
 	{
-		if( is_dir( $path ) ) {
+		if ( is_dir( $path ) ) {
 
 			@ mkdir( $dest );
 			$objects = scandir( $path );
 
-			if( sizeof( $objects ) > 0 ) {
+			if ( sizeof( $objects ) > 0 ) {
 
-				foreach( $objects as $file ) {
+				foreach ( $objects as $file ) {
 
-					if( $file == "." || $file == ".." )
+					if ( $file == "." || $file == ".." )
 						continue;
 
-					if( is_dir( $path.$ds.$file ) )
+					if ( is_dir( $path.$ds.$file ) )
 						self::copy( $path.$ds.$file, $dest.$ds.$file );
 					else
 						copy( $path.$ds.$file, $dest.$ds.$file );
@@ -121,13 +122,13 @@ if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper
 
 			return true;
 
-		} elseif( is_file( $path ) ) {
+		} else if ( is_file( $path ) ) {
 
 			return copy( $path, $dest );
 
 		}
 
-		return false;
+		return FALSE;
 	}
 
 	// http://www.paulund.co.uk/html5-download-attribute
@@ -138,7 +139,7 @@ if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper
 			header( 'Pragma: public' ); // required
 			header( 'Expires: 0' );	// no cache
 			header( 'Cache-Control: must-revalidate, post-check=0, pre-check=0' );
-			header( 'Cache-Control: private', false );
+			header( 'Cache-Control: private', FALSE );
 			header( 'Content-Type: '.$mime );
 			header( 'Content-Length: '.filesize( $file_path ) );
 			header( 'Content-Disposition: attachment; filename="'.basename( $file_path ).'"' );

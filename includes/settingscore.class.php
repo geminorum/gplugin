@@ -150,10 +150,10 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 
 			break;
 			case 'text' :
-			
+
 				if ( ! $args['field_class'] )
 					$args['field_class'] = 'regular-text';
-			
+
 				echo gPluginFormHelper::html( 'input', array(
 					'type'  => 'text',
 					'class' => $args['field_class'],
@@ -165,9 +165,9 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 
 			break;
 			case 'checkbox' :
-			
+
 				if ( count( $args['values'] ) ) {
-					foreach( $args['values'] as $value_name => $value_title ) {
+					foreach ( $args['values'] as $value_name => $value_title ) {
 						$html = gPluginFormHelper::html( 'input', array(
 							'type'    => 'checkbox',
 							'class'   => $args['field_class'],
@@ -214,13 +214,13 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 						'id'    => $id,
 					), $html );
 				}
-			
+
 			break;
 			default :
-			
+
 				echo 'Error: setting type not defind';
 		}
-		
+
 		if ( $args['desc'] ) {
 			echo gPluginFormHelper::html( 'p', array(
 				'class' => 'description',

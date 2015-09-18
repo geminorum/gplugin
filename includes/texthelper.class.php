@@ -29,57 +29,55 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 		preg_match_all ($regx, $title, $html, PREG_OFFSET_CAPTURE);
 		$title = preg_replace ( $regx, '', $title );
 
-		//find each word (including punctuation attached)
+		// find each word (including punctuation attached)
 		preg_match_all ('/[\w\p{L}&`\'‘’"“\.@:\/\{\(\[<>_]+-? */u', $title, $m1, PREG_OFFSET_CAPTURE);
 		foreach ($m1[0] as &$m2) {
 			//shorthand these- "match" and "index"
 			list ($m, $i) = $m2;
 
-			//correct offsets for multi-byte characters (`PREG_OFFSET_CAPTURE` returns *byte*-offset)
-			//we fix this by recounting the text before the offset using multi-byte aware `strlen`
+			// correct offsets for multi-byte characters (`PREG_OFFSET_CAPTURE` returns *byte*-offset)
+			// we fix this by recounting the text before the offset using multi-byte aware `strlen`
 			$i = mb_strlen (substr ($title, 0, $i), 'UTF-8');
 
-			//find words that should always be lowercase…
-			//(never on the first word, and never if preceded by a colon)
+			// find words that should always be lowercase…
+			// (never on the first word, and never if preceded by a colon)
 			$m = $i>0 && mb_substr ($title, max (0, $i-2), 1, 'UTF-8') !== ':' &&
 				!preg_match ('/[\x{2014}\x{2013}] ?/u', mb_substr ($title, max (0, $i-2), 2, 'UTF-8')) &&
 				 preg_match ('/^(a(nd?|s|t)?|b(ut|y)|en|for|i[fn]|o[fnr]|t(he|o)|vs?\.?|via)[ \-]/i', $m)
-			?	//…and convert them to lowercase
+			?	// …and convert them to lowercase
 				mb_strtolower ($m, 'UTF-8')
 
-			//else:	brackets and other wrappers
+			// else: brackets and other wrappers
 			: (	preg_match ('/[\'"_{(\[‘“]/u', mb_substr ($title, max (0, $i-1), 3, 'UTF-8'))
 			?	//convert first letter within wrapper to uppercase
 				mb_substr ($m, 0, 1, 'UTF-8').
 				mb_strtoupper (mb_substr ($m, 1, 1, 'UTF-8'), 'UTF-8').
 				mb_substr ($m, 2, mb_strlen ($m, 'UTF-8')-2, 'UTF-8')
 
-			//else:	do not uppercase these cases
+			// else: do not uppercase these cases
 			: (	preg_match ('/[\])}]/', mb_substr ($title, max (0, $i-1), 3, 'UTF-8')) ||
 				preg_match ('/[A-Z]+|&|\w+[._]\w+/u', mb_substr ($m, 1, mb_strlen ($m, 'UTF-8')-1, 'UTF-8'))
 			?	$m
-				//if all else fails, then no more fringe-cases; uppercase the word
+				// if all else fails, then no more fringe-cases; uppercase the word
 			:	mb_strtoupper (mb_substr ($m, 0, 1, 'UTF-8'), 'UTF-8').
 				mb_substr ($m, 1, mb_strlen ($m, 'UTF-8'), 'UTF-8')
 			));
 
-			//resplice the title with the change (`substr_replace` is not multi-byte aware)
+			// resplice the title with the change (`substr_replace` is not multi-byte aware)
 			$title = mb_substr ($title, 0, $i, 'UTF-8').$m.
 				 mb_substr ($title, $i+mb_strlen ($m, 'UTF-8'), mb_strlen ($title, 'UTF-8'), 'UTF-8')
 			;
 		}
 
-		//restore the HTML
+		// restore the HTML
 		foreach ($html[0] as &$tag) $title = substr_replace ($title, $tag[0], $tag[1], 0);
 		return $title;
 	}
 
-
-
-
-	/** ---------------------------------------------------------------------------------
-									NOT USED YET
-	--------------------------------------------------------------------------------- **/
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/// NOT USED YET ---------------------------------------------------------------
 
 	// Removing JavaScript tags
 	// https://gist.github.com/tommcfarlin/2959778
@@ -105,11 +103,11 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 	// generating unique strings
 	// Sometimes you don't want to create any files but just random string of given length (eg. to generate password).
 	// http://ahoj.io/generating-temporary-files-in-php
-	/**
+	/*
 		string(20) "H5DA9GPT36DM24MZHILA"
 		string(20) "LBMM6I8CLY1437ZK241O"
 		string(20) "OE431O8KVE15ER0KB82V"
-	**/
+	*/
 	public static function uniqueString( $max = 20 )
 	{
 		$string = '';
@@ -156,10 +154,10 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 				if (in_array(mb_strtoupper($word, "UTF-8"), $exceptions)) {
 					// check exceptions list for any words that should be in upper case
 					$word = mb_strtoupper($word, "UTF-8");
-				} elseif (in_array(mb_strtolower($word, "UTF-8"), $exceptions)) {
+				} else if (in_array(mb_strtolower($word, "UTF-8"), $exceptions)) {
 					// check exceptions list for any words that should be in upper case
 					$word = mb_strtolower($word, "UTF-8");
-				} elseif (!in_array($word, $exceptions)) {
+				} else if (!in_array($word, $exceptions)) {
 					// convert to uppercase (non-utf8 only)
 					$word = ucfirst($word);
 				}
@@ -169,7 +167,6 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 	   }//foreach
 	   return $string;
 	}
-
 
 	// http://www.w3.org/International/questions/qa-forms-utf-8.en.php
 	// http://wpkrauts.com/2013/enforce-utf-8-with-php/
@@ -229,12 +226,10 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 		);
 	}
 
-
-
 	// https://gist.github.com/phpdistiller/8067353
 	// This snippet sanitizes database inputs.
 	// Source : http://css-tricks.com/snippets/php/sanitize-database-inputs/
-	/**
+	/*
 		// Usage:
 		$bad_string = "Hi! <script src='http://www.evilsite.com/bad_script.js'></script> It's a good day!";
 		$good_string = sanitize($bad_string);
@@ -243,8 +238,7 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 		// Also use for getting POST/GET variables
 		$_POST = sanitize($_POST);
 		$_GET  = sanitize($_GET);
-	**/
-
+	*/
 
 	// Function for stripping out malicious bits
 	public static function cleanInput($input)
@@ -262,14 +256,13 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 	}
 
 	// Sanitization function
-	public static function sanitize($input)
+	public static function sanitize( $input )
 	{
-		if (is_array($input)) {
-			foreach($input as $var=>$val) {
-				$output[$var] = sanitize($val);
+		if ( is_array( $input ) ) {
+			foreach ( $input as $var=>$val ) {
+				$output[$var] = sanitize( $val );
 			}
-		}
-		else {
+		} else {
 			if (get_magic_quotes_gpc()) {
 				$input = stripslashes($input);
 			}
@@ -320,7 +313,7 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 		$replacements = array();
 		preg_match_all( '/<img[^>]*>/', $content, $matches );
 
-		foreach( $matches[0] as $match ) {
+		foreach ( $matches[0] as $match ) {
 
 			if ( preg_match( '/title=\s*/', $match ) )
 				continue;
@@ -329,7 +322,7 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 			$replacements[$match] = $newimg;
 		}
 
-		foreach( $replacements as $original => $replacement )
+		foreach ( $replacements as $original => $replacement )
 			$content = str_replace( $original, $replacement, $content );
 
 		return $content;
@@ -372,8 +365,6 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 	{
 		return preg_replace( '/[^\P{C}\n]+/u', '', $string );
 	}
-
-
 
 	// https://gist.github.com/boonebgorges/3657745
 	/**
@@ -429,19 +420,7 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 	//add_filter( 'the_content', 'teleogistic_process_quotes', 5 );
 	//add_filter( 'get_comment_text', 'teleogistic_process_quotes', 5 );
 
-
-
-
-
-
-
-
-
-
-
-
-
-	/**
+	/*
 
 	http://daringfireball.net/2009/11/liberal_regex_for_matching_urls
 	http://daringfireball.net/2010/07/improved_regex_for_matching_urls
@@ -464,10 +443,6 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 	// http://gilbert.pellegrom.me/php-strip-non-alphanumeric-chars-from-a-string
 	// PHP Strip Non-Alphanumeric Chars from a String
 	// $string = preg_replace("/[^a-z0-9]+/i", "", $string);
-
-
-
-
 
 	**/
 
@@ -502,7 +477,7 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 		return preg_replace( '#(\.|,|\?|!)(\w)#', '\1 \2', $text );
 	}
 
-	/**
+	/*
 	// Replace replacement array
 	// http://stackoverflow.com/a/8611495/642752
 	// http://codepad.viper-7.com/2ZNNYZ
@@ -513,7 +488,7 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 				return isset( $vars[$match[1]] ) ? $vars[$match[1]] : $match[0];
 			}, $text );
 	}
-	**/
+	*/
 
 	// ?? : ONLY IMG TAG with "/>"
 	// http://bavotasan.com/2009/using-php-to-remove-an-html-tag-from-a-string/
@@ -579,8 +554,4 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
 
 		return implode( ' ', $words );
 	}
-
-
-
-}
-}
+} }

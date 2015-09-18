@@ -38,10 +38,10 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 	{
 		if ( method_exists( $this, 'load_textdomain' ) )
 			add_action( 'plugins_loaded', array( &$this, 'load_textdomain' ) );
-		
+
 		add_action( 'init', array( &$this, 'init' ) );
 
-		if( isset( $this->constants['class_network_settings'] ) && method_exists( $this, 'settings_args_late' ) )
+		if ( isset( $this->constants['class_network_settings'] ) && method_exists( $this, 'settings_args_late' ) )
 			add_filter( 'gplugin_settings_args_'.strtolower( $this->constants['class_network_settings'] ), array( &$this, 'settings_args_late' ) );
 
 		if ( is_network_admin() ) {
@@ -49,7 +49,7 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 			// bail if extended class not ready to have a network settings page
 			if ( method_exists( $this, 'network_settings_save' ) )
 				add_action( 'network_admin_menu', array( &$this, 'network_admin_menu' ) );
-				
+
 			add_action( 'admin_print_footer_scripts', array( &$this, 'footer_asset_config' ), 99 );
 
 		} else {
@@ -110,7 +110,7 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 	public function plugins_loaded()
 	{
 		gPluginError( __FUNCTION__, sprintf( '%s: unneccary fire on plugins_loaded', $this->args['title'] ) );
-		
+
 		// $this->load_textdomain();
 	}
 
@@ -138,14 +138,14 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 	{
 		$uri = 'settings.php?page='.$this->args['domain'];
 		$sub = isset( $_GET['sub'] ) ? trim( $_GET['sub'] ) : 'general';
-		
+
 		$messages = $this->getFilters( 'network_settings_messages', array() );
 		$subs     = $this->getFilters( 'network_settings_subs', array() );
 		$titles   = $this->getFilters( 'network_settings_titles', array() );
 
 		echo '<div class="wrap">';
-			printf( '<h2>%s</h2>', ( isset( $titles['title'] ) ? $titles['title'] : $this->args['title'] ) );
-			
+			printf( '<h1>%s</h1>', ( isset( $titles['title'] ) ? $titles['title'] : $this->args['title'] ) );
+
 			gPluginFormHelper::headerNav( $uri, $sub, $subs );
 
 			if ( isset( $_GET['message'] ) ) {

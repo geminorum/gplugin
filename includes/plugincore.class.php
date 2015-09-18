@@ -65,10 +65,11 @@ class gPluginPluginCore implements gPluginPluginCoreInterface
 
 	// must dep
 	// shortcode_atts() mock-up
-	public function set_args( $defaults, $args ) {
+	public function set_args( $defaults, $args )
+	{
 		$args = (array) $args;
 		$out = array();
-		foreach( $defaults as $name => $default ) {
+		foreach ( $defaults as $name => $default ) {
 			if ( array_key_exists( $name, $args ) )
 				$out[$name] = $args[$name];
 			else

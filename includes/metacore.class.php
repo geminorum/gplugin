@@ -1,5 +1,6 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
+// DEPREATED
 class gPluginMetaCore extends gPluginClassCore
 {
 

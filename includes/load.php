@@ -1,6 +1,6 @@
 <?php
 
-$GLOBALS['_gplugin'] = array( 24, __FILE__, array(
+$GLOBALS['_gplugin'] = array( 25, __FILE__, array(
 	'gPluginFactory',
 	'gPluginClassCore',
 
@@ -77,7 +77,7 @@ if ( ! class_exists( 'gPlugin' ) ) : class gPlugin {
 
 		foreach ( self::$callbacks as $file => $callback ) {
 			if ( dirname( dirname( plugin_basename( $file ) ) ) == $plugin_dir ) {
-				self::load( false );
+				self::load( FALSE );
 				call_user_func( $callback );
 				do_action( 'gplugin_activation_'.$plugin );
 				break;
@@ -85,7 +85,7 @@ if ( ! class_exists( 'gPlugin' ) ) : class gPlugin {
 		}
 	}
 
-	static function load( $do_callbacks = true )
+	static function load( $do_callbacks = TRUE )
 	{
 		arsort( self::$candidates );
 		$file = key( self::$candidates );

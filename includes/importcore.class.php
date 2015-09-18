@@ -2,6 +2,7 @@
 
 if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends gPluginClassCore
 {
+
 	public function setup_actions() {}
 
 	/*
@@ -112,9 +113,9 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 		$args = array(
 			'post_type'      => 'attachment',
 			'numberposts'    => -1,
-			'post_status'    => null,
+			'post_status'    => NULL,
 			'post_mime_type' => $mime,
-			'post_parent'    => null,
+			'post_parent'    => NULL,
 		);
 		$attachments = get_posts( $args );
 
@@ -129,7 +130,7 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 	}
 
 	// exact copy of wp core with diffrent output
-	function media_sideload_image( $file, $post_id, $desc = null )
+	function media_sideload_image( $file, $post_id, $desc = NULL )
 	{
 		// fix file filename for query strings
 		preg_match( '/[^\?]+\.(jpe?g|jpe|gif|png)\b/i', $file, $matches );
@@ -155,9 +156,15 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 	function unpublish_post( $post_id )
 	{
 		global $wpdb;
-		$wpdb->update( $wpdb->posts, array( 'post_status' => 'pending' ), array( 'ID' => $post_id ) );
+
+		$wpdb->update( $wpdb->posts,
+			array( 'post_status' => 'pending' ),
+			array( 'ID' => $post_id )
+		);
+
 		clean_post_cache( $post_id );
-		return true;
+
+		return TRUE;
 	}
 
 	// DRAFT

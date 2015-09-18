@@ -3,10 +3,6 @@
 if ( ! class_exists( 'gPluginDateTimeHelper' ) ) { class gPluginDateTimeHelper
 {
 
-	/** ---------------------------------------------------------------------------------
-						USED FUNCTION: Modyfy with Caution!
-	--------------------------------------------------------------------------------- **/
-
 	// FROM: EDD
 	// Retrieve timezone
 	// edd_get_timezone_id()
@@ -24,7 +20,7 @@ if ( ! class_exists( 'gPluginDateTimeHelper' ) ) { class gPluginDateTimeHelper
 		$timezone = timezone_name_from_abbr( '', $utc_offset );
 
 		// last try, guess timezone string manually
-		if ( $timezone === false ) {
+		if ( $timezone === FALSE ) {
 
 			$is_dst = date( 'I' );
 
@@ -36,14 +32,13 @@ if ( ! class_exists( 'gPluginDateTimeHelper' ) ) { class gPluginDateTimeHelper
 			}
 		}
 
-		// fallback
-		return 'UTC';
+		return 'UTC'; // fallback
 	}
 
-
-	/** ---------------------------------------------------------------------------------
-									NOT USED YET
-	--------------------------------------------------------------------------------- **/
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/// NOT USED YET ---------------------------------------------------------------
 
 	// https://core.trac.wordpress.org/ticket/18146
 	// http://weston.ruter.net/2013/04/02/do-not-change-the-default-timezone-from-utc-in-wordpress/
@@ -60,6 +55,4 @@ if ( ! class_exists( 'gPluginDateTimeHelper' ) ) { class gPluginDateTimeHelper
 		// http://codex.wordpress.org/Function_Reference/date_i18n
 		// function get_date_from_gmt( $string, $format = 'Y-m-d H:i:s' )
 	}
-
-
 } }

@@ -15,14 +15,14 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 		$this->args = gPluginUtils::parse_args_r( $args, array(
 			'title'        => 'gPlugin',
 			'domain'       => 'gplugin',
-			'network'      => false,
+			'network'      => FALSE,
 			'component'    => 'default',
-			'term_meta'    => false,
+			'term_meta'    => FALSE,
 			'options'      => array(),
-			'option_group' => false,
+			'option_group' => FALSE,
 		) );
 
-		if ( false === $this->args['option_group'] )
+		if ( FALSE === $this->args['option_group'] )
 			$this->inject( 'args', array( 'option_group' => $this->args['domain'] ) );
 
 		$this->current_blog = get_current_blog_id();
@@ -80,7 +80,7 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 
 		// gPlugin Local:
 		// if ( ! is_textdomain_loaded( GPLUGIN_TEXTDOMAIN ) )
-		// 	load_plugin_textdomain( GPLUGIN_TEXTDOMAIN, false, 'gplugin/languages' );
+		// 	load_plugin_textdomain( GPLUGIN_TEXTDOMAIN, FALSE, 'gplugin/languages' );
 
 		// Parent Plugin Local:
 		if ( ! is_textdomain_loaded( $this->args['domain'] ) )
@@ -213,19 +213,21 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 	{
 		$key = $this->sanitize_meta_key( $key, $from );
 
-		switch( $from ) {
-
+		switch ( $from ) {
 			case 'user' :
+
 				$meta = get_user_meta( $id, $key, FALSE );
-			break;
 
+			break;
 			case 'term' :
-				$meta = gPluginTermMeta::get_term_meta( $id, $key, true );
-			break;
 
+				$meta = gPluginTermMeta::get_term_meta( $id, $key, TRUE );
+
+			break;
 			case 'post' :
 			default :
-				$meta = get_metadata( 'post', $id, $key, true );
+
+				$meta = get_metadata( 'post', $id, $key, TRUE );
 		}
 
 		if ( empty( $meta ) )
@@ -256,24 +258,26 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 			$meta[$field] = $value;
 		}
 
-		switch( $to ) {
-
+		switch ( $to ) {
 			case 'user' :
+
 				if ( FALSE === $value || ( is_array( $value ) && ! count( $value ) ) )
 					delete_user_meta( $id, $key );
 				else
 					update_user_meta( $id, $key, $meta );
-			break;
 
+			break;
 			case 'term' :
+
 				if ( FALSE === $value || ( is_array( $value ) && ! count( $value ) ) )
 					gPluginTermMeta::delete_term_meta( $id, $key );
 				else
 					gPluginTermMeta::update_term_meta( $id, $key, $meta );
-			break;
 
+			break;
 			case 'post' :
 			default :
+
 				if ( FALSE === $value || ( is_array( $value ) && ! count( $value ) ) )
 					delete_post_meta( $id, $key );
 				else
@@ -284,25 +288,7 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 		return $id;
 	}
 
-	// http://justintadlock.com/archives/2010/08/20/linking-terms-to-a-specific-post
-	// NO NEED : we store the people post id
-	// must move to : wphelper
-	public function get_post_id_by_slug( $slug, $post_type )
-	{
-		global $wpdb;
-		$slug = rawurlencode( urldecode( $slug ) );
-		$slug = sanitize_title( basename( $slug ) );
-		$post_id = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_name = %s AND post_type = %s", $slug, $post_type ) );
-
-		if ( is_array( $post_id ) )
-			return $post_id[0];
-		elseif ( !empty( $post_id ) );
-			return $post_id;
-
-		return false;
-	}
-
-	public function get_template_part( $slug, $name = NULL, $load = true )
+	public function get_template_part( $slug, $name = NULL, $load = TRUE )
 	{
 		do_action( 'get_template_part_'.$slug, $slug, $name ); // standard WP action
 
@@ -312,31 +298,31 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 		$templates[] = $slug.'.php';
 
 		$templates = apply_filters( $this->args['domain'].'_get_template_part', $templates, $slug, $name );
-		return $this->locate_template( $templates, $load, false );
+		return $this->locate_template( $templates, $load, FALSE );
 	}
 
 	// TODO : add our own load_template()
-	public function locate_template( $template_names, $load = false, $require_once = true )
+	public function locate_template( $template_names, $load = FALSE, $require_once = TRUE )
 	{
-		$located = false;
+		$located = FALSE;
 		foreach ( (array) $template_names as $template_name ) {
 			if ( empty( $template_name ) )
 				continue;
 
 			$template_name = untrailingslashit( $template_name );
-			if ( file_exists( get_stylesheet_directory().DS.$this->constants['theme_templates_dir'].DS.$template_name ) ) {
-				$located = get_stylesheet_directory().DS.$this->constants['theme_templates_dir'].DS.$template_name;
+			if ( file_exists( get_stylesheet_directory().'/'.$this->constants['theme_templates_dir'].'/'.$template_name ) ) {
+				$located = get_stylesheet_directory().'/'.$this->constants['theme_templates_dir'].'/'.$template_name;
 				break;
-			} elseif ( file_exists( get_template_directory().DS.$this->constants['theme_templates_dir'].DS.$template_name ) ) {
-				$located = get_template_directory().DS.$this->constants['theme_templates_dir'].DS.$template_name;
+			} else if ( file_exists( get_template_directory().'/'.$this->constants['theme_templates_dir'].'/'.$template_name ) ) {
+				$located = get_template_directory().'/'.$this->constants['theme_templates_dir'].'/'.$template_name;
 				break;
-			} elseif ( file_exists( $this->constants['plugin_dir'].DS.'templates'.DS.$template_name ) ) {
-				$located = $this->constants['plugin_dir'].DS.'templates'.DS.$template_name;
+			} else if ( file_exists( $this->constants['plugin_dir'].'/templates/'.$template_name ) ) {
+				$located = $this->constants['plugin_dir'].'/templates/'.$template_name;
 				break;
 			}
 		}
 
-		if ( ( true == $load ) && ! empty( $located ) )
+		if ( ( TRUE == $load ) && ! empty( $located ) )
 			load_template( $located, $require_once );
 
 		return $located;
