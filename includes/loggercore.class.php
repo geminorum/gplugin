@@ -10,7 +10,7 @@
 
 if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends gPluginClassCore
 {
-	
+
 	public function setup_globals( $constants = array(), $args = array() )
 	{
 		$this->args = gPluginUtils::parse_args_r( $args, array(
