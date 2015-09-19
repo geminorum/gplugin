@@ -583,7 +583,7 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 			$response['total_pages_i18n'] = number_format_i18n( $total_pages );
 		}
 
-		die( json_encode( $response ) );
+		die( wp_json_encode( $response ) );
 	}
 
 	// Send required variables to JavaScript land
@@ -597,7 +597,7 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 			)
 		);
 
-		printf( "<script type='text/javascript'>list_args = %s;</script>\n", json_encode( $args ) );
+		printf( "<script type='text/javascript'>list_args = %s;</script>\n", wp_json_encode( $args ) );
 	}
 
 	// mine

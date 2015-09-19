@@ -517,7 +517,7 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 	 */
 	public function json_out()
 	{
-		return json_encode( $this->container );
+		return wp_json_encode( $this->container );
 	}
 
 	/**
