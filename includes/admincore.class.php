@@ -5,28 +5,30 @@ class gPluginAdminCore extends gPluginClassCore
 
 	var $_component = 'admin'; // root / remote
 
+	var $_init_priority       = 10;
+	var $_admin_init_priority = 10;
+
 	public function setup_actions()
 	{
-		add_action( 'init', array( &$this, 'init' ) );
+		if ( method_exists( $this, 'init' ) )
+			add_action( 'init', array( &$this, 'init' ), $this->_init_priority );
 
 		if ( is_admin() ) {
-			add_action( 'admin_init', array( &$this, 'admin_init' ) );
+
+			if ( method_exists( $this, 'admin_init' ) )
+				add_action( 'admin_init', array( &$this, 'admin_init' ), $this->_admin_init_priority );
+
 			add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
 			add_action( 'admin_print_styles', array( &$this, 'admin_print_styles' ) );
-			add_action( 'admin_print_styles', array( &$this, 'admin_print_styles_settings' ) ); // for settings page
 
-			add_action( 'admin_footer', array( &$this, 'admin_footer' ) );
+			if ( method_exists( $this, 'admin_footer' ) )
+				add_action( 'admin_footer', array( &$this, 'admin_footer' ) );
 
 			// no need for network
 			if ( ! $this->args['network'] )
 				add_action( 'plugin_action_links_'.$this->args['domain'].'/'.$this->args['domain'].'.php', array( &$this, 'settings_link' ), 10, 4 );
 		}
 	}
-
-	public function init() { }
-	public function admin_init() { }
-	public function admin_footer() { }
-	// public function admin_settings_load() { }
 
 	public function admin_menu()
 	{
@@ -45,6 +47,7 @@ class gPluginAdminCore extends gPluginClassCore
 		);
 
 		add_action( 'load-'.$hook, array( &$this, 'admin_settings_load' ) );
+		add_action( 'admin_print_styles', array( &$this, 'admin_print_styles_settings' ) ); // TODO: use this as helper on child's admin_settings_load()
 	}
 
 	public function admin_settings()
@@ -105,17 +108,17 @@ class gPluginAdminCore extends gPluginClassCore
 	{
 		if ( strpos( $_SERVER['REQUEST_URI'], 'post.php' )
 			|| strpos( $_SERVER['REQUEST_URI'], 'post-new.php' ) )
-				gPluginFormHelper::linkStyleSheet( $this->constants['plugin_url'].'assets/css/'.$this->args['component'].'-'.$post_type.'-post.css' );
+				gPluginFormHelper::linkStyleSheet( $this->constants['plugin_url'].'assets/css/'.$this->args['component'].'-'.$post_type.'-post.css', $this->constants['plugin_ver'] );
 
 		if ( strpos( $_SERVER['REQUEST_URI'], 'edit.php' ) )
-			gPluginFormHelper::linkStyleSheet( $this->constants['plugin_url'].'assets/css/'.$this->args['component'].'-'.$post_type.'-edit.css' );
+			gPluginFormHelper::linkStyleSheet( $this->constants['plugin_url'].'assets/css/'.$this->args['component'].'-'.$post_type.'-edit.css', $this->constants['plugin_ver'] );
 	}
 
 	// for settings page only
 	public function admin_print_styles_settings()
 	{
 		if ( strpos( $_SERVER['REQUEST_URI'], 'page='.$this->args['domain'] ) )
-			echo '<link rel="stylesheet" href="'.$this->constants['plugin_url'].'assets/css/settings.css" type="text/css" />';
+			gPluginFormHelper::linkStyleSheet( $this->constants['plugin_url'].'assets/css/'.$this->args['component'].'.settings.css.', $this->constants['plugin_ver'] );
 	}
 
 	public function settings_link( $links )

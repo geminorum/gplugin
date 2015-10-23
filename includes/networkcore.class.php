@@ -36,6 +36,8 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 
 	public function setup_actions()
 	{
+		$this->setup_constants();
+
 		if ( method_exists( $this, 'load_textdomain' ) )
 			add_action( 'plugins_loaded', array( &$this, 'load_textdomain' ) );
 
@@ -65,6 +67,42 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 		}
 
 		$this->setup_modules();
+	}
+
+	protected function setup_constants()
+	{
+		$domain = strtoupper( $this->args['domain'] );
+
+		// JUST IN CASE
+		defined( $domain.'_TEXTDOMAIN' ) or define( $domain.'_TEXTDOMAIN', $this->args['domain'] );
+		defined( $domain.'_ENABLE_MULTIROOTBLOG' ) or define( $domain.'_ENABLE_MULTIROOTBLOG', FALSE );
+
+		if ( ! defined( $domain.'_ROOT_BLOG' ) ) {
+
+			// root blog is the main site on this network
+			if ( is_multisite() && ! constant( $domain.'_ENABLE_MULTIROOTBLOG' ) ) {
+
+				$current_site = get_current_site();
+
+				// root blogs for multi-network
+				if ( defined( $domain.'_SITE_ROOT_BLOG_'.$current_site->id ) ) {
+					$root_blog_id = constant( $domain.'_SITE_ROOT_BLOG_'.$current_site->id );
+
+				} else {
+					$root_blog_id = $current_site->blog_id;
+				}
+
+			// root blog is every site on this network
+			} else if ( is_multisite() && constant( $domain.'_ENABLE_MULTIROOTBLOG' ) ) {
+				$root_blog_id = $this->current_blog;
+
+			// root blog is the only blog on this network
+			} else if ( ! is_multisite() ) {
+				$root_blog_id = 1;
+			}
+
+			define( $domain.'_ROOT_BLOG', $root_blog_id );
+		}
 	}
 
 	public function setup_settings()

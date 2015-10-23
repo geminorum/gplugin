@@ -81,6 +81,8 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 			'crop'      => $crop,
 			'post_type' => $post_type,
 		);
+		
+		self::__dep( 'gPluginWPHelper::registerImageSize' );
 	}
 
 	// FROM: gEditorialHelper
@@ -177,7 +179,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 
 
 	// PROBABLY : the infinite loop!!
-	// Originally from Easy Digital Downloads
+	// FROM: EDD
 	// _edd_die_handler()
 	public static function _die_handler()
 	{
@@ -255,22 +257,22 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 		return FALSE;
 	}
 
-	// DEPRECATED
-	// FROM: gTheme 2
-	// debug on production env
+	// FIXME: DEPRECATED
 	public static function is_debug()
 	{
+		self::__dep( 'gPluginWPHelper::isDebug()' );
+		
 		if ( WP_DEBUG && WP_DEBUG_DISPLAY && ! self::is_dev() )
 			return TRUE;
 
 		return FALSE;
 	}
 
-	// DEPRECATED
-	// FROM: gTheme 2
-	// debug on developmnet env
+	// FIXME: DEPRECATED
 	public static function is_dev()
 	{
+		self::__dep( 'gPluginWPHelper::isDev()' );
+		
 		if ( defined( 'WP_STAGE' )
 			&& 'development' == constant( 'WP_STAGE' ) )
 				return TRUE;
@@ -285,15 +287,25 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 		//return apply_filters( 'edd_is_caching_plugin_active', $caching );
 	}
 
+	// FIXME: DEPRECATED: TYPO
 	public static function getUserRols( $object = FALSE )
 	{
-		$roles = ( $object ? new stdClass : array() );
-		$wp_roles = get_editable_roles();
-		foreach ( $wp_roles as $role_name => $role )
+		self::__dep( 'gPluginWPHelper::getUserRoles()' );
+		return self::getUserRoles( $object );
+	}
+	
+	public static function getUserRoles( $object = FALSE )
+	{
+		$roles = $object ? new stdClass : array();
+		
+		foreach ( get_editable_roles() as $role_name => $role )
+		
 			if ( $object )
 				$roles->{$role_name} = translate_user_role( $role['name'] );
+			
 			else
 				$roles[$role_name] = translate_user_role( $role['name'] );
+		
 		return $roles;
 	}
 
@@ -316,6 +328,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 	// DEPRECATED: use : gPluginWPHelper::getUserEditLink();
 	public static function get_user_edit_link( $user_ID )
 	{
+		self::__dep( 'gPluginWPHelper::getUserEditLink()' );
 		return self::getUserEditLink( $user_ID );
 	}
 

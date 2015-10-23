@@ -1,6 +1,6 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
-defined( 'GPLUGIN_VERSION' ) or define( 'GPLUGIN_VERSION', '25' );
+defined( 'GPLUGIN_VERSION' ) or define( 'GPLUGIN_VERSION', '26' );
 defined( 'GPLUGIN_TEXTDOMAIN' ) or define( 'GPLUGIN_TEXTDOMAIN', 'gplugin' );
 defined( 'GPLUGIN_DEBUG' ) or define( 'GPLUGIN_DEBUG', constant( 'WP_DEBUG' ) );
 
@@ -19,5 +19,7 @@ if ( ! function_exists( 'gPluginFactory' ) ) : function gPluginFactory( $class =
 
 if ( ! function_exists( 'gPluginError' ) ) : function gPluginError( $function, $message, $version = GPLUGIN_VERSION ) {
 	if ( WP_DEBUG )
-		_doing_it_wrong( $function, $message, $version );
+		 _doing_it_wrong( $function, $message, $version );
+		//error_log( print_r( $log, TRUE ) );
+		//trigger_error( sprintf( '%1$s was called <strong>incorrectly</strong>. %2$s %3$s', $function, $message, $version ) );
 } endif;

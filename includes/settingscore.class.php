@@ -167,6 +167,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 			case 'checkbox' :
 
 				if ( count( $args['values'] ) ) {
+					
 					foreach ( $args['values'] as $value_name => $value_title ) {
 						$html = gPluginFormHelper::html( 'input', array(
 							'type'    => 'checkbox',
@@ -182,7 +183,9 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 							'for' => $id.'-'.$value_name,
 						), $html.'&nbsp;'.esc_html( $value_title ) ).'</p>';
 					}
+					
 				} else {
+					
 					$html = gPluginFormHelper::html( 'input', array(
 						'type'    => 'checkbox',
 						'class'   => $args['field_class'],
@@ -195,7 +198,9 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 
 					echo '<p>'.gPluginFormHelper::html( 'label', array(
 						'for' => $id,
-					), $html.'&nbsp;'.esc_html( $value_title ) ).'</p>';
+					), $html.'&nbsp;'.$args['desc'] ).'</p>';
+					
+					$args['desc'] = FALSE;
 				}
 
 			break;
@@ -221,7 +226,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 				echo 'Error: setting type not defind';
 		}
 
-		if ( $args['desc'] ) {
+		if ( $args['desc'] && FALSE !== $args['values'] ) {
 			echo gPluginFormHelper::html( 'p', array(
 				'class' => 'description',
 			), $args['desc'] );

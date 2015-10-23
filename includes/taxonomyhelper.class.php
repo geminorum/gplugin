@@ -4,7 +4,7 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 {
 
 	// Originally from : Custom Field Taxonomies : https://github.com/scribu/wp-custom-field-taxonomies
-	public static function getMetaRows( $meta_key, $limit = false, $offset = 0 )
+	public static function getMetaRows( $meta_key, $limit = FALSE, $offset = 0 )
 	{
 		global $wpdb;
 
@@ -47,7 +47,7 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 
 	// Originally from : Custom Field Taxonomies : https://github.com/scribu/wp-custom-field-taxonomies
 	// here because we used this to convert meta into terms
-	public static function deleteMetaKeys( $meta_key, $limit = false, $table = 'postmeta' )
+	public static function deleteMetaKeys( $meta_key, $limit = FALSE, $table = 'postmeta' )
 	{
 		global $wpdb;
 
@@ -114,23 +114,31 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 	}
 
 	// DEPRECATED: use self::prepareTerms()
-	public static function prepare_terms( $taxonomy, $args = array(), $terms = null, $key = 'term_id', $obj = TRUE )
+	public static function prepare_terms( $taxonomy, $args = array(), $terms = NULL, $key = 'term_id', $obj = TRUE )
 	{
+		if ( gPluginWPHelper::isDev() )
+			_deprecated_function( __FUNCTION__, GPLUGIN_VERSION, 'prepare_terms' );
+
 		return self::prepareTerms( $taxonomy, $args, $terms, $key, $obj );
 	}
 
-	public static function prepareTerms( $taxonomy, $args = array(), $terms = null, $key = 'term_id', $obj = TRUE )
+	public static function prepareTerms( $taxonomy, $args = array(), $terms = NULL, $key = 'term_id', $obj = TRUE )
 	{
 		$new_terms = array();
 
-		if ( is_null( $terms ) )
+		if ( is_null( $terms ) ) {
 			$terms = get_terms( $taxonomy, array_merge( array(
 				'hide_empty' => FALSE,
 				'orderby'    => 'name',
 				'order'      => 'ASC'
 			), $args ) );
+		}
+
+		if ( is_wp_error( $terms ) || FALSE === $terms )
+			return $new_terms;
 
 		foreach ( $terms as $term ) {
+
 			$new = array(
 				'name'        => $term->name,
 				'description' => $term->description,
@@ -140,11 +148,10 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 				'parent'      => $term->parent,
 				'slug'        => $term->slug,
 				'id'          => $term->term_id,
-				);
+			);
+
 			$new_terms[$term->{$key}] = $obj ? (object) $new : $new;
 		}
-
-		// TODO : use cache
 
 		return $new_terms;
 	}
@@ -172,9 +179,9 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper
 
 		if ( FALSE === $post_id ) {
 			$terms = get_terms( $taxonomy, array(
-				'hide_empty' => FALSE,
-				'orderby' => 'name',
-				'order' => 'ASC'
+				'hide_emptzy' => FALSE,
+				'orderby'     => 'name',
+				'order'       => 'ASC'
 			) );
 		} else {
 			$terms = get_the_terms( $post_id, $taxonomy );
