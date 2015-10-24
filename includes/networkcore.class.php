@@ -39,28 +39,28 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 		$this->setup_constants();
 
 		if ( method_exists( $this, 'load_textdomain' ) )
-			add_action( 'plugins_loaded', array( &$this, 'load_textdomain' ) );
+			add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
 
-		add_action( 'init', array( &$this, 'init' ) );
+		add_action( 'init', array( $this, 'init' ) );
 
 		if ( isset( $this->constants['class_network_settings'] ) && method_exists( $this, 'settings_args_late' ) )
-			add_filter( 'gplugin_settings_args_'.strtolower( $this->constants['class_network_settings'] ), array( &$this, 'settings_args_late' ) );
+			add_filter( 'gplugin_settings_args_'.strtolower( $this->constants['class_network_settings'] ), array( $this, 'settings_args_late' ) );
 
 		if ( is_network_admin() ) {
 
 			// bail if extended class not ready to have a network settings page
 			if ( method_exists( $this, 'network_settings_save' ) )
-				add_action( 'network_admin_menu', array( &$this, 'network_admin_menu' ) );
+				add_action( 'network_admin_menu', array( $this, 'network_admin_menu' ) );
 
-			add_action( 'admin_print_footer_scripts', array( &$this, 'footer_asset_config' ), 99 );
+			add_action( 'admin_print_footer_scripts', array( $this, 'footer_asset_config' ), 99 );
 
 		} else {
 
 			if ( is_admin() ) {
-				add_action( 'admin_init', array( &$this, 'admin_init' ) );
-				add_action( 'admin_print_footer_scripts', array( &$this, 'footer_asset_config' ), 99 );
+				add_action( 'admin_init', array( $this, 'admin_init' ) );
+				add_action( 'admin_print_footer_scripts', array( $this, 'footer_asset_config' ), 99 );
 			} else {
-				add_action( 'wp_footer' , array( &$this, 'footer_asset_config'  ), 99 );
+				add_action( 'wp_footer' , array( $this, 'footer_asset_config'  ), 99 );
 			}
 
 			$this->setup_network();
@@ -166,10 +166,10 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 			( isset( $titles['menu'] ) ? $titles['menu'] : $this->args['title'] ),
 			'manage_network_options',
 			$this->args['domain'],
-			array( &$this, 'network_settings' )
+			array( $this, 'network_settings' )
 		);
 
-		add_action( 'load-'.$hook, array( &$this, 'network_settings_save' ) );
+		add_action( 'load-'.$hook, array( $this, 'network_settings_save' ) );
 	}
 
 	public function network_settings()

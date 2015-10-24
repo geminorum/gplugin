@@ -14,7 +14,7 @@ if ( ! class_exists( 'gPluginAjaxCore' ) ) { class gPluginAjaxCore extends gPlug
 
 	public function setup_actions()
 	{
-		add_action( 'wp_ajax_'.$this->_ajax_action, array( &$this, 'ajax' ) );
+		add_action( 'wp_ajax_'.$this->_ajax_action, array( $this, 'ajax' ) );
 	}
 
 	public function ajax()

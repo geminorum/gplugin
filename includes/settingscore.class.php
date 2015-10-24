@@ -36,12 +36,12 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 
 	public function setup_actions()
 	{
-		add_action( 'init', array( &$this, 'init_late' ), 999 );
+		add_action( 'init', array( $this, 'init_late' ), 999 );
 
 		if ( $this->args['register_hook'] )
-			add_action( $this->args['register_hook'], array( &$this, 'register_hook' ) );
+			add_action( $this->args['register_hook'], array( $this, 'register_hook' ) );
 		else
-			add_action( 'admin_init', array( &$this, 'register_hook' ) );
+			add_action( 'admin_init', array( $this, 'register_hook' ) );
 	}
 
 	public function init_late()
@@ -81,7 +81,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 	{
 		register_setting( $page_name, $this->option_group );  // we added the sanitization manually
 
-		$field_callback = $this->args['field_callback'] ? $this->args['field_callback'] : array( &$this, 'do_settings_field' );
+		$field_callback = $this->args['field_callback'] ? $this->args['field_callback'] : array( $this, 'do_settings_field' );
 
 		foreach ( $sections as $section_name => $section_args ) {
 			if ( 'gplugin' == $section_name )

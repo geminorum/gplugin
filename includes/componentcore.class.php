@@ -64,11 +64,11 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 
 	public function setup_actions()
 	{
-		add_action( 'init', array( &$this, 'init' ), $this->_init_priority );
-		add_action( 'plugins_loaded', array( &$this, 'plugins_loaded' ), $this->_plugins_loaded );
+		add_action( 'init', array( $this, 'init' ), $this->_init_priority );
+		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ), $this->_plugins_loaded );
 
 		if ( is_admin() ) {
-			add_action( 'admin_init', array( &$this, 'admin_init' ), $this->_admin_init_priority );
+			add_action( 'admin_init', array( $this, 'admin_init' ), $this->_admin_init_priority );
 		}
 	}
 

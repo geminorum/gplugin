@@ -21,14 +21,14 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
 		// http://justintadlock.com/archives/2011/06/09/install-and-upgrade-functions-for-plugins-and-themes
 
 		// NO NEED : probably, because we call it manually upon enableing the remote
-		//register_activation_hook( constant( 'GTERMMETA_FILE' ), array( &$this, 'activation_hook' ) );
+		// register_activation_hook( constant( 'GTERMMETA_FILE' ), array( $this, 'activation_hook' ) );
 
-		//register_uninstall_hook( constant( 'GTERMMETA_FILE' ), array( &$this, 'uninstall_hook' ) );
-		//register_uninstall_hook( constant( 'GTERMMETA_FILE' ), 'gPluginTermMeta::uninstall_hook' );
-		//register_deactivation_hook( constant( 'GTERMMETA_FILE' ), 'gPluginTermMeta::deactivation_hook' );
+		// register_uninstall_hook( constant( 'GTERMMETA_FILE' ), 'gPluginTermMeta::uninstall_hook' );
+		// register_uninstall_hook( constant( 'GTERMMETA_FILE' ), array( $this, 'uninstall_hook' ) );
+		// register_deactivation_hook( constant( 'GTERMMETA_FILE' ), 'gPluginTermMeta::deactivation_hook' );
 
 
-		//register_uninstall_hook( constant( 'GTERMMETA_FILE' ), array( 'gPluginTermMeta', 'uninstall_hook' ) );
+		// register_uninstall_hook( constant( 'GTERMMETA_FILE' ), array( 'gPluginTermMeta', 'uninstall_hook' ) );
 		add_action( 'init', array( $this, 'define_table' ) );
 	}
 

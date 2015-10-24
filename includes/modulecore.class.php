@@ -16,17 +16,17 @@ if ( ! class_exists( 'gPluginModuleCore' ) ) { class gPluginModuleCore extends g
 	public function setup_actions()
 	{
 		if ( method_exists( $this, 'init' ) )
-			add_action( 'init', array( &$this, 'init' ), $this->_init_priority );
+			add_action( 'init', array( $this, 'init' ), $this->_init_priority );
 
 		if ( method_exists( $this, 'plugins_loaded' ) )
-			add_action( 'plugins_loaded', array( &$this, 'plugins_loaded' ), $this->_plugins_loaded );
+			add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ), $this->_plugins_loaded );
 
 		if ( is_admin() ) {
 			if ( method_exists( $this, 'admin_init' ) )
-				add_action( 'admin_init', array( &$this, 'admin_init' ), $this->_admin_init_priority );
+				add_action( 'admin_init', array( $this, 'admin_init' ), $this->_admin_init_priority );
 
 			if ( method_exists( $this, 'admin_menu' ) )
-				add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
+				add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		}
 	}
 

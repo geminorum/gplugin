@@ -11,22 +11,22 @@ class gPluginAdminCore extends gPluginClassCore
 	public function setup_actions()
 	{
 		if ( method_exists( $this, 'init' ) )
-			add_action( 'init', array( &$this, 'init' ), $this->_init_priority );
+			add_action( 'init', array( $this, 'init' ), $this->_init_priority );
 
 		if ( is_admin() ) {
 
 			if ( method_exists( $this, 'admin_init' ) )
-				add_action( 'admin_init', array( &$this, 'admin_init' ), $this->_admin_init_priority );
+				add_action( 'admin_init', array( $this, 'admin_init' ), $this->_admin_init_priority );
 
-			add_action( 'admin_menu', array( &$this, 'admin_menu' ) );
-			add_action( 'admin_print_styles', array( &$this, 'admin_print_styles' ) );
+			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+			add_action( 'admin_print_styles', array( $this, 'admin_print_styles' ) );
 
 			if ( method_exists( $this, 'admin_footer' ) )
-				add_action( 'admin_footer', array( &$this, 'admin_footer' ) );
+				add_action( 'admin_footer', array( $this, 'admin_footer' ) );
 
 			// no need for network
 			if ( ! $this->args['network'] )
-				add_action( 'plugin_action_links_'.$this->args['domain'].'/'.$this->args['domain'].'.php', array( &$this, 'settings_link' ), 10, 4 );
+				add_action( 'plugin_action_links_'.$this->args['domain'].'/'.$this->args['domain'].'.php', array( $this, 'settings_link' ), 10, 4 );
 		}
 	}
 
@@ -43,11 +43,11 @@ class gPluginAdminCore extends gPluginClassCore
 			( isset( $titles['menu'] ) ? $titles['menu'] : $this->args['title'] ),
 			'manage_options',
 			$this->args['domain'],
-			array( &$this, 'admin_settings' )
+			array( $this, 'admin_settings' )
 		);
 
-		add_action( 'load-'.$hook, array( &$this, 'admin_settings_load' ) );
-		add_action( 'admin_print_styles', array( &$this, 'admin_print_styles_settings' ) ); // TODO: use this as helper on child's admin_settings_load()
+		add_action( 'load-'.$hook, array( $this, 'admin_settings_load' ) );
+		add_action( 'admin_print_styles', array( $this, 'admin_print_styles_settings' ) ); // TODO: use this as helper on child's admin_settings_load()
 	}
 
 	public function admin_settings()
