@@ -22,7 +22,7 @@ $GLOBALS['_gplugin'] = array( 26, __FILE__, array(
 	'gPluginLoggerCore',
 	'gPluginImportCore',
 
-	'gPluginTermMeta',
+	'gPluginTermMeta', // FIXME: DROP THIS
 	'gPluginSession',
 
 	'gPluginWPHelper',
