@@ -3,20 +3,41 @@
 class gPluginAdminCore extends gPluginClassCore
 {
 
-	var $_component = 'admin'; // root / remote
+	protected $component = 'admin'; // root / remote
 
-	var $_init_priority       = 10;
-	var $_admin_init_priority = 10;
+	protected $priority_init       = 10;
+	protected $priority_admin_init = 10;
+
+	// FIXME: DROP THIS
+	public function setup_globals( $constants = array(), $args = array() )
+	{
+		parent::setup_globals( $constants, $args );
+
+		if ( isset( $this->_component ) ) {
+			self::__dep();
+			$this->component = $this->_component;
+		}
+
+		if ( isset( $this->_init_priority ) ) {
+			self::__dep();
+			$this->priority_init = $this->_init_priority;
+		}
+
+		if ( isset( $this->_admin_init_priority ) ) {
+			self::__dep();
+			$this->priority_admin_init = $this->_admin_init_priority;
+		}
+	}
 
 	public function setup_actions()
 	{
 		if ( method_exists( $this, 'init' ) )
-			add_action( 'init', array( $this, 'init' ), $this->_init_priority );
+			add_action( 'init', array( $this, 'init' ), $this->priority_init );
 
 		if ( is_admin() ) {
 
 			if ( method_exists( $this, 'admin_init' ) )
-				add_action( 'admin_init', array( $this, 'admin_init' ), $this->_admin_init_priority );
+				add_action( 'admin_init', array( $this, 'admin_init' ), $this->priority_admin_init );
 
 			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 			add_action( 'admin_print_styles', array( $this, 'admin_print_styles' ) );
@@ -36,7 +57,7 @@ class gPluginAdminCore extends gPluginClassCore
 		if ( ! method_exists( $this, 'admin_settings_load' ) )
 			return;
 
-		$titles = $this->getFilters( $this->_component.'_settings_titles', array() );
+		$titles = $this->getFilters( $this->component.'_settings_titles', array() );
 
 		$hook = add_submenu_page( 'options-general.php',
 			( isset( $titles['title'] ) ? $titles['title'] : $this->args['title'] ),
@@ -55,9 +76,9 @@ class gPluginAdminCore extends gPluginClassCore
 		$uri = 'options-general.php?page='.$this->args['domain'];
 		$sub = isset( $_GET['sub'] ) ? trim( $_GET['sub'] ) : 'general';
 
-		$subs     = $this->getFilters( $this->_component.'_settings_subs', array() );
-		$messages = $this->getFilters( $this->_component.'_settings_messages', array() );
-		$titles   = $this->getFilters( $this->_component.'_settings_titles', array() );
+		$subs     = $this->getFilters( $this->component.'_settings_subs', array() );
+		$messages = $this->getFilters( $this->component.'_settings_messages', array() );
+		$titles   = $this->getFilters( $this->component.'_settings_titles', array() );
 
 		echo '<div class="wrap">';
 			printf( '<h1>%s</h1>', ( isset( $titles['title'] ) ? $titles['title'] : $this->args['title'] ) );
@@ -73,11 +94,11 @@ class gPluginAdminCore extends gPluginClassCore
 				$_SERVER['REQUEST_URI'] = remove_query_arg( array( 'message' ), $_SERVER['REQUEST_URI'] );
 			}
 
-			$file = $this->constants['plugin_dir'].'admin/'.$this->_component.'.admin.'.$sub.'.php';
+			$file = $this->constants['plugin_dir'].'admin/'.$this->component.'.admin.'.$sub.'.php';
 			if ( file_exists( $file ) )
 				require_once( $file );
 			else
-				do_action( $this->args['domain'].'_'.$this->_component.'_settings_sub_'.$sub, $uri, $sub );
+				do_action( $this->args['domain'].'_'.$this->component.'_settings_sub_'.$sub, $uri, $sub );
 
 		echo '<div class="clear"></div></div>';
 	}
@@ -86,8 +107,8 @@ class gPluginAdminCore extends gPluginClassCore
 	public function admin_settings_html( $uri, $sub )
 	{
 		echo '<form method="post" action="">';
-			settings_fields( $this->args['domain'].'_'.$this->_component.'_'.$sub );
-			do_settings_sections( $this->args['domain'].'_'.$this->_component.'_'.$sub );
+			settings_fields( $this->args['domain'].'_'.$this->component.'_'.$sub );
+			do_settings_sections( $this->args['domain'].'_'.$this->component.'_'.$sub );
 			submit_button();
 		echo '</form>';
 

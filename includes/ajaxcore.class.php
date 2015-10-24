@@ -3,8 +3,8 @@
 if ( ! class_exists( 'gPluginAjaxCore' ) ) { class gPluginAjaxCore extends gPluginClassCore
 {
 
-	var $_ajax_action = 'gplugin_ajax';
-	var $_ajax_nonce  = 'gplugin-ajax';
+	protected $ajax_action = 'gplugin_ajax';
+	protected $ajax_nonce  = 'gplugin-ajax';
 
 	public function setup_globals( $constants = array(), $args = array() )
 	{
@@ -14,12 +14,12 @@ if ( ! class_exists( 'gPluginAjaxCore' ) ) { class gPluginAjaxCore extends gPlug
 
 	public function setup_actions()
 	{
-		add_action( 'wp_ajax_'.$this->_ajax_action, array( $this, 'ajax' ) );
+		add_action( 'wp_ajax_'.$this->ajax_action, array( $this, 'ajax' ) );
 	}
 
 	public function ajax()
 	{
-		if ( wp_verify_nonce( $_REQUEST['_ajax_nonce'], $this->_ajax_nonce ) ) {
+		if ( wp_verify_nonce( $_REQUEST['_ajax_nonce'], $this->ajax_nonce ) ) {
 
 			$post = stripslashes_deep( $_POST );
 			$sub  = isset( $post['sub'] ) ? $post['sub'] : 'nosub';
