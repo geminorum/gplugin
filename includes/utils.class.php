@@ -1,6 +1,6 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
-if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils
+if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils extends gPluginClassCore
 {
 
 	public static function IP()

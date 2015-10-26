@@ -1,6 +1,6 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
-if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper
+if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper extends gPluginClassCore
 {
 	// https://gist.github.com/geminorum/5eec57816adb003ccefb
 	public static function joinString( $parts, $between, $last )

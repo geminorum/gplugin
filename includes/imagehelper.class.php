@@ -1,6 +1,6 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
-if ( ! class_exists( 'gPluginImageHelper' ) ) { class gPluginImageHelper
+if ( ! class_exists( 'gPluginImageHelper' ) ) { class gPluginImageHelper extends gPluginClassCore
 {
 
 ////////////////////////////////////////////////////////////////////////////////

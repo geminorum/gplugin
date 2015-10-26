@@ -1,6 +1,6 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
-if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
+if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPluginClassCore
 {
 
 	public static function log( $error = '{NO Error Code}', $data = array(), $wp_error = NULL )
@@ -81,7 +81,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 			'crop'      => $crop,
 			'post_type' => $post_type,
 		);
-		
+
 		self::__dep( 'gPluginWPHelper::registerImageSize' );
 	}
 
@@ -261,7 +261,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 	public static function is_debug()
 	{
 		self::__dep( 'gPluginWPHelper::isDebug()' );
-		
+
 		if ( WP_DEBUG && WP_DEBUG_DISPLAY && ! self::is_dev() )
 			return TRUE;
 
@@ -272,7 +272,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 	public static function is_dev()
 	{
 		self::__dep( 'gPluginWPHelper::isDev()' );
-		
+
 		if ( defined( 'WP_STAGE' )
 			&& 'development' == constant( 'WP_STAGE' ) )
 				return TRUE;
@@ -293,19 +293,19 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper
 		self::__dep( 'gPluginWPHelper::getUserRoles()' );
 		return self::getUserRoles( $object );
 	}
-	
+
 	public static function getUserRoles( $object = FALSE )
 	{
 		$roles = $object ? new stdClass : array();
-		
+
 		foreach ( get_editable_roles() as $role_name => $role )
-		
+
 			if ( $object )
 				$roles->{$role_name} = translate_user_role( $role['name'] );
-			
+
 			else
 				$roles[$role_name] = translate_user_role( $role['name'] );
-		
+
 		return $roles;
 	}
 

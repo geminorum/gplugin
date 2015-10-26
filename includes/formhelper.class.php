@@ -1,6 +1,6 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
-if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper
+if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper extends gPluginClassCore
 {
 
 	public static function hideIf( $print = TRUE )

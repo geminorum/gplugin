@@ -12,7 +12,7 @@ defined( 'GPLUGIN_SESSION_CRON_ROUTINE' ) or define( 'GPLUGIN_SESSION_CRON_ROUTI
  *
 **/
 
-class gPluginSessionHelper
+class gPluginSessionHelper extends gPluginClassCore
 {
 
 	public static function setup_actions()

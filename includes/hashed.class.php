@@ -1,6 +1,6 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
-if ( ! class_exists( 'gPluginHashed' ) ) { class gPluginHashed
+if ( ! class_exists( 'gPluginHashed' ) ) { class gPluginHashed extends gPluginClassCore
 {
 
 	// http://stackoverflow.com/a/6564310

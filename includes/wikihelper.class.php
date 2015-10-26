@@ -1,6 +1,6 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
-if ( ! class_exists( 'gPluginWikiHelper' ) ) { class gPluginWikiHelper
+if ( ! class_exists( 'gPluginWikiHelper' ) ) { class gPluginWikiHelper extends gPluginClassCore
 {
 
 /*

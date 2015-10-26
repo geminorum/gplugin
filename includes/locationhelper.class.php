@@ -4,7 +4,7 @@
 // http://en.wikipedia.org/wiki/ISO_3166-1
 // https://www.iso.org/obp/ui/
 
-if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper
+if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper extends gPluginClassCore
 {
 
 	public static function validate_zipcode( $zip = 0, $country_code = '' )

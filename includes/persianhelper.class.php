@@ -1,6 +1,6 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
-if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper
+if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper extends gPluginClassCore
 {
 
 	public static function l10n( $html, $strip = FALSE )

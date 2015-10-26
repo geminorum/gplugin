@@ -1,6 +1,6 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
-if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper
+if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper extends gPluginClassCore
 {
 
 	public static function mime( $extension )
