@@ -1,3 +1,7 @@
+### r27
+* gPluginTermMeta: deprecated
+* all extending from class core
+
 ### r26
 
 ### r25
