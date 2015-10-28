@@ -10,6 +10,18 @@ if ( ! class_exists( 'gPluginAjaxCore' ) ) { class gPluginAjaxCore extends gPlug
 	{
 		$this->current_blog = get_current_blog_id();
 		parent::setup_globals( $constants, $args );
+
+		// FIXME: DROP THIS
+		if ( isset( $this->_ajax_action ) ) {
+			self::__dep();
+			$this->ajax_action = $this->_ajax_action;
+		}
+
+		// FIXME: DROP THIS
+		if ( isset( $this->_ajax_nonce ) ) {
+			self::__dep();
+			$this->ajax_nonce = $this->_ajax_nonce;
+		}
 	}
 
 	public function setup_actions()

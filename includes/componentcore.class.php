@@ -6,9 +6,10 @@
 if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore extends gPluginClassCore
 {
 
-	var $_init_priority       = 10;
-	var $_admin_init_priority = 10;
-	var $_plugins_loaded      = 10;
+	protected $priority_init           = 10;
+	protected $priority_plugins_loaded = 10;
+	protected $priority_admin_init     = 10;
+
 
 	public function setup_globals( $constants = array(), $args = array() )
 	{
@@ -21,6 +22,24 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 			'options'      => array(),
 			'option_group' => FALSE,
 		) );
+
+		// FIXME: DROP THIS
+		if ( isset( $this->_plugins_loaded ) ) {
+			self::__dep();
+			$this->priority_plugins_loaded = $this->_plugins_loaded;
+		}
+
+		// FIXME: DROP THIS
+		if ( isset( $this->_init_priority ) ) {
+			self::__dep();
+			$this->priority_init = $this->_init_priority;
+		}
+
+		// FIXME: DROP THIS
+		if ( isset( $this->_admin_init_priority ) ) {
+			self::__dep();
+			$this->priority_admin_init = $this->_admin_init_priority;
+		}
 
 		if ( FALSE === $this->args['option_group'] )
 			$this->inject( 'args', array( 'option_group' => $this->args['domain'] ) );
@@ -65,12 +84,9 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 
 	public function setup_actions()
 	{
-		add_action( 'init', array( $this, 'init' ), $this->_init_priority );
-		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ), $this->_plugins_loaded );
-
-		if ( is_admin() ) {
-			add_action( 'admin_init', array( $this, 'admin_init' ), $this->_admin_init_priority );
-		}
+		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ), $this->priority_plugins_loaded );
+		add_action( 'init', array( $this, 'init' ), $this->priority_init );
+		add_action( 'admin_init', array( $this, 'admin_init' ), $this->priority_admin_init );
 	}
 
 	public function init()

@@ -3,27 +3,45 @@
 if ( ! class_exists( 'gPluginModuleCore' ) ) { class gPluginModuleCore extends gPluginClassCore
 {
 
-	var $_init_priority       = 10;
-	var $_plugins_loaded      = 10;
-	var $_admin_init_priority = 10;
+	protected $priority_init           = 10;
+	protected $priority_plugins_loaded = 10;
+	protected $priority_admin_init     = 10;
 
 	public function setup_globals( $constants = array(), $args = array() )
 	{
 		$this->current_blog = get_current_blog_id();
 		parent::setup_globals( $constants, $args );
+
+		// FIXME: DROP THIS
+		if ( isset( $this->_plugins_loaded ) ) {
+			self::__dep();
+			$this->priority_plugins_loaded = $this->_plugins_loaded;
+		}
+
+		// FIXME: DROP THIS
+		if ( isset( $this->_init_priority ) ) {
+			self::__dep();
+			$this->priority_init = $this->_init_priority;
+		}
+
+		// FIXME: DROP THIS
+		if ( isset( $this->_admin_init_priority ) ) {
+			self::__dep();
+			$this->priority_admin_init = $this->_admin_init_priority;
+		}
 	}
 
 	public function setup_actions()
 	{
-		if ( method_exists( $this, 'init' ) )
-			add_action( 'init', array( $this, 'init' ), $this->_init_priority );
-
 		if ( method_exists( $this, 'plugins_loaded' ) )
-			add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ), $this->_plugins_loaded );
+			add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ), $this->priority_plugins_loaded );
+
+		if ( method_exists( $this, 'init' ) )
+			add_action( 'init', array( $this, 'init' ), $this->priority_init );
 
 		if ( is_admin() ) {
 			if ( method_exists( $this, 'admin_init' ) )
-				add_action( 'admin_init', array( $this, 'admin_init' ), $this->_admin_init_priority );
+				add_action( 'admin_init', array( $this, 'admin_init' ), $this->priority_admin_init );
 
 			if ( method_exists( $this, 'admin_menu' ) )
 				add_action( 'admin_menu', array( $this, 'admin_menu' ) );
