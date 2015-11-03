@@ -5,7 +5,7 @@ class gPluginMetaCore extends gPluginClassCore
 {
 
 	// MUST DEPREATED
-	function admin_field( $field, $fields, $post, $ltr = false )
+	function admin_field( $field, $fields, $post, $ltr = FALSE )
 	{
 		global $gEditorial;
 
@@ -26,14 +26,14 @@ class gPluginMetaCore extends gPluginClassCore
 		global $gEditorial;
 
 		if ( is_object( $gEditorial ) )
-			return true;
+			return TRUE;
 
-		return false;
+		return FALSE;
 
 		// TODO : find a sane method!!
 	}
 
-	public static function get_the_term( $taxonomy, $b = '', $a = '', $f = false, $args = array() )
+	public static function get_the_term( $taxonomy, $b = '', $a = '', $f = FALSE, $args = array() )
 	{
 		global $post;
 
@@ -42,7 +42,7 @@ class gPluginMetaCore extends gPluginClassCore
 
 		$args = wp_parse_args( $args, array(
 			'id'    => $post->ID,
-			'echo'  => true,
+			'echo'  => TRUE,
 			'def'   => '',
 			'sep'   => ', ',
 			'class' => 'term',
@@ -55,7 +55,7 @@ class gPluginMetaCore extends gPluginClassCore
 
 			foreach ( $terms as $term ) {
 				$desc = get_term_field( 'description', $term->term_id, $term->taxonomy );
-				//$desc = is_wp_error( $desc ) ? '' : wpautop( $desc, false );
+				//$desc = is_wp_error( $desc ) ? '' : wpautop( $desc, FALSE );
 				$desc = is_wp_error( $desc ) ? '' : strip_tags( $desc );
 				$html .= '<a href="'.get_term_link( $term, $taxonomy ).'" title="'.esc_attr( $desc ).'" class="'.$args['class'].'" >'.$term->name.'</a>'.$args['sep'];
 			}

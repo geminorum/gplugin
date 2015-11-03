@@ -20,16 +20,15 @@ if ( ! class_exists( 'gPluginDateTimeHelper' ) ) { class gPluginDateTimeHelper e
 		$timezone = timezone_name_from_abbr( '', $utc_offset );
 
 		// last try, guess timezone string manually
-		if ( $timezone === FALSE ) {
+		if ( FALSE === $timezone ) {
 
 			$is_dst = date( 'I' );
 
-			foreach ( timezone_abbreviations_list() as $abbr ) {
-				foreach ( $abbr as $city ) {
-					if ( $city['dst'] == $is_dst &&  $city['offset'] == $utc_offset )
-						return $city['timezone_id'];
-				}
-			}
+			foreach ( timezone_abbreviations_list() as $abbr )
+				foreach ( $abbr as $city )
+					if ( $city['dst'] == $is_dst
+						&& $city['offset'] == $utc_offset )
+							return $city['timezone_id'];
 		}
 
 		return 'UTC'; // fallback

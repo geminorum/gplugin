@@ -15,46 +15,82 @@ if ( ! class_exists( 'gPluginHashed' ) ) { class gPluginHashed extends gPluginCl
 ////////////////////////////////////////////////////////////////////////////////
 /// NOT USED YET ---------------------------------------------------------------
 
+	/// Random Number Generator
+	// @SOURCE: http://www.sitepoint.com/php-random-number-generator/
+	// gPluginHashed::seed(42); // set seed
+	// gPluginHashed::num(1, 100); // numbers between 1 and 100
+	private static $RSeed = 0; // random seed
+	 // set seed
+	public static function seed( $s = 0 )
+	{
+		self::$RSeed = abs( intval( $s ) ) % 9999999 + 1;
+		self::num();
+	}
 
+	public static function num( $min = 0, $max = 9999999 )
+	{
+		if ( self::$RSeed == 0 )
+			self::seed( mt_rand() );
 
-	/*
+		self::$RSeed = ( self::$RSeed * 125 ) % 2796203;
+		return self::$RSeed % ( $max - $min + 1 ) + $min;
+	}
 
-	http://www.fileformat.info/tool/hash.htm
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
-	http://wordpress.org/plugins/wp-hashed-ids/
-	http://www.hashids.org/php/
+	/// generating unique strings
+	// sometimes you don't want to create any files but just random string of given length (eg. to generate password).
+	// @SOURCE: http://ahoj.io/generating-temporary-files-in-php
+	// string(20) "H5DA9GPT36DM24MZHILA"
+	// string(20) "LBMM6I8CLY1437ZK241O"
+	// string(20) "OE431O8KVE15ER0KB82V"
+	public static function uniqueString( $max = 20 )
+	{
+		$string = '';
 
-	http://stackoverflow.com/a/2237247
+		for ( $i=0; $i < $max; $i++ ) {
+			$d = rand( 1,30 ) % 2;
+			$char = $d ? chr( rand( 65, 90 ) ) : chr( rand( 48, 57 ) );
+			$string .= $char;
+		}
 
-	http://kvz.io/blog/2009/06/10/create-short-ids-with-php-like-youtube-or-tinyurl/
-	http://www.codinghorror.com/blog/2007/08/url-shortening-hashes-in-practice.html
+		return $string;
+	}
 
-	http://blog.kevburnsjr.com/php-unique-hash
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
-	*/
-
-	//http://programanddesign.com/php/base62-encode/
-	// If you have large integers and you want to shrink them down in size for whatever reason, you can use this code. Should be easy enough to extend if you want even higher bases (just add a few more chars and increase the base).
+	/// BASE62 ENCODE
+	// @SOURCE: http://programanddesign.com/php/base62-encode/
+	// If you have large integers and you want to shrink them down in size for
+	// whatever reason, you can use this code. Should be easy enough to extend
+	// if you want even higher bases (just add a few more chars and increase the base).
 
 	/**
 	 * Converts a base 10 number to any other base.
 	 *
 	 * @param int $val   Decimal number
-	 * @param int $base  Base to convert to. If null, will use strlen($chars) as base.
+	 * @param int $base  Base to convert to. If NULL, will use strlen($chars) as base.
 	 * @param string $chars Characters used in base, arranged lowest to highest. Must be at least $base characters long.
 	 *
 	 * @return string    Number converted to specified base
 	 */
-	public static function base_encode( $val, $base = 62, $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' )
+	public static function baseEncode( $val, $base = 62, $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' )
 	{
 		if ( ! isset( $base ) )
 			$base = strlen( $chars );
+
 		$str = '';
 
 		do {
+
 			$m = bcmod( $val, $base );
 			$str = $chars[$m].$str;
 			$val = bcdiv( bcsub( $val, $m ), $base );
+
 		} while ( bccomp( $val,0 ) > 0 );
 
 		return $str;
@@ -64,15 +100,16 @@ if ( ! class_exists( 'gPluginHashed' ) ) { class gPluginHashed extends gPluginCl
 	* Convert a number from any base to base 10
 	*
 	* @param string $str   Number
-	* @param int $base  Base of number. If null, will use strlen($chars) as base.
+	* @param int $base  Base of number. If NULL, will use strlen($chars) as base.
 	* @param string $chars Characters use in base, arranged lowest to highest. Must be at least $base characters long.
 	*
 	* @return int    Number converted to base 10
 	*/
-	public static function base_decode( $str, $base = 62, $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' )
+	public static function baseDecode( $str, $base = 62, $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' )
 	{
 		if ( ! isset( $base ) )
 			$base = strlen( $chars );
+
 		$len = strlen( $str );
 		$val = 0;
 		$arr = array_flip( str_split( $chars ) );
@@ -83,11 +120,14 @@ if ( ! class_exists( 'gPluginHashed' ) ) { class gPluginHashed extends gPluginCl
 		return $val;
 	}
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
-
-	// http://kvz.io/blog/2009/06/10/create-short-ids-with-php-like-youtube-or-tinyurl/
+	/// Youtube-Like IDs
+	// @SOURCE: http://kvz.io/blog/2009/06/10/create-short-ids-with-php-like-youtube-or-tinyurl/
 	// alphaID(9007199254740989); -> PpQXn7COf
-	// alphaID('PpQXn7COf', true); -> 9007199254740989
+	// alphaID('PpQXn7COf', TRUE ); -> 9007199254740989
 
 	/**
 	 * Translates a number to a short alhanumeric version
@@ -96,7 +136,7 @@ if ( ! class_exists( 'gPluginHashed' ) ) { class gPluginHashed extends gPluginCl
 	 * to a shorter version in letters e.g.:
 	 * 9007199254740989 --> PpQXn7COf
 	 *
-	 * specifiying the second argument true, it will
+	 * specifiying the second argument TRUE, it will
 	 * translate back e.g.:
 	 * PpQXn7COf --> 9007199254740989
 	 *
@@ -138,8 +178,8 @@ if ( ! class_exists( 'gPluginHashed' ) ) { class gPluginHashed extends gPluginCl
 	 * $alpha_in  = "SpQXn7Cb";
 	 *
 	 * // Execute //
-	 * $alpha_out  = alphaID($number_in, false, 8);
-	 * $number_out = alphaID($alpha_in, true, 8);
+	 * $alpha_out  = alphaID( $number_in, FALSE, 8 );
+	 * $number_out = alphaID( $alpha_in, TRUE, 8 );
 	 *
 	 * if ($number_in != $number_out) {
 	 *	 echo "Conversion failure, ".$alpha_in." returns ".$number_out." instead of the ";
@@ -153,7 +193,7 @@ if ( ! class_exists( 'gPluginHashed' ) ) { class gPluginHashed extends gPluginCl
 	 * // Show //
 	 * echo $number_out." => ".$alpha_out."\n";
 	 * echo $alpha_in." => ".$number_out."\n";
-	 * echo alphaID(238328, false)." => ".alphaID(alphaID(238328, false), true)."\n";
+	 * echo alphaID(238328, FALSE)." => ".alphaID(alphaID(238328, FALSE), TRUE )."\n";
 	 *
 	 * // expects:
 	 * // 2188847690240 => SpQXn7Cb
@@ -171,111 +211,100 @@ if ( ! class_exists( 'gPluginHashed' ) ) { class gPluginHashed extends gPluginCl
 	 * @link	  http://kevin.vanzonneveld.net/
 	 *
 	 * @param mixed   $in	  String or long input to translate
-	 * @param boolean $to_num  Reverses translation when true
+	 * @param boolean $to_num  Reverses translation when TRUE
 	 * @param mixed   $pad_up  Number or boolean padds the result up to a specified length
 	 * @param string  $passKey Supplying a password makes it harder to calculate the original ID
 	 *
 	 * @return mixed string or long
 	 */
-	public static function alphaID( $in, $to_num = false, $pad_up = false, $passKey = null )
+	public static function alphaID( $in, $to_num = FALSE, $pad_up = FALSE, $passKey = NULL )
 	{
 		$index = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		if ($passKey !== null) {
+
+		if ( NULL !== $passKey ) {
+
 			// Although this function's purpose is to just make the
 			// ID short - and not so much secure,
 			// with this patch by Simon Franz (http://blog.snaky.org/)
 			// you can optionally supply a password to make it harder
 			// to calculate the corresponding numeric ID
 
-			for ($n = 0; $n<strlen($index); $n++) {
-				$i[] = substr( $index,$n ,1);
-			}
+			for ( $n = 0; $n < strlen( $index ); $n++ )
+				$i[] = substr( $index, $n, 1 );
 
-			$passhash = hash('sha256',$passKey);
-			$passhash = (strlen($passhash) < strlen($index))
-				? hash('sha512',$passKey)
+			$passhash = hash( 'sha256', $passKey );
+			$passhash = ( strlen( $passhash ) < strlen( $index ) )
+				? hash( 'sha512', $passKey )
 				: $passhash;
 
-			for ($n=0; $n < strlen($index); $n++) {
-				$p[] =  substr($passhash, $n ,1);
-			}
+			for ( $n=0; $n < strlen( $index ); $n++ )
+				$p[] =  substr( $passhash, $n, 1 );
 
-			array_multisort($p,  SORT_DESC, $i);
-			$index = implode($i);
+			array_multisort( $p, SORT_DESC, $i );
+			$index = implode( $i );
 		}
 
-		$base  = strlen($index);
+		$base = strlen( $index );
 
-		if ($to_num) {
+		if ( $to_num ) {
+
 			// Digital number  <<--  alphabet letter code
-			$in  = strrev($in);
+
+			$in  = strrev( $in );
 			$out = 0;
-			$len = strlen($in) - 1;
-			for ($t = 0; $t <= $len; $t++) {
-				$bcpow = bcpow($base, $len - $t);
-				$out   = $out + strpos($index, substr($in, $t, 1)) * $bcpow;
+			$len = strlen( $in ) - 1;
+
+			for ( $t = 0; $t <= $len; $t++ ) {
+				$bcpow = bcpow( $base, $len - $t );
+				$out   = $out + strpos( $index, substr( $in, $t, 1 ) ) * $bcpow;
 			}
 
-			if (is_numeric($pad_up)) {
+			if ( is_numeric( $pad_up ) ) {
 				$pad_up--;
-				if ($pad_up > 0) {
+				if ( $pad_up > 0 )
 					$out -= pow($base, $pad_up);
-				}
-			}
-			$out = sprintf('%F', $out);
-			$out = substr($out, 0, strpos($out, '.'));
-		} else {
-			// Digital number  -->>  alphabet letter code
-			if (is_numeric($pad_up)) {
-				$pad_up--;
-				if ($pad_up > 0) {
-					$in += pow($base, $pad_up);
-				}
 			}
 
-			$out = "";
-			for ($t = floor(log($in, $base)); $t >= 0; $t--) {
-				$bcp = bcpow($base, $t);
-				$a   = floor($in / $bcp) % $base;
-				$out = $out . substr($index, $a, 1);
-				$in  = $in - ($a * $bcp);
+			$out = sprintf( '%F', $out );
+			$out = substr( $out, 0, strpos( $out, '.' ) );
+
+		} else {
+
+			// Digital number  -->>  alphabet letter code
+
+			if ( is_numeric( $pad_up ) ) {
+				$pad_up--;
+				if ( $pad_up > 0 )
+					$in += pow( $base, $pad_up );
 			}
-			$out = strrev($out); // reverse
+
+			$out = '';
+
+			for ( $t = floor( log( $in, $base ) ); $t >= 0; $t-- ) {
+				$bcp = bcpow( $base, $t );
+				$a   = floor( $in / $bcp ) % $base;
+				$out = $out.substr( $index, $a, 1 );
+				$in  = $in - ( $a * $bcp );
+			}
+
+			$out = strrev( $out ); // reverse
 		}
 
 		return $out;
 	}
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
+	/*
+	http://www.fileformat.info/tool/hash.htm
+	http://wordpress.org/plugins/wp-hashed-ids/
+	http://www.hashids.org/php/
+	http://stackoverflow.com/a/2237247
+	http://kvz.io/blog/2009/06/10/create-short-ids-with-php-like-youtube-or-tinyurl/
+	http://www.codinghorror.com/blog/2007/08/url-shortening-hashes-in-practice.html
+	http://blog.kevburnsjr.com/php-unique-hash
+	*/
 
-} }
-
-
-// http://www.sitepoint.com/php-random-number-generator/
-/*
-gPluginHashedRandom::seed(42); // set seed
-
-// echo 10 numbers between 1 and 100
-for ($i = 0; $i < 10; $i++) {
-	echo gPluginHashedRandom::num(1, 100) . '<br />';
-}
-*/
-if ( ! class_exists( 'gPluginHashedRandom' ) ) { class gPluginHashedRandom
-{
-	private static $RSeed = 0; // random seed
-	 // set seed
-	public static function seed( $s = 0 )
-	{
-		self::$RSeed = abs( intval( $s ) ) % 9999999 + 1;
-		self::num();
-	}
-
-	// generate random number
-	public static function num( $min = 0, $max = 9999999 )
-	{
-		if ( self::$RSeed == 0 )
-			self::seed( mt_rand() );
-		self::$RSeed = ( self::$RSeed * 125 ) % 2796203;
-		return self::$RSeed % ($max - $min + 1) + $min;
-	}
 } }

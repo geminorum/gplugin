@@ -45,7 +45,7 @@ if ( ! class_exists( 'gPluginAjaxCore' ) ) { class gPluginAjaxCore extends gPlug
 			if ( method_exists( $this, 'sub_'.$sub ) )
 				$results = call_user_func_array ( array( $this, 'sub_'.$sub ), array( $post ) );
 
-			//	if false /error / if not success
+			//	if FALSE /error / if not success
 
 		} else {
 			self::sendError( __( 'Cheatin&#8217; uh?' ) );

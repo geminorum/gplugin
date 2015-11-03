@@ -9,9 +9,10 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper extends g
 			echo ' style="display:none;"';
 	}
 
-	// FIXME: DEPRECATED : use gPluginFormHelper::headerNav()
+	// FIXME: DEPRECATED
 	public static function wpSettingsHeaderNav( $settings_uri = '', $active = '', $sub_pages = array(), $class_prefix = 'nav-tab-', $tag = 'h2' )
 	{
+		self::__dep( 'gPluginFormHelper::headerNav()' );
 		self::headerNav( $settings_uri, $active, $sub_pages, $class_prefix, $tag );
 	}
 
@@ -53,9 +54,11 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper extends g
 		), $html );
 	}
 
-	// DEPRECATED: use gPluginFormHelper::headerTabs()
+	// FIXME: DEPRECATED
 	public static function wpNavTabs( $tabs, $active = 'manual', $class_prefix = 'nav-tab-', $tag = 'h2' )
 	{
+		self::__dep( 'gPluginFormHelper::headerTabs()' );
+
 		echo '<'.$tag.' class="nav-tab-wrapper">';
 		foreach ( $tabs as $tab => $title )
 			echo '<a href="#" class="nav-tab '.$class_prefix.$tab.( $active == $tab ? ' nav-tab-active' : '' ).'" rel="'.$tab.'" >'.$title.'</a>';
@@ -150,8 +153,11 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper extends g
 		return $html.$content.'</'.$tag.'>'.$sep;
 	}
 
+	// FIXME: DEPRECATED
 	public static function select( $list, $atts = array(), $selected = 0, $prop = FALSE, $none = FALSE, $none_val = 0 )
 	{
+		self::__dep( 'gPluginFormHelper::dropdown()' );
+
 		$html = self::_tag_open( 'select', $atts, TRUE );
 
 		if ( $none )
@@ -164,9 +170,11 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper extends g
 		return $html.'</select>';
 	}
 
-	// must dep
+	// FIXME: DEPRECATED
 	function getFieldTitle( $column )
 	{
+		self::__dep();
+
 		if ( isset( $field['type'] ) ) {
 			if ( 'delete' == $field['type'] )
 				return '<span class="field-delete-all" title="'.$field['title'].'"></span>';
@@ -174,9 +182,11 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper extends g
 		return ( isset( $field['title'] ) ? $field['title'] : '' );
 	}
 
-	// must dep / use : gPluginUtils::reKey()
-	function reKey( $list, $key )
+	// FIXME: DEPRECATED
+	public static function reKey( $list, $key )
 	{
+		self::__dep( 'gPluginUtils::reKey()' );
+
 		if ( ! empty( $list ) ) {
 			$ids = wp_list_pluck( $list, $key );
 			$list = array_combine( $ids, $list );
@@ -227,8 +237,11 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper extends g
 		return $html.'</select>';
 	}
 
-	function dropdown_e( $list, $name, $prop = FALSE, $selected = 0, $none = FALSE, $none_val = 0 )
+	// FIXME: DEPRECATED
+	public static function dropdown_e( $list, $name, $prop = FALSE, $selected = 0, $none = FALSE, $none_val = 0 )
 	{
+		self::__dep();
+
 		?><select name="<?php echo $name; ?>" id="<?php echo $name; ?>"><?php
 		if ( $none )
 			echo '<option value="'.$none_val.'" '.selected( $selected, $none_val, FALSE ).'>'.esc_html( $none ).'</option>';

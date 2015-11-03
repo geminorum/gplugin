@@ -40,13 +40,13 @@ if ( ! class_exists( 'gPluginFilteredCore' ) ) { class gPluginFilteredCore exten
 		return $this->filtered[$group];
 	}
 
-	// helper
+	// HELPER
 	public static function error( $message )
 	{
 		return gPluginWPHelper::notice( $message, 'error fade', FALSE );
 	}
 
-	// helper
+	// HELPER
 	public static function updated( $message )
 	{
 		return gPluginWPHelper::notice( $message, 'updated fade', FALSE );

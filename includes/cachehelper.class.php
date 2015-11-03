@@ -41,8 +41,8 @@ class gPluginCacheHelper extends gPluginClassCore
 		// Queries GA, relates to internal posts
 		$top_post_objects = zt_magic_GA_querier( $args );
 		// If no objects are returned, exit the function
-		if ( false === $top_post_objects )
-			return false;
+		if ( FALSE === $top_post_objects )
+			return FALSE;
 
 		// Start building the HTML
 		$html = '<ul>';
@@ -62,7 +62,7 @@ class gPluginCacheHelper extends gPluginClassCore
 
 	// https://gist.github.com/tollmanz/3882208
 	// Get Google Analytics Data With Variable Arguments
-	function zt_get_top_posts_ANOTHER( $args, $force = false )
+	function zt_get_top_posts_ANOTHER( $args, $force = FALSE )
 	{
 		// Define our cache key
 		$cache_key = 'zt-top-posts';
@@ -71,13 +71,13 @@ class gPluginCacheHelper extends gPluginClassCore
 		$top_posts = wp_cache_get( $cache_key );
 
 		// If not found in cache or forced, regenerate
-		if ( false === $top_posts || true === $force ) {
+		if ( FALSE === $top_posts || TRUE === $force ) {
 
 			// Get posts from GA
 			$top_posts = zt_generate_top_posts( $args );
 
 			// If none were found, save a dummy value so the caller knows that
-			if ( false === $top_posts )
+			if ( FALSE === $top_posts )
 			$top_posts = 'none-found';
 
 			// Set the result to the cache
@@ -89,7 +89,7 @@ class gPluginCacheHelper extends gPluginClassCore
 
 	// https://gist.github.com/tollmanz/3882215
 	// Cache Google Analytics Data with Unique Key
-	function zt_get_top_posts( $args, $force = false )
+	function zt_get_top_posts( $args, $force = FALSE )
 	{
 		// Define our cache key
 		$identifier = md5( maybe_serialize( $args ) );
@@ -102,13 +102,13 @@ class gPluginCacheHelper extends gPluginClassCore
 		$top_posts = wp_cache_get( $cache_key, $cache_group );
 
 		// If not found in cache or forced, regenerate
-		if ( false === $top_posts || true === $force ) {
+		if ( FALSE === $top_posts || TRUE === $force ) {
 
 			// Get posts from GA
 			$top_posts = zt_generate_top_posts( $args );
 
 			// If none were found, save a dummy value so the caller knows that
-			if ( false === $top_posts )
+			if ( FALSE === $top_posts )
 				$top_posts = 'none-found';
 
 			// Set the result to the cache
@@ -120,12 +120,12 @@ class gPluginCacheHelper extends gPluginClassCore
 
 	// Basic Incrementor/Versioning Pattern
 	// https://gist.github.com/tollmanz/3882524
-	function get_object( $force = false )
+	function get_object( $force = FALSE )
 	{
 		$cache_key = 'my-object-' . get_incrementor();
 		$object = wp_cache_get( $cache_key );
 
-		if ( false === $object ) {
+		if ( FALSE === $object ) {
 			$object = regenerate_cached_object();
 			wp_cache_set( $cache_key, $object, 3600 );
 		}
@@ -133,12 +133,12 @@ class gPluginCacheHelper extends gPluginClassCore
 		return $object;
 	}
 
-	function get_incrementor( $refresh = false )
+	function get_incrementor( $refresh = FALSE )
 	{
 		$incrementor_key = 'my-incrementor';
 		$incrementor_value = wp_cache_get( $incrementor_key );
 
-		if ( false === $incrementor_value || true === $refresh ) {
+		if ( FALSE === $incrementor_value || TRUE === $refresh ) {
 			$incrementor_value = time();
 			wp_cache_set( $incrementor_key, $incrementor_value );
 		}
@@ -148,7 +148,7 @@ class gPluginCacheHelper extends gPluginClassCore
 
 	// Get Google Analytics Data With Incrementor
 	// https://gist.github.com/tollmanz/3882534
-	function zt_get_top_posts_ANOTHERXX( $args, $force = false )
+	function zt_get_top_posts_ANOTHERXX( $args, $force = FALSE )
 	{
 		// Define the cache key
 		$identifier = md5( maybe_serialize( $args ) );
@@ -161,13 +161,13 @@ class gPluginCacheHelper extends gPluginClassCore
 		$top_posts = wp_cache_get( $cache_key, $cache_group );
 
 		// If not found in cache or forced, regenerate
-		if ( false === $top_posts || true === $force ) {
+		if ( FALSE === $top_posts || TRUE === $force ) {
 
 			// Get posts from GA
 			$top_posts = zt_generate_top_posts( $args );
 
 			// If none were found, save a dummy value so the caller knows that
-			if ( false === $top_posts )
+			if ( FALSE === $top_posts )
 				$top_posts = 'none-found';
 
 			// Set the result to the cache
@@ -177,13 +177,13 @@ class gPluginCacheHelper extends gPluginClassCore
 		return $top_posts;
 	}
 
-	function zt_get_incrementor( $refresh = false )
+	function zt_get_incrementor( $refresh = FALSE )
 	{
 		$incrementor_key = 'google-analytics';
 		$incrementor_group = 'zt-incrementors';
 		$incrementor_value = wp_cache_get( $incrementor_key, $incrementor_group );
 
-		if ( false === $incrementor_value || true === $refresh ) {
+		if ( FALSE === $incrementor_value || TRUE === $refresh ) {
 			$incrementor_value = time();
 			wp_cache_set( $incrementor_key, $incrementor_value, $incrementor_group );
 		}
@@ -202,13 +202,13 @@ class gPluginCacheHelper extends gPluginClassCore
 		$top_posts = wp_cache_get( $cache_key );
 
 		// If not found in cache regenerate
-		if ( false === $top_posts ) {
+		if ( FALSE === $top_posts ) {
 
 			// Get posts from Google Analytics
 			$top_posts = zt_generate_top_posts();
 
 			// If none were found, save a dummy value so the caller knows that
-			if ( false === $top_posts )
+			if ( FALSE === $top_posts )
 				$top_posts = 'none-found';
 
 			// Set the result to the cache
@@ -220,7 +220,7 @@ class gPluginCacheHelper extends gPluginClassCore
 
 	// Cache Google Analytics Data with Force Argument
 	// https://gist.github.com/tollmanz/3882195
-	function zt_get_top_posts_ANOTHERXXXX( $force = false )
+	function zt_get_top_posts_ANOTHERXXXX( $force = FALSE )
 	{
 		// Define our cache key
 		$cache_key = 'zt-top-posts';
@@ -229,13 +229,13 @@ class gPluginCacheHelper extends gPluginClassCore
 		$top_posts = wp_cache_get( $cache_key );
 
 		// If not found in cache or forced, regenerate
-		if ( false === $top_posts || true === $force ) {
+		if ( FALSE === $top_posts || TRUE === $force ) {
 
 			// Get posts from GA
 			$top_posts = zt_generate_top_posts();
 
 			// If none were found, save a dummy value so the caller knows that
-			if ( false === $top_posts )
+			if ( FALSE === $top_posts )
 				$top_posts = 'none-found';
 
 			// Set the result to the cache
@@ -247,7 +247,7 @@ class gPluginCacheHelper extends gPluginClassCore
 
 	function zt_refresh_top_posts()
 	{
-		return zt_get_top_posts( true );
+		return zt_get_top_posts( TRUE );
 	}
 
 	// Get Google Analytics Data
@@ -279,8 +279,8 @@ class gPluginCacheHelper extends gPluginClassCore
 		$top_post_objects = zt_magic_GA_querier( $args );
 
 		// If no objects are returned, exit the function
-		if ( false === $top_post_objects )
-			return false;
+		if ( FALSE === $top_post_objects )
+			return FALSE;
 
 		// Start building the HTML
 		$html = '<ul>';

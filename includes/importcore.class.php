@@ -69,7 +69,7 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 	}
 
 	// helper
-	function l10n( $string, $strip = false )
+	function l10n( $string, $strip = FALSE )
 	{
 		return gPluginPersianHelper::l10n( trim( $string ), $strip );
 	}

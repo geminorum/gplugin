@@ -234,7 +234,7 @@ if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper extends g
 				}
 			}
 
-			return true;
+			return TRUE;
 
 		} else if ( is_file( $path ) ) {
 
@@ -278,13 +278,13 @@ if ( ! class_exists( 'gPluginFileHelper' ) ) { class gPluginFileHelper extends g
 		// http://en.wikipedia.org/wiki/Byte_order_mark#UTF-8
 		$bom = pack('CCC', 0xEF, 0xBB, 0xBF);
 
-		$first = true;
+		$first = TRUE;
 		foreach ($file as $line) {
 			if ($first && substr($line, 0, 3) === $bom) {
 				$line = substr($line, 3);
 			}
 
-			$first = false;
+			$first = FALSE;
 
 			// your lines don't have a BOM, do you shit
 		}

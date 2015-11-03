@@ -178,7 +178,6 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper e
 		return FALSE;
 	}
 
-	// Originally from Easy Digital Downloads
 	public static function get_states( $country = NULL )
 	{
 		if ( ! empty( $country ) && method_exists( 'gPluginLocationHelper', 'get_states_'.$country ) )
@@ -383,8 +382,8 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper e
 	public static function get_states_HK()
 	{
 		return array(
-			'HONG KONG' => 'Hong Kong Island',
-			'KOWLOON' => 'Kowloon',
+			'HONG KONG'       => 'Hong Kong Island',
+			'KOWLOON'         => 'Kowloon',
 			'NEW TERRITORIES' => 'New Territories'
 		);
 	}
@@ -935,37 +934,37 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper e
 	public static function get_next_states_IR( $state = 'TEH' )
 	{
 		$array = array(
-			'EAZ' => array( 'WEZ','ARD','ZAN', ),
-			'WEZ' => array( 'EAZ','ZAN','KRD', ),
-			'ARD' => array( 'EAZ','ZAN','GIL', ),
-			'EFH' => array( 'CMB','KZT','SMN','FAR','QOM','KBA','LRS','MKZ','YZD' ),
-			'ALZ' => array( 'TEH','QAZ','MZD','MKZ', ),
-			'ILM' => array( 'KZT','KRM','LRS', ),
-			'BSH' => array( 'KZT','FAR','KBA', ),
-			'TEH' => array( 'ALZ','SMN','QOM','MZD','MKZ', ),
-			'CMB' => array( 'EFH','KZT','KBA', ),
-			'SKH' => array( 'RKH','SBL','KRB','YZD', ),
-			'RKH' => array( 'SKH','NKH','SMN','YZD', ),
-			'NKH' => array( 'RKH','SMN','GLS', ),
-			'KZT' => array( 'EFH','ILM','BSH','CMB','KBA','LRS', ),
-			'ZAN' => array( 'EAZ','WEZ','ARD','QAZ','KRD','GIL','HMD', ),
-			'SMN' => array( 'EFH','TEH','RKH','NKH','QOM','GLS','MZD','YZD', ),
-			'SBL' => array( 'SKH','KRB','HRM', ),
-			'FAR' => array( 'EFH','BSH','KRB','KBA','HRM','YZD', ),
-			'QAZ' => array( 'ALZ','ZAN','GIL','MZD','MKZ','HMD', ),
-			'QOM' => array( 'EFH','TEH','SMN','MKZ', ),
-			'KRD' => array( 'WEZ','ZAN','KRM','HMD', ),
-			'KRB' => array( 'SKH','SBL','FAR','HRM','YZD', ),
-			'KRM' => array( 'ILM','KRD','LRS','HMD', ),
-			'KBA' => array( 'EFH','BSH','CMB','KZT','FAR', ),
-			'GLS' => array( 'NKH','SMN','MZD', ),
-			'GIL' => array( 'ARD','ZAN','QAZ','MZD', ),
-			'LRS' => array( 'EFH','ILM','KZT','KRM','MKZ','HMD', ),
-			'MZD' => array( 'ALZ','TEH','SMN','QAZ','GLS','GIL', ),
-			'MKZ' => array( 'EFH','ALZ','TEH','QAZ','QOM','LRS','HMD', ),
-			'HRM' => array( 'SBL','FAR','KRB', ),
-			'HMD' => array( 'ZAN','QAZ','KRD','KRM','LRS','MKZ', ),
-			'YZD' => array( 'EFH','SKH','RKH','SMN','FAR','KRB', ),
+			'EAZ' => array( 'WEZ', 'ARD', 'ZAN', ),
+			'WEZ' => array( 'EAZ', 'ZAN', 'KRD', ),
+			'ARD' => array( 'EAZ', 'ZAN', 'GIL', ),
+			'EFH' => array( 'CMB', 'KZT', 'SMN', 'FAR', 'QOM', 'KBA', 'LRS', 'MKZ', 'YZD', ),
+			'ALZ' => array( 'TEH', 'QAZ', 'MZD', 'MKZ', ),
+			'ILM' => array( 'KZT', 'KRM', 'LRS', ),
+			'BSH' => array( 'KZT', 'FAR', 'KBA', ),
+			'TEH' => array( 'ALZ', 'SMN', 'QOM', 'MZD', 'MKZ', ),
+			'CMB' => array( 'EFH', 'KZT', 'KBA', ),
+			'SKH' => array( 'RKH', 'SBL', 'KRB', 'YZD', ),
+			'RKH' => array( 'SKH', 'NKH', 'SMN', 'YZD', ),
+			'NKH' => array( 'RKH', 'SMN', 'GLS', ),
+			'KZT' => array( 'EFH', 'ILM', 'BSH', 'CMB', 'KBA', 'LRS', ),
+			'ZAN' => array( 'EAZ', 'WEZ', 'ARD', 'QAZ', 'KRD', 'GIL', 'HMD', ),
+			'SMN' => array( 'EFH', 'TEH', 'RKH', 'NKH', 'QOM', 'GLS', 'MZD', 'YZD', ),
+			'SBL' => array( 'SKH', 'KRB', 'HRM', ),
+			'FAR' => array( 'EFH', 'BSH', 'KRB', 'KBA', 'HRM', 'YZD', ),
+			'QAZ' => array( 'ALZ', 'ZAN', 'GIL', 'MZD', 'MKZ', 'HMD', ),
+			'QOM' => array( 'EFH', 'TEH', 'SMN', 'MKZ', ),
+			'KRD' => array( 'WEZ', 'ZAN', 'KRM', 'HMD', ),
+			'KRB' => array( 'SKH', 'SBL', 'FAR', 'HRM', 'YZD', ),
+			'KRM' => array( 'ILM', 'KRD', 'LRS', 'HMD', ),
+			'KBA' => array( 'EFH', 'BSH', 'CMB', 'KZT', 'FAR', ),
+			'GLS' => array( 'NKH', 'SMN', 'MZD', ),
+			'GIL' => array( 'ARD', 'ZAN', 'QAZ', 'MZD', ),
+			'LRS' => array( 'EFH', 'ILM', 'KZT', 'KRM', 'MKZ', 'HMD', ),
+			'MZD' => array( 'ALZ', 'TEH', 'SMN', 'QAZ', 'GLS', 'GIL', ),
+			'MKZ' => array( 'EFH', 'ALZ', 'TEH', 'QAZ', 'QOM', 'LRS', 'HMD', ),
+			'HRM' => array( 'SBL', 'FAR', 'KRB', ),
+			'HMD' => array( 'ZAN', 'QAZ', 'KRD', 'KRM', 'LRS', 'MKZ', ),
+			'YZD' => array( 'EFH', 'SKH', 'RKH', 'SMN', 'FAR', 'KRB', ),
 		);
 
 		if ( isset( $array[$state] ) )
@@ -1419,8 +1418,8 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper e
 
 		$content = curl_exec( $ch );
 
-		//if ( ! is_null( $curl_info ) )
-			//$curl_info = curl_getinfo( $ch );
+		// if ( ! is_null( $curl_info ) )
+		// 	$curl_info = curl_getinfo( $ch );
 
 		curl_close( $ch );
 

@@ -18,7 +18,7 @@ $GLOBALS['_gplugin'] = array( 27, __FILE__, array(
 	'gPluginAjaxCore',
 
 	'gPluginTemplateCore',
-	'gPluginListTableCore',
+	'gPluginListTableCore', // FIXME: DROP THIS
 	'gPluginLoggerCore',
 	'gPluginImportCore',
 

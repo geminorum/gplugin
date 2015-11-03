@@ -9,13 +9,15 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 
 	public function setup_globals( $constants = array(), $args = array() )
 	{
+		self::__dep();
+
 		$this->args = gPluginUtils::parse_args_r( $args, array(
 			'domain'   => 'gplugin',
 			'title'    => 'gPlugin',
 			'plural'   => '',
 			'singular' => '',
-			'ajax'     => false,
-			'screen'   => null,
+			'ajax'     => FALSE,
+			'screen'   => NULL,
 			'options'  => array(),
 		) );
 
@@ -97,7 +99,7 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 		$this->display_tablenav( 'top' );
 		?><table class="wp-list-table gplugin-list-table <?php echo implode( ' ', $this->get_table_classes() ); ?>" cellspacing="0">
 			<thead><tr><?php $this->print_column_headers(); ?></tr></thead>
-			<tfoot><tr><?php $this->print_column_headers( false ); ?></tr></tfoot>
+			<tfoot><tr><?php $this->print_column_headers( FALSE ); ?></tr></tfoot>
 			<tbody id="the-list"<?php if ( $this->args['singular'] ) echo " data-wp-lists='list:".$this->args['singular']."'"; ?>>
 				<?php $this->display_rows_or_placeholder(); ?>
 			</tbody>
@@ -127,7 +129,7 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 	}
 
 	// Print column headers, accounting for hidden and sortable columns.
-	function print_column_headers( $with_id = true )
+	function print_column_headers( $with_id = TRUE )
 	{
 		list( $columns, $hidden, $sortable ) = $this->get_column_info();
 
@@ -203,7 +205,7 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 
 			$data = (array) $data;
 			if ( !isset( $data[1] ) )
-				$data[1] = false;
+				$data[1] = FALSE;
 
 			$sortable[$id] = $data;
 		}
@@ -224,7 +226,7 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 	 * Get a list of sortable columns. The format is:
 	 * 'internal-name' => 'orderby'
 	 * or
-	 * 'internal-name' => array( 'orderby', true )
+	 * 'internal-name' => array( 'orderby', TRUE )
 	 * The second format will make the initial sorting order be descending
 	 */
 	function get_sortable_columns()
@@ -343,7 +345,7 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 		?><p class="search-box">
 			<label class="screen-reader-text" for="<?php echo $input_id ?>"><?php echo $text; ?>:</label>
 			<input type="search" id="<?php echo $input_id ?>" name="s" value="<?php self::search_query(); ?>" />
-			<?php submit_button( $text, 'button', false, false, array( 'id' => 'search-submit' ) ); ?>
+			<?php submit_button( $text, 'button', FALSE, FALSE, array( 'id' => 'search-submit' ) ); ?>
 		</p> <?php
 	}
 
@@ -403,7 +405,7 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 
 		echo "</select>\n";
 
-		submit_button( __( 'Apply' ), 'action', false, false, array( 'id' => "doaction$two" ) );
+		submit_button( __( 'Apply' ), 'action', FALSE, FALSE, array( 'id' => "doaction$two" ) );
 		echo "\n";
 	}
 
@@ -416,11 +418,11 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 		if ( isset( $_REQUEST['action2'] ) && -1 != $_REQUEST['action2'] )
 			return $_REQUEST['action2'];
 
-		return false;
+		return FALSE;
 	}
 
 	// Generate row actions div
-	function row_actions( $actions, $always_visible = false )
+	function row_actions( $actions, $always_visible = FALSE )
 	{
 		$action_count = count( $actions );
 		$i = 0;

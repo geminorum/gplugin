@@ -176,7 +176,7 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper ext
 					  // Tell PCRE to spend more time optimizing since, when used on a page load, it will probably be used several times.
 
 				$ret = preg_replace_callback( $url_replace, array( $this, 'repelace_url' ), $ret );
-				$ret = $this->cleanup( $ret, false );
+				$ret = $this->cleanup( $ret, FALSE );
 				//$ret = preg_replace_callback( $url_re_replace, array( $this, 're_repelace_url' ), $ret );
 				$ret = $this->re_repelace_urls( $ret );
 
@@ -351,7 +351,7 @@ if ( ! class_exists( 'gPluginPersianHelper' ) ) { class gPluginPersianHelper ext
 	 *
 	 * Joining the returned chunks with empty delimiters reconstructs the input string losslessly.
 	 *
-	 * Input string must have no null characters (or eventual transformations on output chunks must not care about null characters)
+	 * Input string must have no NULL characters (or eventual transformations on output chunks must not care about NULL characters)
 	 *
 	 * <code>
 	 * _split_str_by_whitespace( "1234 67890 1234 67890a cd 1234   890 123456789 1234567890a    45678   1 3 5 7 90 ", 10 ) ==

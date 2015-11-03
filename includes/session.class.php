@@ -1,16 +1,12 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
-defined( 'GPLUGIN_SESSION_NETWORKWIDE' ) or define( 'GPLUGIN_SESSION_NETWORKWIDE', true );
+defined( 'GPLUGIN_SESSION_NETWORKWIDE' ) or define( 'GPLUGIN_SESSION_NETWORKWIDE', TRUE );
 defined( 'GPLUGIN_SESSION_CRON_ROUTINE' ) or define( 'GPLUGIN_SESSION_CRON_ROUTINE', 'twicedaily' ); // 'hourly'
 
-/**
- *
- * based on WP Session Manager 1.1.2 by Eric Mann
- * http://jumping-duck.com/wordpress/plugins
- * http://wordpress.org/plugins/wp-session-manager/
- * http://jumping-duck.com/wordpress/plugins/wp-session-manager/
- *
-**/
+// based on WP Session Manager 1.1.2 by Eric Mann
+// http://jumping-duck.com/wordpress/plugins
+// http://wordpress.org/plugins/wp-session-manager/
+// http://jumping-duck.com/wordpress/plugins/wp-session-manager/
 
 class gPluginSessionHelper
 {
@@ -78,11 +74,11 @@ class gPluginSessionHelper
 	 *
 	 * @return bool
 	 */
-	public static function regenerate_id( $delete_old_session = false )
+	public static function regenerate_id( $delete_old_session = FALSE )
 	{
 		$gPluginSession = gPluginSession::get_instance();
 		$gPluginSession->regenerate_id( $delete_old_session );
-		return true;
+		return TRUE;
 	}
 
 	/**
@@ -218,7 +214,7 @@ class gPluginRecursiveArrayAccess implements ArrayAccess {
 	 *
 	 * @var bool
 	 */
-	protected $dirty = false;
+	protected $dirty = FALSE;
 
 	/**
 	 * Default object constructor.
@@ -268,7 +264,7 @@ class gPluginRecursiveArrayAccess implements ArrayAccess {
 	 *
 	 * @param mixed $offset An offset to check for.
 	 *
-	 * @return boolean true on success or false on failure.
+	 * @return boolean TRUE on success or FALSE on failure.
 	 */
 	public function offsetExists( $offset ) {
 		return isset( $this->container[ $offset ]) ;
@@ -284,7 +280,7 @@ class gPluginRecursiveArrayAccess implements ArrayAccess {
 	 * @return mixed Can return all value types.
 	 */
 	public function offsetGet( $offset ) {
-		return isset( $this->container[ $offset ] ) ? $this->container[ $offset ] : null;
+		return isset( $this->container[ $offset ] ) ? $this->container[ $offset ] : NULL;
 	}
 
 	/**
@@ -301,13 +297,13 @@ class gPluginRecursiveArrayAccess implements ArrayAccess {
 		if ( is_array( $data ) ) {
 			$data = new self( $data );
 		}
-		if ( $offset === null ) { // don't forget this!
+		if ( $offset === NULL ) { // don't forget this!
 			$this->container[] = $data;
 		} else {
 			$this->container[ $offset ] = $data;
 		}
 
-		$this->dirty = true;
+		$this->dirty = TRUE;
 	}
 
 	/**
@@ -322,7 +318,7 @@ class gPluginRecursiveArrayAccess implements ArrayAccess {
 	public function offsetUnset( $offset ) {
 		unset( $this->container[ $offset ] );
 
-		$this->dirty = true;
+		$this->dirty = TRUE;
 	}
 }
 
@@ -357,7 +353,7 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 	 *
 	 * @var bool|WP_Session
 	 */
-	private static $instance = false;
+	private static $instance = FALSE;
 
 	/**
 	 * Retrieve the current session instance.
@@ -461,7 +457,7 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 	private function generate_id()
 	{
 		require_once( ABSPATH.'wp-includes/class-phpass.php' );
-		$hasher = new PasswordHash( 8, false );
+		$hasher = new PasswordHash( 8, FALSE );
 
 		return md5( $hasher->get_random_bytes( 32 ) );
 	}
@@ -493,14 +489,14 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 		// Only write the collection to the DB if it's changed.
 		if ( $this->dirty ) {
 			if ( GPLUGIN_SESSION_NETWORKWIDE ) {
-				if ( false === get_site_option( $option_key ) ) {
+				if ( FALSE === get_site_option( $option_key ) ) {
 					add_site_option( "_gp_session_{$this->session_id}", $this->container  );
 					add_site_option( "_gp_session_expires_{$this->session_id}", $this->expires );
 				} else {
 					update_site_option( "_gp_session_{$this->session_id}", $this->container );
 				}
 			} else {
-				if ( false === get_option( $option_key ) ) {
+				if ( FALSE === get_option( $option_key ) ) {
 					add_option( "_gp_session_{$this->session_id}", $this->container, '', 'no' );
 					add_option( "_gp_session_expires_{$this->session_id}", $this->expires, '', 'no' );
 				} else {
@@ -533,10 +529,10 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 
 		if ( is_array( $array ) ) {
 			$this->container = $array;
-			return true;
+			return TRUE;
 		}
 
-		return false;
+		return FALSE;
 	}
 
 	/**
@@ -544,7 +540,7 @@ final class gPluginSession extends gPluginRecursiveArrayAccess implements Iterat
 	 *
 	 * @param bool $delete_old Flag whether or not to delete the old session data from the server.
 	 */
-	public function regenerate_id( $delete_old = false )
+	public function regenerate_id( $delete_old = FALSE )
 	{
 		if ( $delete_old ) {
 			if ( GPLUGIN_SESSION_NETWORKWIDE )

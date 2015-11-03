@@ -42,13 +42,13 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 		register_post_type( $this->args['logger_args']['post_type'],
 			apply_filters( $this->args['logger_args']['hook_prefix'].'post_type_args', array(
 				'labels'          => array( 'name' => $this->args['logger_args']['name'] ),
-				'public'          => false,
-				'query_var'       => false,
-				'rewrite'         => false,
+				'public'          => FALSE,
+				'query_var'       => FALSE,
+				'rewrite'         => FALSE,
 				'capability_type' => 'post',
 				'supports'        => array( 'title', 'editor' ),
-				'can_export'      => false,
-				// 'show_ui'         => true,
+				'can_export'      => FALSE,
+				// 'show_ui'         => TRUE,
 		) ) );
 
 		register_taxonomy( $this->args['logger_args']['taxonomy'], $this->args['logger_args']['post_type'] );
@@ -71,7 +71,7 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 		return in_array( $type, $this->types() );
 	}
 
-	public static function add( $title = '', $message = '', $parent = 0, $type = null )
+	public static function add( $title = '', $message = '', $parent = 0, $type = NULL )
 	{
 		return $this->insert( array(
 			'post_title'   => $title,
@@ -97,7 +97,7 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 
 		// set the log type, if any
 		if ( $log_data['log_type'] && $this->valid_type( $log_data['log_type'] ) )
-			wp_set_object_terms( $log_id, $log_data['log_type'], $this->args['logger_args']['taxonomy'], false );
+			wp_set_object_terms( $log_id, $log_data['log_type'], $this->args['logger_args']['taxonomy'], FALSE );
 
 		// set log meta, if any
 		if ( $log_id && ! empty( $log_meta ) )
@@ -135,7 +135,7 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 
 
 	// Easily retrieves log items for a particular object ID
-	public static function logs( $object_id = 0, $type = null, $paged = null )
+	public static function logs( $object_id = 0, $type = NULL, $paged = NULL )
 	{
 		return $this->connected( array(
 			'post_parent' => $object_id,
@@ -155,7 +155,7 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 			'posts_per_page' => 10,
 			'post_status'    => 'publish',
 			'paged'          => get_query_var( 'paged' ),
-			'log_type'       => false
+			'log_type'       => FALSE
 		);
 
 		$query_args = wp_parse_args( $args, $defaults );
@@ -172,11 +172,11 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 
 		if ( $logs )
 			return $logs;
-		return false; // no logs found
+		return FALSE; // no logs found
 	}
 
 	// Retrieves number of log entries connected to particular object ID
-	function count( $object_id = 0, $type = null, $meta_query = null )
+	function count( $object_id = 0, $type = NULL, $meta_query = NULL )
 	{
 		$query_args = array(
 			'post_parent'    => $object_id,
