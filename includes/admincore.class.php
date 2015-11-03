@@ -14,17 +14,17 @@ class gPluginAdminCore extends gPluginClassCore
 		parent::setup_globals( $constants, $args );
 
 		if ( isset( $this->_component ) ) {
-			self::__dep();
+			self::__dep( 'var $_component' );
 			$this->component = $this->_component;
 		}
 
 		if ( isset( $this->_init_priority ) ) {
-			self::__dep();
+			self::__dep( 'var $_init_priority' );
 			$this->priority_init = $this->_init_priority;
 		}
 
 		if ( isset( $this->_admin_init_priority ) ) {
-			self::__dep();
+			self::__dep( 'var $_admin_init_priority' );
 			$this->priority_admin_init = $this->_admin_init_priority;
 		}
 	}

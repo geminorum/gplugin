@@ -14,19 +14,19 @@ if ( ! class_exists( 'gPluginModuleCore' ) ) { class gPluginModuleCore extends g
 
 		// FIXME: DROP THIS
 		if ( isset( $this->_plugins_loaded ) ) {
-			self::__dep();
+			self::__dep( 'var $_plugins_loaded' );
 			$this->priority_plugins_loaded = $this->_plugins_loaded;
 		}
 
 		// FIXME: DROP THIS
 		if ( isset( $this->_init_priority ) ) {
-			self::__dep();
+			self::__dep( 'var $_init_priority' );
 			$this->priority_init = $this->_init_priority;
 		}
 
 		// FIXME: DROP THIS
 		if ( isset( $this->_admin_init_priority ) ) {
-			self::__dep();
+			self::__dep( 'var $_admin_init_priority' );
 			$this->priority_admin_init = $this->_admin_init_priority;
 		}
 	}

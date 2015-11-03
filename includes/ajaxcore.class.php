@@ -13,13 +13,13 @@ if ( ! class_exists( 'gPluginAjaxCore' ) ) { class gPluginAjaxCore extends gPlug
 
 		// FIXME: DROP THIS
 		if ( isset( $this->_ajax_action ) ) {
-			self::__dep();
+			self::__dep( 'var $_ajax_action' );
 			$this->ajax_action = $this->_ajax_action;
 		}
 
 		// FIXME: DROP THIS
 		if ( isset( $this->_ajax_nonce ) ) {
-			self::__dep();
+			self::__dep( 'var $_ajax_nonce' );
 			$this->ajax_nonce = $this->_ajax_nonce;
 		}
 	}
