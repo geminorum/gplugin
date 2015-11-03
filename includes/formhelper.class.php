@@ -75,6 +75,18 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper extends g
 		) )."\n";
 	}
 
+	// NOTE: like core but without filter and fallback
+	public static function sanitizeHTMLClass( $class )
+	{
+		// strip out any % encoded octets
+		$sanitized = preg_replace( '|%[a-fA-F0-9][a-fA-F0-9]|', '', $class );
+
+		// limit to A-Z,a-z,0-9,_,-
+		$sanitized = preg_replace( '/[^A-Za-z0-9_-]/', '', $sanitized );
+
+		return trim( $sanitized );
+	}
+
 	private static function _tag_open( $tag, $atts, $content = TRUE )
 	{
 		$html = '<'.$tag;

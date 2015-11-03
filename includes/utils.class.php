@@ -82,6 +82,16 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils extends gPluginClas
 		return $list;
 	}
 
+	public static function sameKey( $old )
+	{
+		$new = array();
+
+		foreach ( $old as $key => $value )
+			$new[$value] = $value;
+
+		return $new;
+	}
+
 	// for useing with $('form').serializeArray();
 	// http://api.jquery.com/serializeArray/
 	public static function parseJSArray( $array )
