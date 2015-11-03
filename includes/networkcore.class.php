@@ -3,10 +3,10 @@
 if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends gPluginClassCore
 {
 
-	var $_asset_styles = FALSE;
-	var $_asset_config = FALSE;
-	var $_asset_object = 'gPlugin';
-	var $_asset_args   = array();
+	protected $asset_styles = FALSE;
+	protected $asset_config = FALSE;
+	protected $asset_object = 'gPlugin';
+	protected $asset_args   = array();
 
 	public function setup_globals( $constants = array(), $args = array() )
 	{
@@ -18,9 +18,33 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 			'options'   => array(),
 		) );
 
+		// FIXME: DROP THIS
+		if ( isset( $this->_asset_styles ) ) {
+			self::__dep( 'var $_asset_styles' );
+			$this->asset_styles = $this->_asset_styles;
+		}
+
+		// FIXME: DROP THIS
+		if ( isset( $this->_asset_config ) ) {
+			self::__dep( 'var $_asset_config' );
+			$this->asset_config = $this->_asset_config;
+		}
+
+		// FIXME: DROP THIS
+		if ( isset( $this->_asset_object ) ) {
+			self::__dep( 'var $_asset_object' );
+			$this->asset_object = $this->_asset_object;
+		}
+
+		// FIXME: DROP THIS
+		if ( isset( $this->_asset_args ) ) {
+			self::__dep( 'var $_asset_args' );
+			$this->asset_args = $this->_asset_args;
+		}
+
 		$this->constants    = apply_filters( $this->args['domain'].'_network_constants', $constants );
-		// $this->blog_map     = get_site_option( $this->args['domain'].'_blog_map', array() ); // NOT USED YET, MUST CAN BE DISABLED
 		$this->current_blog = get_current_blog_id();
+		// $this->blog_map     = get_site_option( $this->args['domain'].'_blog_map', array() ); // FIXME
 
 		$this->root   = FALSE;
 		$this->remote = FALSE;
@@ -226,31 +250,31 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 
 	public function enqueue_asset_config( $args = array(), $scope = NULL )
 	{
-		$this->_asset_config = TRUE;
+		$this->asset_config = TRUE;
 
 		if ( count( $args ) ) {
 			if ( is_null( $scope ) )
-				$temp = array_merge( $this->_asset_args, $args );
+				$temp = array_merge( $this->asset_args, $args );
 			else
-				$temp = array_merge( $this->_asset_args, array( $scope => $args ) );
-			$this->_asset_args = $temp;
+				$temp = array_merge( $this->asset_args, array( $scope => $args ) );
+			$this->asset_args = $temp;
 		}
 	}
 
 	// front & admin
 	public function footer_asset_config()
 	{
-		if ( ! $this->_asset_config )
+		if ( ! $this->asset_config )
 			return;
 
-		$args = $this->_asset_args;
+		$args = $this->asset_args;
 		$args['api'] = defined( 'GNETWORK_AJAX_ENDPOINT' ) && GNETWORK_AJAX_ENDPOINT ? GNETWORK_AJAX_ENDPOINT : admin_url( 'admin-ajax.php' );
 
 	?><script type="text/javascript">
 /* <![CDATA[ */
-	var <?php echo $this->_asset_object; ?> = <?php echo wp_json_encode( $args ); ?>;
+	var <?php echo $this->asset_object; ?> = <?php echo wp_json_encode( $args ); ?>;
 
-	<?php if ( gPluginWPHelper::isDev() ) echo 'console.log('.$this->_asset_object.');'; ?>
+	<?php if ( gPluginWPHelper::isDev() ) echo 'console.log('.$this->asset_object.');'; ?>
 
 /* ]]> */
 </script><?php
@@ -274,30 +298,49 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 		return 0;
 	}
 
-	// DEPRECATED
+	// FIXME: DEPRECATED
 	public function get_option( $name, $default = FALSE )
 	{
+		self::__dep();
+
 		$options = get_site_option( $this->args['domain'], FALSE );
-		if ( $options === FALSE ) $options = array();
-		if ( !isset( $options[$name] ) ) $options[$name] = $default;
+
+		if ( $options === FALSE )
+			$options = array();
+
+		if ( !isset( $options[$name] ) )
+			$options[$name] = $default;
+
 		return $options[$name];
 	}
 
-	// DEPRECATED
+	// FIXME: DEPRECATED
 	public function update_option( $name, $value )
 	{
+		self::__dep();
+
 		$options = get_site_option( $this->args['domain'], FALSE );
-		if ( $options === FALSE ) $options = array();
+
+		if ( $options === FALSE )
+			$options = array();
+
 		$options[$name] = $value;
+
 		return update_site_option( $this->args['domain'], $options );
 	}
 
-	// DEPRECATED
+	// FIXME: DEPRECATED
 	public function delete_option( $name )
 	{
+		self::__dep();
+
 		$options = get_site_option( $this->args['domain'], FALSE );
-		if ( $options === FALSE ) $options = array();
+
+		if ( $options === FALSE )
+			$options = array();
+
 		unset( $options[$name] );
+
 		return update_option( $this->args['domain'], $options );
 	}
 } }
