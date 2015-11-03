@@ -69,7 +69,7 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper extends g
 	{
 		echo "\t".self::html( 'link', array(
 			'rel'   => 'stylesheet',
-			'href'  => add_query_arg( 'ver', $version, $url ),
+			'href'  => is_null( $version ) ? $url : add_query_arg( 'ver', $version, $url ),
 			'type'  => 'text/css',
 			'media' => $media,
 		) )."\n";
