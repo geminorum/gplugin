@@ -167,7 +167,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 			case 'checkbox' :
 
 				if ( count( $args['values'] ) ) {
-					
+
 					foreach ( $args['values'] as $value_name => $value_title ) {
 						$html = gPluginFormHelper::html( 'input', array(
 							'type'    => 'checkbox',
@@ -183,9 +183,9 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 							'for' => $id.'-'.$value_name,
 						), $html.'&nbsp;'.esc_html( $value_title ) ).'</p>';
 					}
-					
+
 				} else {
-					
+
 					$html = gPluginFormHelper::html( 'input', array(
 						'type'    => 'checkbox',
 						'class'   => $args['field_class'],
@@ -199,7 +199,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 					echo '<p>'.gPluginFormHelper::html( 'label', array(
 						'for' => $id,
 					), $html.'&nbsp;'.$args['desc'] ).'</p>';
-					
+
 					$args['desc'] = FALSE;
 				}
 
@@ -240,9 +240,10 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 		return $default;
 	}
 
-	// DEPRECATED : use get()
+	// FIXME: DEPRECATED
 	public function get_option( $field, $default = FALSE )
 	{
+		self::__dep( 'gPluginSettingsCore::get()');
 		return $this->get( $field, $default );
 	}
 
@@ -342,29 +343,29 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 	}
 } }
 
-/*
+/***
 	SAMPLE ARGUMENTS :
 
 	$args = array(
-		'plugin_class' => false,
-		'option_group' => 'gpluginsettings',
-		'settings_sanitize' => false, // override sanitization
-		'field_callback' => false, // oberride field print
-		'page' => 'general',
-		'sections' => array(
+		'plugin_class'      => FALSE,
+		'option_group'      => 'gpluginsettings',
+		'settings_sanitize' => FALSE, // override sanitization
+		'field_callback'    => FALSE, // oberride field print
+		'page'              => 'general',
+		'sections'          => array(
 			'default' => array(
 			//'date' => array(
-				'title' => false,
+				'title' => FALSE,
 				//'title' => 'Section Title',
 				'callback' => array( __CLASS__, 'section_callback' ), // '__return_false'
 				'fields' => array(
 					'enabled' => array(
-						'title' => 'gPlugin',
-						'desc' => '',
-						'type' => 'enabled',
-						'dir' => 'ltr',
+						'title'   => 'gPlugin',
+						'desc'    => '',
+						'type'    => 'enabled',
+						'dir'     => 'ltr',
 						'default' => 0,
-						'filter' => false, // 'esc_attr'
+						'filter'  => FALSE, // 'esc_attr'
 					),
 				),
 			),

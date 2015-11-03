@@ -5,6 +5,6 @@ if ( ! class_exists( 'gPluginTemplateCore' ) ) { class gPluginTemplateCore exten
 
 	public function setup_globals( $constants = array(), $args = array() )
 	{
-
+		self::__dep();
 	}
 } }

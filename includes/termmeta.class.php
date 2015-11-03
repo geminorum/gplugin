@@ -21,8 +21,6 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
 
 	public function setup_actions()
 	{
-		self::__dep();
-
 		// http://justintadlock.com/archives/2011/06/09/install-and-upgrade-functions-for-plugins-and-themes
 
 		// NO NEED : probably, because we call it manually upon enableing the remote
@@ -90,7 +88,7 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
 	* function, do not need to perform SQL queries on their own.
 	*
 	* @param array $term_ids List of post IDs.
-	* @return bool|array Returns false if there is nothing to update or an array of metadata.
+	* @return bool|array Returns FALSE if there is nothing to update or an array of metadata.
 	*/
 	public static function update_termmeta_cache( $term_ids )
 	{
@@ -104,8 +102,8 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
 	* @param int $term_id Term ID.
 	* @param string $key Metadata name.
 	* @param mixed $value Metadata value.
-	* @param bool $unique Optional, default is false. Whether the same key should not be added.
-	* @return bool False for failure. True for success.
+	* @param bool $unique Optional, default is FALSE. Whether the same key should not be added.
+	* @return bool FALSE for failure. True for success.
 	*/
 	public static function add_term_meta( $term_id, $meta_key, $meta_value, $unique = FALSE )
 	{
@@ -137,8 +135,8 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
 	* @param int $term_id Term ID.
 	* @param string $key The meta key to retrieve.
 	* @param bool $single Whether to return a single value.
-	* @return mixed Will be an array if $single is false. Will be value of meta data field if $single
-	*  is true.
+	* @return mixed Will be an array if $single is FALSE. Will be value of meta data field if $single
+	*  is TRUE.
 	*/
 	public static function get_term_meta( $term_id, $key, $single = FALSE )
 	{
@@ -158,7 +156,7 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
 	* @param string $key Metadata key.
 	* @param mixed $value Metadata value.
 	* @param mixed $prev_value Optional. Previous value to check before removing.
-	* @return bool False on failure, true if success.
+	* @return bool False on failure, TRUE if success.
 	*/
 	public static function update_term_meta( $term_id, $meta_key, $meta_value, $prev_value = '' )
 	{
@@ -228,10 +226,10 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
 	/**
 	* Retrieve meta field names for a term.
 	*
-	* If there are no meta fields, then nothing (null) will be returned.
+	* If there are no meta fields, then nothing (NULL) will be returned.
 	*
 	* @param int $term_id term ID
-	* @return array|null Either array of the keys, or null if keys could not be retrieved.
+	* @return array|NULL Either array of the keys, or NULL if keys could not be retrieved.
 	*/
 	public static function get_term_custom_keys( $term_id )
 	{

@@ -33,7 +33,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 			// registered for all types
 			if ( TRUE === $_wp_theme_features[$feature] ) {
 
-				// WORKING: but if it is true, it's true!
+				// WORKING: but if it is TRUE, it's TRUE!
 				// $post_types[] = 'post';
 				// $_wp_theme_features[$feature] = array( $post_types );
 
@@ -69,7 +69,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		);
 	}
 
-	// DEPRECATED: use: gPluginWPHelper::registerImageSize()
+	// FIXME: DEPRECATED
 	// core duplication with post_type : add_image_size()
 	public static function addImageSize( $name, $width = 0, $height = 0, $crop = FALSE, $post_type = array( 'post' ) )
 	{
@@ -141,7 +141,6 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		echo $html;
 	}
 
-	// from gMemberHelper
 	public static function get_current_site_blog_id()
 	{
 		if ( ! is_multisite() )
@@ -325,7 +324,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		return add_query_arg( 'wp_http_referer', urlencode( stripslashes( $_SERVER['REQUEST_URI'] ) ), 'user-edit.php?user_id='.$user_ID );
 	}
 
-	// DEPRECATED: use : gPluginWPHelper::getUserEditLink();
+	// FIXME: DEPRECATED
 	public static function get_user_edit_link( $user_ID )
 	{
 		self::__dep( 'gPluginWPHelper::getUserEditLink()' );
@@ -334,7 +333,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 
 	// https://gist.github.com/boonebgorges/4165099
 	// Are we looking at the WordPress admin?
-	// Because AJAX requests are sent to wp-admin/admin-ajax.php, WordPress's is_admin() function returns true when DOING_AJAX. This function contains logic to test whether AJAX requests are coming from the front end or from the Dashboard.
+	// Because AJAX requests are sent to wp-admin/admin-ajax.php, WordPress's is_admin() function returns TRUE when DOING_AJAX. This function contains logic to test whether AJAX requests are coming from the front end or from the Dashboard.
 	public static function is_admin()
 	{
 		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
@@ -400,7 +399,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 	// UNFINISHED
 	// update post meta by array
 	// build for speed!
-	function update_post_meta( $post_id, $meta_array )
+	public static function update_post_meta( $post_id, $meta_array )
 	{
 		// make sure meta is added to the post, not a revision
 		if ( $the_post = wp_is_post_revision( $post_id ) )
@@ -409,44 +408,12 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		return update_metadata( 'post', $post_id, $meta_key, $meta_value, '' );
 	}
 
-	// http://tommcfarlin.com/save-custom-post-meta/
-	// https://gist.github.com/tommcfarlin/4468321
-	// if ( user_can_save( $post_id, 'meta_data_nonce' ) )
-	/**
-	* An example function used to demonstrate how to use the `user_can_save` function
-	* that provides boilerplate security checks when saving custom post meta data.
-	*
-	* The ultimate goal is provide a simple helper function to be used in themes and
-	* plugins without the need to use a set of complex conditionals and constants.
-	*
-	* Instead, the aim is to have a simplified function that's easy to read and that uses
-	* WordPress APIs.
-	*
-	* The DocBlocks should provide all information needed to understand how the function works.
-	*/
-	/**
-	* Determines whether or not the current user has the ability to save meta data associated with this post.
-	*
-	* @param int $post_id The ID of the post being save
-	* @param bool Whether or not the user has the ability to save this post.
-	*/
-	function user_can_save( $post_id, $nonce )
-	{
-		$is_autosave = wp_is_post_autosave( $post_id );
-		$is_revision = wp_is_post_revision( $post_id );
-		$is_valid_nonce = ( isset( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], plugin_basename( __FILE__ ) ) );
-
-		// Return true if the user is able to save; otherwise, false.
-		return ! ( $is_autosave || $is_revision ) && $is_valid_nonce;
-
-	}
-
-	function is_plugin_active( $plugin )
+	public static function is_plugin_active( $plugin )
 	{
 		return in_array( $plugin, (array) get_option( 'active_plugins', array() ) ) || self::is_plugin_active_for_network( $plugin );
 	}
 
-	function is_plugin_active_for_network( $plugin )
+	public static function is_plugin_active_for_network( $plugin )
 	{
 		if ( ! is_multisite() )
 			return FALSE;
@@ -461,7 +428,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 	// NOT WORKING!!!! ON ADMIN
 	// http://kovshenin.com/2012/current-url-in-wordpress/
 	// http://www.stephenharris.info/2012/how-to-get-the-current-url-in-wordpress/
-	function getCurrentURL( $trailingslashit = FALSE )
+	public static function getCurrentURL( $trailingslashit = FALSE )
 	{
 		global $wp;
 
@@ -476,7 +443,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		return $current_url;
 	}
 
-	function getRequestURI()
+	public static function getRequestURI()
 	{
 		return stripslashes_deep( $_SERVER['REQUEST_URI'] );
 	}
@@ -485,7 +452,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 	// Have you ever needed to find the WordPress blog URL? Using home_url() is fine but what if your Settings > Reading options
 	// in WordPress are set to your blog having a static page (usually called �Blog�). You may need to know what the URL of that page is.
 	// So here is a quick function I came up with to find it.
-	function get_blog_url()
+	public static function get_blog_url()
 	{
 		if ( $posts_page_id = get_option( 'page_for_posts' ) ){
 			return home_url( get_page_uri( $posts_page_id ) );
@@ -496,7 +463,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 
 	// http://webdevstudios.com/2013/04/03/how-to-quickly-grab-post-fields-outside-the-loop-with-get_post_field-in-wordpress/
 	// http://codex.wordpress.org/Function_Reference/get_post#Return
-	function get_post_field( $field, $post, $default = '', $context = 'display' )
+	public static function get_post_field( $field, $post, $default = '', $context = 'display' )
 	{
 		$post = get_post( $post );
 
@@ -509,8 +476,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		return sanitize_post_field( $field, $post->$field, $post->ID, $context );
 	}
 
-
-	function get_updates( $basename )
+	public static function get_updates( $basename )
 	{
 		$updates = get_plugin_updates();
 		//$basename = plugin_basename(__FILE__);
@@ -525,11 +491,10 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 	}
 
 	// Originally from : http://wordpress.org/extend/plugins/kimili-flash-embed/
-	function isMinimumWPVersion( $minimum_version )
+	public static function isMinimumWPVersion( $minimum_version )
 	{
 		return ( version_compare( get_bloginfo( 'version' ), $minimum_version ) >= 0 );
 	}
-
 
 	// http://wordpress.org/plugins/sem-autolink-uri/
 

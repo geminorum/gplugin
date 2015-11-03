@@ -23,17 +23,20 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils extends gPluginClas
 		return $_SERVER['REMOTE_ADDR'];
 	}
 
-	// DEPRECATED: use: gPluginUtils::IP()
+	// FIXME: DEPRECATED
 	public static function getIP()
 	{
+		self::__dep( 'gPluginUtils::IP()' );
 		return self::IP();
 	}
 
 	public static function roundArray( $array, $precision = -3, $mode = PHP_ROUND_HALF_UP )
 	{
 		$new = array();
+
 		foreach( (array) $array as $key => $value )
 			$new[$key] = round( (float) $value, $precision, $mode );
+
 		return $new;
 	}
 
@@ -56,12 +59,15 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils extends gPluginClas
 		echo '<pre dir="ltr" style="text-align:left;direction:ltr;">'.( $htmlSafe ? htmlspecialchars( $result ) : $result).'</pre>';
 	}
 
-	// returns array of the keys if options values are true
+	// returns array of the keys if options values are TRUE
 	public static function getKeys( $options = array() )
 	{
 		$keys = array();
+
 		foreach ( (array) $options as $support => $enabled )
-			if ( $enabled ) $keys[] = $support;
+			if ( $enabled )
+				$keys[] = $support;
+
 		return $keys;
 	}
 
@@ -72,6 +78,7 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils extends gPluginClas
 			$ids = wp_list_pluck( $list, $key );
 			$list = array_combine( $ids, $list );
 		}
+
 		return $list;
 	}
 
@@ -215,11 +222,11 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils extends gPluginClas
 	 * @param string $search_value The value to search for, ie a specific 'Taylor'
 	 * @param string $key_to_search The associative key to find it in, ie first_name
 	 * @param string $other_matching_key The associative key to find in the matches for employed
-	 * @param string $other_matching_value The value to find in that matching associative key, ie true
+	 * @param string $other_matching_value The value to find in that matching associative key, ie TRUE
 	 *
 	 * @return array keys, ie all the people with the first name 'Taylor' that are employed.
 	 */
-	public static function search_revisions( $revisions, $search_value, $key_to_search, $other_matching_value = null, $other_matching_key = null )
+	public static function search_revisions( $revisions, $search_value, $key_to_search, $other_matching_value = NULL, $other_matching_key = NULL )
 	{
 		// This function will search the revisions for a certain value
 		// related to the associative key you are looking for.

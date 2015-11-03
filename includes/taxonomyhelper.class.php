@@ -113,12 +113,10 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper e
 		return TRUE;
 	}
 
-	// DEPRECATED: use self::prepareTerms()
+	// FIXME: DEPRECATED
 	public static function prepare_terms( $taxonomy, $args = array(), $terms = NULL, $key = 'term_id', $obj = TRUE )
 	{
-		if ( gPluginWPHelper::isDev() )
-			_deprecated_function( __FUNCTION__, GPLUGIN_VERSION, 'prepare_terms' );
-
+		self::__dep( 'gPluginTaxonomyHelper::prepareTerms()');
 		return self::prepareTerms( $taxonomy, $args, $terms, $key, $obj );
 	}
 
