@@ -39,6 +39,9 @@ class gPluginAdminCore extends gPluginClassCore
 			if ( method_exists( $this, 'admin_init' ) )
 				add_action( 'admin_init', array( $this, 'admin_init' ), $this->priority_admin_init );
 
+			if ( method_exists( $this, 'current_screen' ) )
+				add_action( 'current_screen', array( $this, 'current_screen' ) );
+
 			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 			add_action( 'admin_print_styles', array( $this, 'admin_print_styles' ) );
 
