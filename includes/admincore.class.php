@@ -127,15 +127,28 @@ class gPluginAdminCore extends gPluginClassCore
 		$this->print_admin_edit_styles();
 	}
 
-	// the caller must check cpt first
-	public function print_admin_edit_styles( $post_type = 'post' )
+	public function linkStyleSheet( $post_type, $base = 'post' )
 	{
-		if ( strpos( $_SERVER['REQUEST_URI'], 'post.php' )
-			|| strpos( $_SERVER['REQUEST_URI'], 'post-new.php' ) )
-				gPluginFormHelper::linkStyleSheet( $this->constants['plugin_url'].'assets/css/'.$this->args['component'].'-'.$post_type.'-post.css', $this->constants['plugin_ver'] );
+		gPluginFormHelper::linkStyleSheet(
+			$this->constants['plugin_url'].
+			'assets/css/'.
+			$this->component.'.'.
+			'admin'.'.'.
+			$post_type.'.'.
+			$base.'.css',
+		$this->constants['plugin_ver'] );
+	}
 
-		if ( strpos( $_SERVER['REQUEST_URI'], 'edit.php' ) )
-			gPluginFormHelper::linkStyleSheet( $this->constants['plugin_url'].'assets/css/'.$this->args['component'].'-'.$post_type.'-edit.css', $this->constants['plugin_ver'] );
+	// the caller must check cpt first
+	public function print_admin_edit_styles( $post_type = 'post', $screen = NULL )
+	{
+		self::__dep( '$this->linkStyleSheet()' );
+
+		if ( is_null( $screen ) )
+			$screen = get_current_screen();
+
+		if ( in_array( $screen->base, array( 'edit', 'post' ) ) )
+			$this->linkStyleSheet( $post_type, $screen->base );
 	}
 
 	// for settings page only
