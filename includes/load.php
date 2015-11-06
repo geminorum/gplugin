@@ -88,6 +88,7 @@ if ( ! class_exists( 'gPlugin' ) ) : class gPlugin {
 	static function load( $do_callbacks = TRUE )
 	{
 		arsort( self::$candidates );
+		$rev  = current( self::$candidates );
 		$file = key( self::$candidates );
 		$path = dirname( $file ).'/';
 
@@ -104,7 +105,7 @@ if ( ! class_exists( 'gPlugin' ) ) : class gPlugin {
 
 		if ( $do_callbacks )
 			foreach ( self::$callbacks as $callback )
-				call_user_func( $callback );
+				call_user_func_array( $callback, array( $rev ) );
 	}
 
 	static function get_info()
