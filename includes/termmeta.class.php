@@ -12,7 +12,7 @@ if ( ! class_exists( 'gPluginTermMeta' ) ) { class gPluginTermMeta extends gPlug
 
 	public function setup_globals( $constants = array(), $args = array() )
 	{
-		self::__dep();
+		// self::__dep();
 
 		$this->set_args( array(
 			'db_version' => '1',

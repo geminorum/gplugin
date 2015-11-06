@@ -1,12 +1,14 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
-// DEPREATED
+// FIXME: DEPREATED
 class gPluginMetaCore extends gPluginClassCore
 {
 
-	// MUST DEPREATED
+	// FIXME: MUST DEPREATED
 	function admin_field( $field, $fields, $post, $ltr = FALSE )
 	{
+		self::__dep();
+
 		global $gEditorial;
 
 		if ( in_array( $field, $fields ) && $gEditorial->meta->user_can( 'view', $field )  ) {
@@ -23,6 +25,8 @@ class gPluginMetaCore extends gPluginClassCore
 
 	public static function is_active()
 	{
+		self::__dep();
+
 		global $gEditorial;
 
 		if ( is_object( $gEditorial ) )
@@ -35,6 +39,8 @@ class gPluginMetaCore extends gPluginClassCore
 
 	public static function get_the_term( $taxonomy, $b = '', $a = '', $f = FALSE, $args = array() )
 	{
+		self::__dep();
+		
 		global $post;
 
 		if ( ! self::is_active() )

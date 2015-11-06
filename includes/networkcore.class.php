@@ -52,7 +52,7 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 		if ( isset( $this->constants['class_filters'] ) )
 			gPluginFactory( $this->constants['class_filters'], $constants, $args );
 
-		// TODO: DROP: gPluginTermMeta
+		// FIXME: DROP: gPluginTermMeta
 		if ( isset( $this->args['term_meta'] ) && $this->args['term_meta'] )
 			gPluginFactory( 'gPluginTermMeta', $constants, $args ); // no point passing the arguments!
 
