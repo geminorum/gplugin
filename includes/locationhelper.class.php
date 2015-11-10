@@ -1,9 +1,5 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
-// http://countrycode.org/
-// http://en.wikipedia.org/wiki/ISO_3166-1
-// https://www.iso.org/obp/ui/
-
 if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper extends gPluginClassCore
 {
 
@@ -901,9 +897,10 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper e
 		);
 	}
 
-	// Originally from Easy Digital Downloads
 	public static function get_countries( $pre = array() )
 	{
+		self::__dep( 'gPluginLocationHelper::getCountries()' );
+
 		return array_merge( $pre, array(
 			'US' => 'United States',
 			'CA' => 'Canada',
@@ -1013,7 +1010,7 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper e
 			'IQ' => 'Iraq',
 			'IE' => 'Ireland',
 			'IM' => 'Isle of Man',
-			//'IL' => 'Israel',
+			// 'IL' => 'Israel',
 			'IT' => 'Italy',
 			'JM' => 'Jamaica',
 			'JP' => 'Japan',
@@ -1148,7 +1145,7 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper e
 			'YE' => 'Yemen',
 			'YU' => 'Yugoslavia',
 			'ZM' => 'Zambia',
-			'ZW' => 'Zimbabwe'
+			'ZW' => 'Zimbabwe',
 		) );
 	}
 
@@ -1231,7 +1228,6 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper e
 
 		return FALSE;
 	}
-
 
 	public static function get_cities_IR()
 	{
@@ -1644,9 +1640,17 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper e
 		);
 	}
 
-   /** ---------------------------------------------------------------------------------
-									NOT USED YET
-	--------------------------------------------------------------------------------- **/
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/// NOT USED YET ---------------------------------------------------------------
+
+	// Geo-Toolkit for PHP: https://github.com/jsor/geokit
+
+	// http://ip.codehelper.io/
+	// http://stackoverflow.com/a/7767055
+	// http://ipinfo.io/developers
+	// http://jsfiddle.net/zK5FN/2/
 
 	// https://gist.github.com/phpdistiller/8067330
 	// http://www.catswhocode.com/blog/snippets/detect-location-by-ip
@@ -1728,12 +1732,7 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper e
 	// http://www.movable-type.co.uk/scripts/latlong.html
 
 	// SEE : https://developers.google.com/maps/articles/phpsqlsearch_v3
-
 	// SEE: http://www.geodatasource.com/world-cities-database/free
-
-
-	//--------------------------------------------------------------------------
-
 
 	// http://www.geodatasource.com/developers/php
 	/*::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
@@ -1809,11 +1808,4 @@ if ( ! class_exists( 'gPluginLocationHelper' ) ) { class gPluginLocationHelper e
 
 		return $geopointDistance;
 	}
-
-	// http://ip.codehelper.io/
-
-	// http://stackoverflow.com/a/7767055
-
-	// http://ipinfo.io/developers
-	// http://jsfiddle.net/zK5FN/2/
 } }
