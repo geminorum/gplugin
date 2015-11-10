@@ -34,7 +34,7 @@ $GLOBALS['_gplugin'] = array( 27, __FILE__, array(
 	'gPluginFormHelper',
 	'gPluginTextHelper',
 	'gPluginFileHelper',
-	'gPluginImageHelper',
+	// 'gPluginImageHelper', // NOT USED YET
 	'gPluginLocationHelper',
 	'gPluginDateTimeHelper',
 
