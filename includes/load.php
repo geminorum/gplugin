@@ -77,9 +77,9 @@ if ( ! class_exists( 'gPlugin' ) ) : class gPlugin {
 
 		foreach ( self::$callbacks as $file => $callback ) {
 			if ( dirname( dirname( plugin_basename( $file ) ) ) == $plugin_dir ) {
-				self::load( FALSE );
-				call_user_func( $callback );
-				do_action( 'gplugin_activation_'.$plugin );
+				$rev = self::load( FALSE );
+				call_user_func_array( $callback, array( $rev ) );
+				do_action( 'gplugin_activation_'.$plugin, $rev );
 				break;
 			}
 		}
@@ -106,6 +106,8 @@ if ( ! class_exists( 'gPlugin' ) ) : class gPlugin {
 		if ( $do_callbacks )
 			foreach ( self::$callbacks as $callback )
 				call_user_func_array( $callback, array( $rev ) );
+
+		return $rev;
 	}
 
 	static function get_info()
