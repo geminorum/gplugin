@@ -1,3 +1,7 @@
+### r28
+* passing revision to the plugin callback
+* gPluginListTableCore: deprecated
+
 ### r27
 * gPluginTermMeta: deprecated
 * all extending from class core
