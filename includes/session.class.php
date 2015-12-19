@@ -128,7 +128,6 @@ class gPluginSessionHelper
 		do_action( 'wp_session_commit' ); // back comp
 	}
 
-
 	/**
 	 * Clean up expired sessions by removing data and their expiration entries from
 	 * the WordPress options table.
@@ -143,7 +142,7 @@ class gPluginSessionHelper
 		if ( defined( 'WP_SETUP_CONFIG' ) )
 			return;
 
-		if ( ! defined( 'WP_INSTALLING' ) ) {
+		if ( ! wp_installing() ) {
 			if ( GPLUGIN_SESSION_NETWORKWIDE )
 				$expiration_keys = $wpdb->get_results( "SELECT meta_key, meta_value FROM $wpdb->sitemeta WHERE meta_key LIKE '_gp_session_expires_%'" );
 			else

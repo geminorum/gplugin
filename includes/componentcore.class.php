@@ -12,7 +12,7 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 
 	public function setup_globals( $constants = array(), $args = array() )
 	{
-		$this->args = gPluginUtils::parse_args_r( $args, array(
+		$this->args = gPluginUtils::recursiveParseArgs( $args, array(
 			'title'        => 'gPlugin',
 			'domain'       => 'gplugin',
 			'network'      => FALSE,
@@ -47,7 +47,7 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 
 		$constants = apply_filters( $this->args['domain'].'_constants', $constants );
 
-		$this->constants = gPluginUtils::parse_args_r( $constants, array(
+		$this->constants = gPluginUtils::recursiveParseArgs( $constants, array(
 			'plugin_dir'          => GPLUGIN_DIR,
 			'plugin_url'          => GPLUGIN_URL,
 			'class_filters'       => 'gPluginFiltersCore',
@@ -333,24 +333,29 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 	public function locate_template( $template_names, $load = FALSE, $require_once = TRUE )
 	{
 		$located = FALSE;
+		$dir = '/'.$this->constants['theme_templates_dir'].'/';
+
 		foreach ( (array) $template_names as $template_name ) {
+
 			if ( empty( $template_name ) )
 				continue;
 
-			$template_name = untrailingslashit( $template_name );
-			if ( file_exists( get_stylesheet_directory().'/'.$this->constants['theme_templates_dir'].'/'.$template_name ) ) {
-				$located = get_stylesheet_directory().'/'.$this->constants['theme_templates_dir'].'/'.$template_name;
+			$name = gPluginUtils::untrail( $template_name );
+
+			if ( file_exists( get_stylesheet_directory().$dir.$name ) )
+				$located = get_stylesheet_directory().$dir.$name;
+
+			else if ( file_exists( get_template_directory().$dir.$name ) )
+				$located = get_template_directory().$dir.$name;
+
+			else if ( file_exists( $this->constants['plugin_dir'].'/templates/'.$name ) )
+				$located = $this->constants['plugin_dir'].'/templates/'.$name;
+
+			if ( $located )
 				break;
-			} else if ( file_exists( get_template_directory().'/'.$this->constants['theme_templates_dir'].'/'.$template_name ) ) {
-				$located = get_template_directory().'/'.$this->constants['theme_templates_dir'].'/'.$template_name;
-				break;
-			} else if ( file_exists( $this->constants['plugin_dir'].'/templates/'.$template_name ) ) {
-				$located = $this->constants['plugin_dir'].'/templates/'.$template_name;
-				break;
-			}
 		}
 
-		if ( ( TRUE == $load ) && ! empty( $located ) )
+		if ( $load && ! empty( $located ) )
 			load_template( $located, $require_once );
 
 		return $located;

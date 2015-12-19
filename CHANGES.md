@@ -1,3 +1,7 @@
+### r29
+* gPluginSettingsCore: almost rewrite
+* more camel casing
+
 ### r28
 * passing revision to the plugin callback
 * gPluginListTableCore: deprecated

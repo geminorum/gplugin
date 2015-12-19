@@ -121,10 +121,13 @@ class gPluginAdminCore extends gPluginClassCore
 		// }
 	}
 
+	// FIXME: DEPRECATE THIS
 	// usually overrides by the child class
 	public function admin_print_styles()
 	{
-		$this->print_admin_edit_styles();
+		self::__log( 'UNNECESSARY: '.get_class( $this ).'::admin_print_styles' );
+
+		// $this->print_admin_edit_styles();
 	}
 
 	public function linkStyleSheet( $post_type, $base = 'post' )

@@ -110,15 +110,24 @@ class gPluginClassCore implements gPluginClassCoreInterface
 		return $out;
 	}
 
+	// INTERNAL
+	public static function __log( $log )
+	{
+		if ( defined( 'WP_DEBUG_LOG' ) && ! WP_DEBUG_LOG )
+			return;
+
+		error_log( $log );
+	}
+
 	// INTERNAL: used on anything deprecated
-	protected static function __dep( $note = '' )
+	protected static function __dep( $note = '', $prefix = 'DEP: ' )
 	{
 		if ( defined( 'WP_DEBUG_LOG' ) && ! WP_DEBUG_LOG )
 			return;
 
 		$trace = debug_backtrace();
 
-		$log = 'DEP: ';
+		$log = $prefix;
 
 		if ( isset( $trace[1]['object'] ) )
 			$log .= get_class( $trace[1]['object'] ).'::';
@@ -139,6 +148,6 @@ class gPluginClassCore implements gPluginClassCoreInterface
 		if ( $note )
 			$log .= '|'.$note;
 
-		error_log( $log );
+		self::__log( $log );
 	}
 } }

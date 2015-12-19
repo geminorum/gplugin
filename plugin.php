@@ -3,7 +3,7 @@
 Plugin Name: gPlugin
 Plugin URI: http://geminorum.ir/wordpress/gplugin
 Description: Shade of a framework to help with WordPress development
-Version: 28
+Version: 29
 Author: geminorum
 Author URI: http://geminorum.ir/
 Network: true
@@ -11,10 +11,12 @@ TextDomain: gplugin
 DomainPath : /languages
 GitHub Plugin URI: https://github.com/geminorum/gplugin
 GitHub Branch: master
+Requires WP: 4.4
+Requires PHP: 5.3
 */
 
 /*
-	Copyright 2015 geminorum
+	Copyright 2016 geminorum
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by

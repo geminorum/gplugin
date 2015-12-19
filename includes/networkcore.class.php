@@ -4,13 +4,13 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 {
 
 	protected $asset_styles = FALSE;
-	protected $asset_config = FALSE;
+	protected $asset_config = FALSE; // set NULL to enable
 	protected $asset_object = 'gPlugin';
 	protected $asset_args   = array();
 
 	public function setup_globals( $constants = array(), $args = array() )
 	{
-		$this->args = gPluginUtils::parse_args_r( $args, array(
+		$this->args = gPluginUtils::recursiveParseArgs( $args, array(
 			'title'     => 'gPlugin',
 			'domain'    => 'gplugin',
 			'network'   => TRUE,
@@ -53,8 +53,8 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 			gPluginFactory( $this->constants['class_filters'], $constants, $args );
 
 		// FIXME: DROP: gPluginTermMeta
-		if ( isset( $this->args['term_meta'] ) && $this->args['term_meta'] )
-			gPluginFactory( 'gPluginTermMeta', $constants, $args ); // no point passing the arguments!
+		// if ( isset( $this->args['term_meta'] ) && $this->args['term_meta'] )
+		//	gPluginFactory( 'gPluginTermMeta', $constants, $args ); // no point passing the arguments!
 
 		$this->setup_settings();
 	}
@@ -77,15 +77,23 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 			if ( method_exists( $this, 'network_settings_save' ) )
 				add_action( 'network_admin_menu', array( $this, 'network_admin_menu' ) );
 
-			add_action( 'admin_print_footer_scripts', array( $this, 'footer_asset_config' ), 99 );
+			if ( FALSE !== $this->asset_config )
+				add_action( 'admin_print_footer_scripts', array( $this, 'footer_asset_config' ), 99 );
 
 		} else {
 
 			if ( is_admin() ) {
-				add_action( 'admin_init', array( $this, 'admin_init' ) );
-				add_action( 'admin_print_footer_scripts', array( $this, 'footer_asset_config' ), 99 );
+
+				if ( method_exists( $this, 'admin_init' ) )
+					add_action( 'admin_init', array( $this, 'admin_init' ) );
+
+				if ( FALSE !== $this->asset_config )
+					add_action( 'admin_print_footer_scripts', array( $this, 'footer_asset_config' ), 99 );
+
 			} else {
-				add_action( 'wp_footer' , array( $this, 'footer_asset_config'  ), 99 );
+
+				if ( FALSE !== $this->asset_config )
+					add_action( 'wp_footer' , array( $this, 'footer_asset_config'  ), 99 );
 			}
 
 			$this->setup_network();
@@ -172,13 +180,13 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 	// FIXME: DEPRECATE THIS
 	public function plugins_loaded()
 	{
-		gPluginError( __FUNCTION__, sprintf( '%s: unneccary fire on plugins_loaded', $this->args['title'] ) );
+		self::__log( 'UNNECESSARY: '.get_class( $this ).'::plugins_loaded' );
 
 		// $this->load_textdomain();
 	}
 
 	// public function load_textdomain() {}
-	public function admin_init() {}
+	// public function admin_init() {}
 	public function setup_network() {}
 	public function setup_modules() {}
 

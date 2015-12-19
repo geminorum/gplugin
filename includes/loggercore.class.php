@@ -13,7 +13,7 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 
 	public function setup_globals( $constants = array(), $args = array() )
 	{
-		$this->args = gPluginUtils::parse_args_r( $args, array(
+		$this->args = gPluginUtils::recursiveParseArgs( $args, array(
 			'domain'      => 'gplugin',
 			'title'       => 'gPlugin',
 			'logger_args' => array(
@@ -26,7 +26,7 @@ if ( ! class_exists( 'gPluginLoggerCore' ) ) { class gPluginLoggerCore extends g
 			),
 		) );
 
-		$this->constants = gPluginUtils::parse_args_r( $constants, array(
+		$this->constants = gPluginUtils::recursiveParseArgs( $constants, array(
 			'plugin_dir' => GPLUGIN_DIR,
 			'plugin_url' => GPLUGIN_URL,
 		) );

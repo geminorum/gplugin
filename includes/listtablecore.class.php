@@ -11,7 +11,7 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 	{
 		self::__dep();
 
-		$this->args = gPluginUtils::parse_args_r( $args, array(
+		$this->args = gPluginUtils::recursiveParseArgs( $args, array(
 			'domain'   => 'gplugin',
 			'title'    => 'gPlugin',
 			'plural'   => '',
@@ -47,7 +47,8 @@ if ( ! class_exists( 'gPluginListTableCore' ) ) { class gPluginListTableCore ext
 
 	public static function search_query()
 	{
-		echo isset( $_REQUEST['s'] ) ? esc_attr( gPluginUtils::unslash( $_REQUEST['s'] ) ) : '';
+		// echo isset( $_REQUEST['s'] ) ? esc_attr( gPluginUtils::unslash( $_REQUEST['s'] ) ) : '';
+		echo get_search_query();
 	}
 
 	// Checks the current user's permissions

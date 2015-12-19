@@ -141,6 +141,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		echo $html;
 	}
 
+	// FIXME: use new wp core function
 	public static function get_current_site_blog_id()
 	{
 		if ( ! is_multisite() )
@@ -370,7 +371,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		if ( is_null( $request_uri ) )
 			$request_uri = $_SERVER['REQUEST_URI'];
 
-		return gPluginUtils::strpos_arr( $request_uri, array(
+		return gPluginUtils::strposArray( $request_uri, array(
 			'wp-login.php',
 			'wp-signup.php',
 			'wp-activate.php',
@@ -438,7 +439,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 			$current_url = home_url( add_query_arg( array(), ( empty( $wp->request ) ? FALSE : $wp->request ) ) );
 
 		if ( $trailingslashit )
-			return trailingslashit( $current_url );
+			return gPluginUtils::trail( $current_url );
 
 		return $current_url;
 	}

@@ -38,7 +38,7 @@ if ( ! class_exists( 'gPluginAjaxCore' ) ) { class gPluginAjaxCore extends gPlug
 
 			// if ( ! method_exists( $this, 'sub_'.$sub ) ) {
 			// 	if ( ! count( $fallback ) )
-			// 		gPluginError( __FUNCTION__, sprintf( '%s group filter not exists!', $group ) );
+			//		self::__log( 'GROUP FILTER NOT EXISTS: '.get_class( $this ).'::'.$group );
 			// 	return $fallback;
 			// }
 

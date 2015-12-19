@@ -5,7 +5,7 @@ if ( ! class_exists( 'gPluginFilteredCore' ) ) { class gPluginFilteredCore exten
 
 	public function setup_globals( $constants = array(), $args = array() )
 	{
-		$this->args = gPluginUtils::parse_args_r( $args, array(
+		$this->args = gPluginUtils::recursiveParseArgs( $args, array(
 			'domain'        => 'gplugin',
 			'title'         => 'gPlugin',
 			'filter_prefix' => FALSE,
@@ -14,7 +14,7 @@ if ( ! class_exists( 'gPluginFilteredCore' ) ) { class gPluginFilteredCore exten
 		if ( FALSE === $this->args['filter_prefix'] )
 			$this->inject( 'args', array( 'filter_prefix' => $this->args['domain'] ) );
 
-		$this->constants = gPluginUtils::parse_args_r( $constants, array(
+		$this->constants = gPluginUtils::recursiveParseArgs( $constants, array(
 			'plugin_dir' => GPLUGIN_DIR,
 			'plugin_url' => GPLUGIN_URL,
 		) );
@@ -29,8 +29,10 @@ if ( ! class_exists( 'gPluginFilteredCore' ) ) { class gPluginFilteredCore exten
 				return $this->filtered[$group];
 
 		if ( ! method_exists( $this, $group ) ) {
+
 			if ( ! count( $fallback ) )
-				gPluginError( __FUNCTION__, sprintf( '%s group filter not exists!', $group ) );
+				self::__log( 'GROUP FILTER NOT EXISTS: '.get_class( $this ).'::'.$group );
+
 			return $fallback;
 		}
 
