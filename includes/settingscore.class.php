@@ -137,7 +137,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 		), $atts );
 
 		if ( $args['rekey'] )
-			self::__dep( 'gPluginUtils::reKey()' );
+			self::__dep( 'gPluginUtils::sameKey()' );
 
 		if ( ! $args['field'] )
 			return;
