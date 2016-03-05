@@ -10,13 +10,13 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper extends g
 	}
 
 	// FIXME: DEPRECATED
-	public static function wpSettingsHeaderNav( $settings_uri = '', $active = '', $sub_pages = array(), $class_prefix = 'nav-tab-', $tag = 'h2' )
+	public static function wpSettingsHeaderNav( $settings_uri = '', $active = '', $sub_pages = array(), $class_prefix = 'nav-tab-', $tag = 'h3' )
 	{
 		self::__dep( 'gPluginFormHelper::headerNav()' );
 		self::headerNav( $settings_uri, $active, $sub_pages, $class_prefix, $tag );
 	}
 
-	public static function headerNav( $uri = '', $active = '', $subs = array(), $prefix = 'nav-tab-', $tag = 'h2' )
+	public static function headerNav( $uri = '', $active = '', $subs = array(), $prefix = 'nav-tab-', $tag = 'h3' )
 	{
 		if ( ! count( $subs ) )
 			return;
@@ -34,7 +34,7 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper extends g
 		), $html );
 	}
 
-	public static function headerTabs( $tabs, $active = 'manual', $prefix = 'nav-tab-', $tag = 'h2' )
+	public static function headerTabs( $tabs, $active = 'manual', $prefix = 'nav-tab-', $tag = 'h3' )
 	{
 		if ( ! count( $tabs ) )
 			return;
@@ -55,7 +55,7 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper extends g
 	}
 
 	// FIXME: DEPRECATED
-	public static function wpNavTabs( $tabs, $active = 'manual', $class_prefix = 'nav-tab-', $tag = 'h2' )
+	public static function wpNavTabs( $tabs, $active = 'manual', $class_prefix = 'nav-tab-', $tag = 'h3' )
 	{
 		self::__dep( 'gPluginFormHelper::headerTabs()' );
 
