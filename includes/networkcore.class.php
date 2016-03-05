@@ -11,11 +11,10 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 	public function setup_globals( $constants = array(), $args = array() )
 	{
 		$this->args = gPluginUtils::recursiveParseArgs( $args, array(
-			'title'     => 'gPlugin',
-			'domain'    => 'gplugin',
-			'network'   => TRUE,
-			'term_meta' => FALSE,
-			'options'   => array(),
+			'title'   => 'gPlugin',
+			'domain'  => 'gplugin',
+			'network' => TRUE,
+			'options' => array(),
 		) );
 
 		// FIXME: DROP THIS
@@ -51,10 +50,6 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 
 		if ( isset( $this->constants['class_filters'] ) )
 			gPluginFactory( $this->constants['class_filters'], $constants, $args );
-
-		// FIXME: DROP: gPluginTermMeta
-		// if ( isset( $this->args['term_meta'] ) && $this->args['term_meta'] )
-		//	gPluginFactory( 'gPluginTermMeta', $constants, $args ); // no point passing the arguments!
 
 		$this->setup_settings();
 	}

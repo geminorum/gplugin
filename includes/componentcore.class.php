@@ -17,7 +17,6 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 			'domain'       => 'gplugin',
 			'network'      => FALSE,
 			'component'    => 'default',
-			'term_meta'    => FALSE,
 			'options'      => array(),
 			'option_group' => FALSE,
 		) );
@@ -65,10 +64,6 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 
 		if ( isset( $this->constants['class_filters'] ) )
 			gPluginFactory( $this->constants['class_filters'], $constants, $args );
-
-		// TODO: DROP: gPluginTermMeta
-		if ( isset( $this->args['term_meta'] ) && $this->args['term_meta'] )
-			gPluginFactory( 'gPluginTermMeta', $constants, $args ); // no point passing the arguments!
 	}
 
 	public function setup_settings()
