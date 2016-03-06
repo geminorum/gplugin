@@ -385,6 +385,16 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		return ( version_compare( get_bloginfo( 'version' ), $minimum_version ) >= 0 );
 	}
 	
+	public static function getUsers( $all_fields = FALSE, $network = FALSE )
+	{
+		$users = get_users( array(
+			'blog_id' => ( $network ? '' : $GLOBALS['blog_id'] ),
+			'orderby' => 'display_name',
+			'fields'  => ( $all_fields ? 'all_with_meta' : 'all' ),
+		) );
+
+		return gPluginUtils::reKey( $users, 'ID' );
+	}
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -535,17 +545,5 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		// BETTER :
 		// http://stackoverflow.com/questions/9465486/php-preg-replace-regex-mention-username
 
-	}
-
-
-	// adapt!
-	public static function getUsers( $all_fields = FALSE )
-	{
-		$users = get_users( array(
-			'blog_id' => '', // TODO : add option to include entire network users / what if it changes and then the stored user id points to ???
-			'orderby' => 'display_name',
-			'fields' => ( $all_fields ? 'all_with_meta' : 'all' ),
-		) );
-		return gPluginUtils::reKey( $users, 'ID' );
 	}
 } }
