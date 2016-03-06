@@ -1,3 +1,8 @@
+### r31
+* wphelper: min WP version
+* wphelper: get users by blog or network
+* utils: same key checks for false & null
+
 ### r30
 * gPluginTermMeta: disabled
 
