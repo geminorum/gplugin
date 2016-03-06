@@ -100,7 +100,6 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 		// init here to help filtering the templates
 		if ( isset( $this->constants['class_mustache'] ) )
 			call_user_func( array( $this->constants['class_mustache'], 'init' ) );
-
 	}
 
 	public function plugins_loaded() {}

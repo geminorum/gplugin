@@ -343,6 +343,6 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper extends g
 			echo '<option value="'.$none_val.'" '.selected( $selected, $none_val, FALSE ).'>'.esc_html( $none ).'</option>';
 		foreach ( $list as $key => $item )
 			echo '<option value="'.$key.'" '.selected( $selected, $key, FALSE ).'>'.esc_html( ( $prop ? $item->$prop : $item ) ).'</option>';
-		?></select> <?php
+		?></select><?php
 	}
 } }
