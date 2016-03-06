@@ -147,7 +147,8 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils extends gPluginClas
 		$same = array();
 
 		foreach ( $old as $key => $value )
-			$same[$value] = $value;
+			if ( FALSE !== $value && NULL !== $value )
+				$same[$value] = $value;
 
 		return $same;
 	}
