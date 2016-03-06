@@ -379,6 +379,12 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 			'wp-admin',
 		) );
 	}
+	
+	public static function isMinWPv( $minimum_version )
+	{
+		return ( version_compare( get_bloginfo( 'version' ), $minimum_version ) >= 0 );
+	}
+	
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -490,14 +496,6 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		}
 		return FALSE;
 	}
-
-	// Originally from : http://wordpress.org/extend/plugins/kimili-flash-embed/
-	public static function isMinimumWPVersion( $minimum_version )
-	{
-		return ( version_compare( get_bloginfo( 'version' ), $minimum_version ) >= 0 );
-	}
-
-	// http://wordpress.org/plugins/sem-autolink-uri/
 
 	// Originally from : http://wordpress.org/extend/plugins/categories-autolink/
 	function linkify( $text, $terms )
