@@ -1,3 +1,6 @@
+### r30
+* gPluginTermMeta: disabled
+
 ### r29
 * gPluginSettingsCore: almost rewrite
 * more camel casing
