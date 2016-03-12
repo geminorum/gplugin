@@ -30,25 +30,18 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils extends gPluginClas
 		return self::IP();
 	}
 
-	public static function dump( &$var, $htmlsafe = TRUE )
+	// FIXME: DEPRECATED
+	public static function dump_get( $var, $htmlsafe = TRUE )
 	{
-		$result = var_export( $var, TRUE );
-		echo '<pre dir="ltr" style="text-align:left;direction:ltr;">'
-			.( $htmlsafe ? htmlspecialchars( $result ) : $result ).'</pre>';
+		self::__dep( 'self::dump()' );
+		return self::dump( $var, $htmlsafe, FALSE );
 	}
 
-	public static function dump_get( &$var, $htmlsafe = TRUE )
-	{
-		$result = var_export( $var, TRUE );
-		return '<pre dir="ltr" style="text-align:left;direction:ltr;">'
-			.( $htmlsafe ? htmlspecialchars( $result ) : $result ).'</pre>';
-	}
-
+	// FIXME: DEPRECATED
 	public static function dump_n( $var, $htmlsafe = TRUE )
 	{
-		$result = var_export( $var, TRUE );
-		echo '<pre dir="ltr" style="text-align:left;direction:ltr;">'
-			.( $htmlsafe ? htmlspecialchars( $result ) : $result ).'</pre>';
+		self::__dep( 'self::dump()' );
+		self::dump( $var, $htmlsafe );
 	}
 
 	public static function roundArray( $array, $precision = -3, $mode = PHP_ROUND_HALF_UP )

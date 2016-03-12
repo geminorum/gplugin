@@ -110,6 +110,29 @@ class gPluginClassCore implements gPluginClassCoreInterface
 		return $out;
 	}
 
+	public static function dump( $var, $htmlsafe = TRUE, $echo = TRUE )
+	{
+		$result = var_export( $var, TRUE );
+
+		$html = '<pre dir="ltr" style="text-align:left;direction:ltr;">'
+			.( $htmlsafe ? htmlspecialchars( $result ) : $result ).'</pre>';
+
+		if ( ! $echo )
+			return $html;
+
+		echo $html;
+	}
+
+	public static function kill( $var = FALSE )
+	{
+		if ( $var )
+			self::dump( $var );
+
+		// FIXME: add query/memory/time info
+
+		die();
+	}
+
 	// INTERNAL
 	public static function __log( $log )
 	{
