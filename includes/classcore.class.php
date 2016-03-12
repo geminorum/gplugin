@@ -1,18 +1,5 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
-if ( ! function_exists( 'gPluginFactory' ) ) :
-	function gPluginFactory( $class = 'gPluginClassCore', $constants = array(), $args = array() ) {
-
-		if ( class_exists( $class ) )
-			return call_user_func_array( array( $class, 'instance' ), array( $class, $constants, $args ) );
-
-		else if ( WP_DEBUG )
-			_doing_it_wrong( __FUNCTION__, sprintf( '%s class not exists!', $class ), GPLUGIN_VERSION );
-
-		return FALSE;
-	}
-endif;
-
 if ( ! class_exists( 'gPluginClassCore' ) ) {
 
 // http://stackoverflow.com/a/6386309

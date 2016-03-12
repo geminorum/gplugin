@@ -8,13 +8,15 @@ defined( 'GPLUGIN_DEBUG' ) or define( 'GPLUGIN_DEBUG', constant( 'WP_DEBUG' ) );
 defined( 'GPLUGIN_DIR' ) or define( 'GPLUGIN_DIR', '' );
 defined( 'GPLUGIN_URL' ) or define( 'GPLUGIN_URL', '' );
 
+if ( ! function_exists( 'gPluginFactory' ) ) :
+	function gPluginFactory( $class = 'gPluginClassCore', $constants = array(), $args = array() ) {
 
-if ( ! function_exists( 'gPluginFactory' ) ) : function gPluginFactory( $class = 'gPluginClassCore', $constants = array(), $args = array() ){
-	if ( class_exists( $class ) )
-		return call_user_func_array( array( $class, 'instance' ), array( $class, $constants, $args ) );
+		if ( class_exists( $class ) )
+			return call_user_func_array( array( $class, 'instance' ), array( $class, $constants, $args ) );
 
-	gPluginClassCore::__log( 'CLASS NOT EXISTS: '.$class );
-	return FALSE;
+		gPluginClassCore::__log( 'CLASS NOT EXISTS: '.$class );
+
+		return FALSE;
 } endif;
 
 if ( ! function_exists( 'gPluginError' ) ) : function gPluginError() {
