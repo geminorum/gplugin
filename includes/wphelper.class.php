@@ -309,15 +309,20 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		return $roles;
 	}
 
-	// Originally From : http://wp.tutsplus.com/tutorials/creative-coding/add-a-custom-column-in-posts-and-custom-post-types-admin-screen/
+	public static function getFeaturedImage( $post_id, $size = 'thumbnail', $default = FALSE )
+	{
+		if ( ! $post_thumbnail_id = get_post_thumbnail_id( $post_id ) )
+			return $default;
+
+		$post_thumbnail_img = wp_get_attachment_image_src( $post_thumbnail_id, $size );
+		return $post_thumbnail_img[0];
+	}
+
+	// FIXME: DEPRECATED
 	public static function get_featured_image_src( $post_id, $size = 'thumbnail', $default = FALSE )
 	{
-		$post_thumbnail_id = get_post_thumbnail_id( $post_id );
-		if ( $post_thumbnail_id ) {
-			$post_thumbnail_img = wp_get_attachment_image_src( $post_thumbnail_id, $size );
-			return $post_thumbnail_img[0];
-		}
-		return $default;
+		self::__dep( 'gPluginWPHelper::getFeaturedImage()' );
+		return self::getFeaturedImage( $post_id, $size, $default );
 	}
 
 	public static function getUserEditLink( $user_ID )
@@ -379,12 +384,12 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 			'wp-admin',
 		) );
 	}
-	
+
 	public static function isMinWPv( $minimum_version )
 	{
 		return ( version_compare( get_bloginfo( 'version' ), $minimum_version ) >= 0 );
 	}
-	
+
 	public static function getUsers( $all_fields = FALSE, $network = FALSE )
 	{
 		$users = get_users( array(
