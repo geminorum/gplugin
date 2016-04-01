@@ -325,6 +325,23 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		return self::getFeaturedImage( $post_id, $size, $default );
 	}
 
+	// @SEE: get_edit_term_link()
+	public static function getEditTaxLink( $taxonomy )
+	{
+		return add_query_arg( array(
+			'taxonomy' => $taxonomy,
+		), admin_url( 'edit-tags.php' ) );
+	}
+
+	// @SEE: get_search_link()
+	public static function getSearchLink( $query = FALSE )
+	{
+		if ( defined( 'GNETWORK_SEARCH_REDIRECT' ) && GNETWORK_SEARCH_REDIRECT )
+			return $query ? add_query_arg( GNETWORK_SEARCH_QUERYID, urlencode( $query ), GNETWORK_SEARCH_URL ) : GNETWORK_SEARCH_URL;
+
+		return $query ? add_query_arg( 's', urlencode( $query ), get_option( 'home' ) ) : get_option( 'home' );
+	}
+
 	public static function getUserEditLink( $user_ID )
 	{
 		return add_query_arg( 'wp_http_referer', urlencode( stripslashes( $_SERVER['REQUEST_URI'] ) ), 'user-edit.php?user_id='.$user_ID );
