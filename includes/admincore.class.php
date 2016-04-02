@@ -142,6 +142,21 @@ class gPluginAdminCore extends gPluginClassCore
 		$this->constants['plugin_ver'] );
 	}
 
+	public function enqueue_style( $post_type, $base = 'post' )
+	{
+		wp_enqueue_style(
+			$this->args['domain'].'-'.$post_type.'-'.$base,
+			$this->constants['plugin_url'].
+			'assets/css/'.
+			$this->component.'.'.
+			'admin'.'.'.
+			$post_type.'.'.
+			$base.'.css',
+			array(),
+			$this->constants['plugin_ver'],
+			'screen' );
+	}
+
 	// the caller must check cpt first
 	public function print_admin_edit_styles( $post_type = 'post', $screen = NULL )
 	{
