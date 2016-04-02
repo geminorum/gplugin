@@ -43,7 +43,6 @@ class gPluginAdminCore extends gPluginClassCore
 				add_action( 'current_screen', array( $this, 'current_screen' ) );
 
 			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
-			add_action( 'admin_print_styles', array( $this, 'admin_print_styles' ) );
 
 			if ( method_exists( $this, 'admin_footer' ) )
 				add_action( 'admin_footer', array( $this, 'admin_footer' ) );
@@ -121,7 +120,7 @@ class gPluginAdminCore extends gPluginClassCore
 		// }
 	}
 
-	// FIXME: DEPRECATE THIS
+	// FIXME: DEPRECATED
 	// usually overrides by the child class
 	public function admin_print_styles()
 	{
