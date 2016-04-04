@@ -49,7 +49,7 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 		$this->remote = FALSE;
 
 		if ( isset( $this->constants['class_filters'] ) )
-			gPluginFactory( $this->constants['class_filters'], $constants, $args );
+			gPluginFactory::get( $this->constants['class_filters'], $constants, $args );
 
 		$this->setup_settings();
 	}
@@ -136,21 +136,21 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 	public function setup_settings()
 	{
 		if ( isset( $this->constants['class_network_settings'] ) )
-			$this->settings = gPluginFactory(
+			$this->settings = gPluginFactory::get(
 				$this->constants['class_network_settings'],
 				$this->constants,
 				$this->getFilters( 'network_settings_args' )
 			);
 
 		if ( isset( $this->constants['class_component_settings'] ) )
-			$this->components = gPluginFactory(
+			$this->components = gPluginFactory::get(
 				$this->constants['class_component_settings'],
 				$this->constants,
 				$this->getFilters( 'component_settings_args' )
 			);
 
 		if ( isset( $this->constants['class_module_settings'] ) )
-			$this->modules = gPluginFactory(
+			$this->modules = gPluginFactory::get(
 				$this->constants['class_module_settings'],
 				$this->constants,
 				$this->getFilters( 'module_settings_args' )
@@ -245,7 +245,7 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 	{
 		if ( isset( $this->constants['class_filters'] )
 			&& class_exists( $this->constants['class_filters'] ) ) {
-				$filtred = gPluginFactory( $this->constants['class_filters'] );
+				$filtred = gPluginFactory::get( $this->constants['class_filters'] );
 				return $filtred->get( $context, $fallback );
 		}
 		return $fallback;

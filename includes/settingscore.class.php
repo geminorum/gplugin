@@ -29,9 +29,8 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 
 		// for something like old gMember Restricted class
 		// when we have to initiate a plugin module if enabled option
-		$plugin_class = $this->args['plugin_class'];
-		if ( $this->enabled && class_exists( $plugin_class ) )
-			gPluginFactory( $plugin_class, $this->constants, $this->args['plugin_args'] );
+		if ( $this->enabled && class_exists( $this->args['plugin_class'] ) )
+			gPluginFactory::get( $this->args['plugin_class'], $this->constants, $this->args['plugin_args'] );
 	}
 
 	public function setup_actions()

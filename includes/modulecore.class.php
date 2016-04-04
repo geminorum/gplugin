@@ -55,7 +55,7 @@ if ( ! class_exists( 'gPluginModuleCore' ) ) { class gPluginModuleCore extends g
 	{
 		if ( isset( $this->constants['class_filters'] )
 			&& class_exists( $this->constants['class_filters'] ) ) {
-				$filtred = gPluginFactory( $this->constants['class_filters'] );
+				$filtred = gPluginFactory::get( $this->constants['class_filters'] );
 				return $filtred->get( $context, $fallback );
 		}
 		return $fallback;

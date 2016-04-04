@@ -63,13 +63,13 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 			return;
 
 		if ( isset( $this->constants['class_filters'] ) )
-			gPluginFactory( $this->constants['class_filters'], $constants, $args );
+			gPluginFactory::get( $this->constants['class_filters'], $constants, $args );
 	}
 
 	public function setup_settings()
 	{
 		if ( isset( $this->constants['class_'.$this->args['component'].'_settings'] ) )
-			$this->settings = gPluginFactory(
+			$this->settings = gPluginFactory::get(
 				$this->constants['class_'.$this->args['component'].'_settings'],
 				$this->constants,
 				$this->getFilters( $this->args['component'].'_settings_args' )
@@ -134,7 +134,7 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 	{
 		if ( isset( $this->constants['class_filters'] )
 			&& class_exists( $this->constants['class_filters'] ) ) {
-				$filtred = gPluginFactory( $this->constants['class_filters'] );
+				$filtred = gPluginFactory::get( $this->constants['class_filters'] );
 				return $filtred->get( $context, $fallback );
 		}
 		return $fallback;
