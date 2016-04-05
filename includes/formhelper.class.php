@@ -65,11 +65,17 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper extends g
 		echo '</'.$tag.'>';
 	}
 
-	public static function linkStyleSheet( $url, $version = GPLUGIN_VERSION, $media = FALSE )
+	public static function linkStyleSheet( $url, $version = NULL, $media = 'all' )
 	{
+		if ( is_array( $version ) )
+			$url = add_query_arg( $version, $url );
+
+		else if ( $version )
+			$url = add_query_arg( 'ver', $version, $url );
+
 		echo "\t".self::html( 'link', array(
 			'rel'   => 'stylesheet',
-			'href'  => is_null( $version ) ? $url : add_query_arg( 'ver', $version, $url ),
+			'href'  => $url,
 			'type'  => 'text/css',
 			'media' => $media,
 		) )."\n";
