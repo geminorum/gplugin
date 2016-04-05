@@ -3,24 +3,32 @@
 if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils extends gPluginClassCore
 {
 
-	public static function IP()
+	public static function IP( $pad = FALSE )
 	{
+		$ip = '';
+
 		if ( getenv( 'HTTP_CLIENT_IP' ) )
-			return getenv( 'HTTP_CLIENT_IP' );
+			$ip = getenv( 'HTTP_CLIENT_IP' );
 
-		if ( getenv( 'HTTP_X_FORWARDED_FOR' ) )
-			return getenv( 'HTTP_X_FORWARDED_FOR' );
+		else if ( getenv( 'HTTP_X_FORWARDED_FOR' ) )
+			$ip = getenv( 'HTTP_X_FORWARDED_FOR' );
 
-		if ( getenv( 'HTTP_X_FORWARDED' ) )
-			return getenv( 'HTTP_X_FORWARDED' );
+		else if ( getenv( 'HTTP_X_FORWARDED' ) )
+			$ip = getenv( 'HTTP_X_FORWARDED' );
 
-		if ( getenv( 'HTTP_FORWARDED_FOR' ) )
-			return getenv( 'HTTP_FORWARDED_FOR' );
+		else if ( getenv( 'HTTP_FORWARDED_FOR' ) )
+			$ip = getenv( 'HTTP_FORWARDED_FOR' );
 
-		if ( getenv( 'HTTP_FORWARDED' ) )
-			return getenv( 'HTTP_FORWARDED' );
+		else if ( getenv( 'HTTP_FORWARDED' ) )
+			$ip = getenv( 'HTTP_FORWARDED' );
 
-		return $_SERVER['REMOTE_ADDR'];
+		else
+			$ip = getenv( 'REMOTE_ADDR' );
+
+		if ( $pad )
+			return str_pad( $ip, 15, ' ', STR_PAD_LEFT );
+
+		return $ip;
 	}
 
 	// FIXME: DEPRECATED
