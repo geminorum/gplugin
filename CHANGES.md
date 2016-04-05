@@ -1,3 +1,14 @@
+### 32
+* factory: using calss & exceptions
+* classcore: log checks for arrays
+* classcore: duplicate factory helper removed
+* admincore: enqueue helper
+* admincore: admin print style hook removed
+* modulecore: default current screen hook
+* formhelper: link stylesheet accepts array of query vars
+* utils: moving up dump helper
+* utils: ip padding for more readability
+
 ### r31
 * wphelper: min WP version
 * wphelper: get users by blog or network
