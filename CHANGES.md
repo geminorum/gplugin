@@ -1,3 +1,10 @@
+### 33
+* classcore: wrapper check for errors
+* wphelper: support single term edit link
+* wpremote: new `gPluginWPRemote`
+* html: new `gPluginHTML`
+* http: new `gPluginHTTP`
+
 ### 32
 * factory: using calss & exceptions
 * classcore: log checks for arrays
