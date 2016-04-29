@@ -582,29 +582,4 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper extends g
 	{
 		return strtolower( trim( preg_replace( '/[^A-Za-z0-9-]+/', '-', $string ) ) );
 	}
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-/// DEPRECATED -----------------------------------------------------------------
-
-	// http://www.sitepoint.com/title-case-in-php/
-	// Converts $title to Title Case, and returns the result.
-	public static function titleCase_DEPRECATED( $title )
-	{
-		// Our array of 'small words' which shouldn't be capitalised if they aren't the first word. Add your own words to taste.
-		$small_words = array(
-			'of','a','the','and','an','or','nor','but','is','if','then','else','when',
-			'at','from','by','on','off','for','in','out','over','to','into','with'
-		);
-
-		$words = explode( ' ', $title );
-
-		// If this word is the first, or it's not one of our small words, capitalise it with ucwords().
-		foreach ( $words as $key => $word )
-			if ( $key == 0 || ! in_array( $word, $small_words ) )
-				$words[$key] = ucwords( $word );
-
-		return implode( ' ', $words );
-	}
 } }
