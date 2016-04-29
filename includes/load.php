@@ -38,6 +38,7 @@ $GLOBALS['_gplugin'] = array( 32, __FILE__, array(
 	'gPluginLocationHelper',
 	'gPluginDateTimeHelper',
 
+	'gPluginHTML',
 	'gPluginUtils',
 	'gPluginHashed',
 ) );
