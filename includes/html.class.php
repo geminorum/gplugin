@@ -124,6 +124,12 @@ if ( ! class_exists( 'gPluginHTML' ) ) { class gPluginHTML extends gPluginClassC
 		return strtolower( preg_replace('/[^a-zA-Z0-9_:]/', '', $tag ) );
 	}
 
+	// @SOURCE: http://www.billerickson.net/code/phone-number-url/
+	public static function sanitizePhoneNumber( $number )
+	{
+		return self::escapeURL( 'tel:'.str_replace( array( '(', ')', '-', '.', '|', ' ' ), '', $number ) );
+	}
+
 	public static function tableCode( $array, $reverse = FALSE, $caption = FALSE )
 	{
 		if ( $reverse )
