@@ -82,10 +82,10 @@ if ( ! class_exists( 'gPluginHTML' ) ) { class gPluginHTML extends gPluginClassC
 				$att = $att;
 
 			else if ( 'href' == $key && '#' != $att )
-				$att = esc_url( $att );
+				$att = self::escapeURL( $att );
 
 			else if ( 'src' == $key && FALSE === strpos( $att, 'data:image' ) )
-				$att = esc_url( $att );
+				$att = self::escapeURL( $att );
 
 			else
 				$att = esc_attr( $att );
@@ -97,6 +97,11 @@ if ( ! class_exists( 'gPluginHTML' ) ) { class gPluginHTML extends gPluginClassC
 			return $html.' />';
 
 		return $html.'>';
+	}
+
+	public static function escapeURL( $url )
+	{
+		return esc_url( $url );
 	}
 
 	// like WP core but without filter and fallback
