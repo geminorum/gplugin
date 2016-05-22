@@ -26,7 +26,7 @@ $GLOBALS['_gplugin'] = array( 33, __FILE__, array(
 	'gPluginSession',
 
 	'gPluginWPHelper',
-	'gPluginWPRemote',
+	'gPluginWPRemote', // FIXME: DROP THIS
 	'gPluginTaxonomyHelper',
 	'gPluginCacheHelper',
 
