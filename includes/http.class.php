@@ -2,7 +2,7 @@
 
 if ( ! class_exists( 'gPluginHTTP' ) ) { class gPluginHTTP extends gPluginClassCore
 {
-	
+
 	public static function headers( $array )
 	{
 		foreach ( $array as $h => $k )
