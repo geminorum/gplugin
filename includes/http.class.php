@@ -14,6 +14,8 @@ if ( ! class_exists( 'gPluginHTTP' ) ) { class gPluginHTTP extends gPluginClassC
 		@header( "Retry-After: ".( absint( $minutes ) * MINUTE_IN_SECONDS ) );
 	}
 
+	// http://code.tutsplus.com/tutorials/a-look-at-the-wordpress-http-api-a-brief-survey-of-wp_remote_get--wp-32065
+	// http://wordpress.stackexchange.com/a/114922
 	public static function getJSON( $url, $atts = array(), $assoc = FALSE )
 	{
 		$args = gPluginUtils::recursiveParseArgs( $atts, array(
