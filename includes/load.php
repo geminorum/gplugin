@@ -1,6 +1,6 @@
 <?php
 
-$GLOBALS['_gplugin'] = array( 33, __FILE__, array(
+$GLOBALS['_gplugin'] = array( 34, __FILE__, array(
 	'gPluginFactory',
 	'gPluginClassCore',
 

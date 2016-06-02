@@ -1,3 +1,12 @@
+### 34
+* admincore: correct url for settings style
+* html: tag generator
+* html: wrapper for esc_url
+* html: sanitizing phone numbers
+* http: deprecated `gPluginWPRemote`, moved here
+* texthelper: reformat name helper
+* texthelper: unused removed
+
 ### 33
 * classcore: wrapper check for errors
 * wphelper: support single term edit link
