@@ -3,6 +3,12 @@
 if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper extends gPluginClassCore
 {
 
+	public static function reFormatName( $string )
+	{
+		// return preg_replace( '/(.*), (.*)/', '$2 $1', $string );
+		return preg_replace( '/(.*)[,،;؛] (.*)/u', '$2 $1', $string );
+	}
+
 	// https://gist.github.com/geminorum/5eec57816adb003ccefb
 	public static function joinString( $parts, $between, $last )
 	{
