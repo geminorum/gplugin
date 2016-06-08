@@ -17,30 +17,6 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 			'options' => array(),
 		) );
 
-		// FIXME: DROP THIS
-		if ( isset( $this->_asset_styles ) ) {
-			self::__dep( 'var $_asset_styles' );
-			$this->asset_styles = $this->_asset_styles;
-		}
-
-		// FIXME: DROP THIS
-		if ( isset( $this->_asset_config ) ) {
-			self::__dep( 'var $_asset_config' );
-			$this->asset_config = $this->_asset_config;
-		}
-
-		// FIXME: DROP THIS
-		if ( isset( $this->_asset_object ) ) {
-			self::__dep( 'var $_asset_object' );
-			$this->asset_object = $this->_asset_object;
-		}
-
-		// FIXME: DROP THIS
-		if ( isset( $this->_asset_args ) ) {
-			self::__dep( 'var $_asset_args' );
-			$this->asset_args = $this->_asset_args;
-		}
-
 		$this->constants    = apply_filters( $this->args['domain'].'_network_constants', $constants );
 		$this->current_blog = get_current_blog_id();
 		// $this->blog_map     = get_site_option( $this->args['domain'].'_blog_map', array() ); // FIXME
