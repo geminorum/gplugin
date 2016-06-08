@@ -30,12 +30,12 @@ if ( ! class_exists( 'gPluginImportCore' ) ) { class gPluginImportCore extends g
 				$selected = $_REQUEST[$name];
 
 			foreach ( $attachments as $attachment )
-				$html .= gPluginFormHelper::html( 'option', array(
+				$html .= gPluginHTML::tag( 'option', array(
 					'value'    => $attachment->ID,
 					'selected' => $selected == $attachment->ID,
 				), esc_html( date_i18n( __( 'Y/m/j' ), strtotime( $attachment->post_date ) ).' — '.$attachment->post_title ) );
 
-			echo gPluginFormHelper::html( 'select', array(
+			echo gPluginHTML::tag( 'select', array(
 				'name' => $name,
 			), $html );
 		}
