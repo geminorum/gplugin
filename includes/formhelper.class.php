@@ -65,20 +65,12 @@ if ( ! class_exists( 'gPluginFormHelper' ) ) { class gPluginFormHelper extends g
 		echo '</'.$tag.'>';
 	}
 
+	// FIXME: DROP THIS
+	// DEPRICATED: use `gPluginHTML::linkStyleSheet()`
 	public static function linkStyleSheet( $url, $version = NULL, $media = 'all' )
 	{
-		if ( is_array( $version ) )
-			$url = add_query_arg( $version, $url );
-
-		else if ( $version )
-			$url = add_query_arg( 'ver', $version, $url );
-
-		echo "\t".gPluginHTML::tag( 'link', array(
-			'rel'   => 'stylesheet',
-			'href'  => $url,
-			'type'  => 'text/css',
-			'media' => $media,
-		) )."\n";
+		self::__dep( 'gPluginHTML::linkStyleSheet()' );
+		gPluginHTML::linkStyleSheet( $url, $version, $media );
 	}
 
 	// FIXME: DROP THIS

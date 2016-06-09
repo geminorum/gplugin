@@ -130,6 +130,22 @@ if ( ! class_exists( 'gPluginHTML' ) ) { class gPluginHTML extends gPluginClassC
 		return self::escapeURL( 'tel:'.str_replace( array( '(', ')', '-', '.', '|', ' ' ), '', $number ) );
 	}
 
+	public static function linkStyleSheet( $url, $version = NULL, $media = 'all' )
+	{
+		if ( is_array( $version ) )
+			$url = add_query_arg( $version, $url );
+
+		else if ( $version )
+			$url = add_query_arg( 'ver', $version, $url );
+
+		echo "\t".self::tag( 'link', array(
+			'rel'   => 'stylesheet',
+			'href'  => $url,
+			'type'  => 'text/css',
+			'media' => $media,
+		) )."\n";
+	}
+
 	public static function tableCode( $array, $reverse = FALSE, $caption = FALSE )
 	{
 		if ( $reverse )
