@@ -26,13 +26,12 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 
 		if ( isset( $this->constants['class_filters'] ) )
 			gPluginFactory::get( $this->constants['class_filters'], $constants, $args );
-
-		$this->setup_settings();
 	}
 
 	public function setup_actions()
 	{
 		$this->setup_constants();
+		$this->setup_settings();
 
 		if ( method_exists( $this, 'load_textdomain' ) )
 			add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
