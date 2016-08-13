@@ -153,12 +153,20 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 
 	// http://kovshenin.com/2011/attachments-filename-and-directory-in-wordpress/
 	// an absolute path (filesystem path, not URL) to the location of your attachment file.
-	public static function get_attachmnet_path( $post_id, $uploads = NULL )
+	public static function get_attachment_path( $post_id, $uploads = NULL )
 	{
 		if ( is_null( $uploads ) )
 			$uploads = wp_upload_dir();
 
 		return str_replace( $uploads['baseurl'], $uploads['basedir'], wp_get_attachment_url( $post_id ) );
+	}
+
+	// FIXME: DROP THIS
+	public static function get_attachmnet_path( $post_id, $uploads = NULL )
+	{
+		self::__dep( 'get_attachment_path()');
+
+		return self::get_attachment_path( $post_id, $uploads );
 	}
 
 	// http://www.stephenharris.info/2012/get-post-content-by-id/
