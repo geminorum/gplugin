@@ -357,7 +357,6 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 							continue;
 
 						$html .= gPluginHTML::tag( 'option', array(
-							// 'value'    => $value_name,
 							'value'    => $args['rekey'] ? $value_title : $value_name,
 							'selected' => $value == $value_name,
 						), esc_html( $value_title ) );
@@ -460,7 +459,8 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 		else
 			$options = get_option( $this->option_group, array() );
 
-		return gPluginUtils::recursiveParseArgs( $options, self::get_option_defaults() );
+		// return gPluginUtils::recursiveParseArgs( $options, self::get_option_defaults() );
+		return array_merge( self::get_option_defaults(), $options );
 	}
 
 	public function update_options( $options = NULL )
@@ -495,10 +495,8 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 		return (array) apply_filters( $this->option_group.'_option_defaults', $defaults );
 	}
 
-	protected function get_field_defaults( $field_name, $field_args )
+	protected function get_field_defaults( $field_name, $field_args, $default = '' )
 	{
-		// if ( 'checkbox' == $field_args['type'] && isset( $field_args['values'] ) )
-
 		if ( isset( $field_args['constant'] )
 			&& $field_args['constant']
 			&& defined( $field_args['constant'] ) )
