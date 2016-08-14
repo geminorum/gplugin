@@ -31,6 +31,9 @@ if ( ! class_exists( 'gPluginFactory' ) ) { class gPluginFactory
 {
 	public static function get( $class = 'gPluginClassCore', $constants = array(), $args = array() )
 	{
+		if ( ! $class )
+			return FALSE;
+
 		if ( class_exists( $class ) ) {
 
 			try {
