@@ -413,6 +413,30 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 				) );
 
 			break;
+			case 'posttypes' :
+
+				foreach ( gPluginWPHelper::getPostTypes() as $value_name => $value_title ) {
+
+					if ( in_array( $value_name, $exclude ) )
+						continue;
+
+					$html = gPluginHTML::tag( 'input', array(
+						'type'     => 'checkbox',
+						'class'    => $args['field_class'],
+						'name'     => $name.'['.$value_name.']',
+						'id'       => $id.'-'.$value_name,
+						'value'    => '1',
+						'checked'  => in_array( $value_name, ( array ) $value ),
+						'disabled' => $args['disabled'],
+						'dir'      => $args['dir'],
+					) );
+
+					echo '<p>'.gPluginHTML::tag( 'label', array(
+						'for' => $id.'-'.$value_name,
+					), $html.'&nbsp;'.esc_html( $value_title ) ).'</p>';
+				}
+
+			break;
 			case 'custom' :
 
 				if ( ! is_array( $args['values'] ) )
@@ -555,6 +579,10 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 
 				// empty multiple checkboxes
 				} else if ( isset( $field_args['values'] ) && FALSE !== $field_args['values'] ) {
+					$output[$field] = array();
+
+				// custom multiple checkboxes
+				} else if ( in_array( $field_args['type'], array( 'posttypes' ) ) ) {
 					$output[$field] = array();
 
 				// previously stored value
