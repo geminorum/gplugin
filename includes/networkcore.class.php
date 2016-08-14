@@ -38,9 +38,6 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 
 		add_action( 'init', array( $this, 'init' ) );
 
-		if ( isset( $this->constants['class_network_settings'] ) && method_exists( $this, 'settings_args_late' ) )
-			add_filter( 'gplugin_settings_args_'.strtolower( $this->constants['class_network_settings'] ), array( $this, 'settings_args_late' ) );
-
 		if ( is_network_admin() ) {
 
 			// bail if extended class not ready to have a network settings page
@@ -110,12 +107,16 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 
 	public function setup_settings()
 	{
-		if ( isset( $this->constants['class_network_settings'] ) )
+		if ( isset( $this->constants['class_network_settings'] ) ) {
 			$this->settings = gPluginFactory::get(
 				$this->constants['class_network_settings'],
 				$this->constants,
 				$this->getFilters( 'network_settings_args' )
 			);
+
+			if ( method_exists( $this, 'settings_args_late' ) )
+				add_filter( 'gplugin_settings_args_'.strtolower( $this->constants['class_network_settings'] ), array( $this, 'settings_args_late' ) );
+		}
 
 		if ( isset( $this->constants['class_component_settings'] ) )
 			$this->components = gPluginFactory::get(

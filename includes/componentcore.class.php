@@ -50,12 +50,18 @@ if ( ! class_exists( 'gPluginComponentCore' ) ) { class gPluginComponentCore ext
 
 	public function setup_settings()
 	{
-		if ( isset( $this->constants['class_'.$this->args['component'].'_settings'] ) )
+		$key = 'class_'.$this->args['component'].'_settings';
+
+		if ( isset( $this->constants[$key] ) ) {
 			$this->settings = gPluginFactory::get(
-				$this->constants['class_'.$this->args['component'].'_settings'],
+				$this->constants[$key],
 				$this->constants,
 				$this->getFilters( $this->args['component'].'_settings_args' )
 			);
+
+			if ( method_exists( $this, 'settings_args_late' ) )
+				add_filter( 'gplugin_settings_args_'.strtolower( $this->constants[$key] ), array( $this, 'settings_args_late' ) );
+		}
 	}
 
 	public function setup_actions()
