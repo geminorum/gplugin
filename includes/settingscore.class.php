@@ -471,7 +471,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 		if ( $this->args['site_options'] )
 			return update_site_option( $this->option_group, $options );
 		else
-			return update_option( $this->option_group, $options );
+			return update_option( $this->option_group, $options, TRUE );
 	}
 
 	public function get_option_defaults()
@@ -505,7 +505,7 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 		if ( isset( $field_args['default'] ) )
 			return $field_args['default'];
 
-		return '';
+		return $default;
 	}
 
 	public function settings_sanitize( $input )
@@ -545,13 +545,17 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 					else if ( isset( $field_args['values'] ) && FALSE === $field_args['values'] )
 						$output[$field] = $field_args['default'];
 
-					// multiple checkboxes
+					// filled multiple checkboxes
 					else if ( is_array( $input[$field] ) )
 						$output[$field] = gPluginUtils::getKeys( $input[$field] );
 
 					// default
 					else
 						$output[$field] = $input[$field];
+
+				// empty multiple checkboxes
+				} else if ( isset( $field_args['values'] ) && FALSE !== $field_args['values'] ) {
+					$output[$field] = array();
 
 				// previously stored value
 				} else if ( isset( $stored[$field] ) ) {
