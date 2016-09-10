@@ -185,17 +185,18 @@ if ( ! class_exists( 'gPluginNetworkCore' ) ) { class gPluginNetworkCore extends
 		$subs     = $this->getFilters( 'network_settings_subs', array() );
 		$titles   = $this->getFilters( 'network_settings_titles', array() );
 
-		echo '<div class="wrap">';
+		echo '<div class="wrap -settings-wrap">';
 			printf( '<h1>%s</h1>', ( isset( $titles['title'] ) ? $titles['title'] : $this->args['title'] ) );
 
 			gPluginFormHelper::headerNav( $uri, $sub, $subs );
 
-			if ( isset( $_GET['message'] ) ) {
-				if ( isset( $messages[$_REQUEST['message']] ) ) {
+			if ( ! empty( $_GET['message'] ) ) {
+
+				if ( empty( $messages[$_REQUEST['message']] ) )
+					gPluginHTML::notice( $_REQUEST['message'], 'notice-error' );
+				else
 					echo $messages[$_REQUEST['message']];
-				} else {
-					gPluginWPHelper::notice( $_REQUEST['message'], 'error fade' );
-				}
+
 				$_SERVER['REQUEST_URI'] = remove_query_arg( array( 'message' ), $_SERVER['REQUEST_URI'] );
 			}
 

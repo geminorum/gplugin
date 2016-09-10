@@ -169,14 +169,11 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		return NULL;
 	}
 
-	public static function notice( $notice, $class = 'updated fade', $echo = TRUE )
+	// FIXME: DEPRECATED
+	public static function notice( $notice, $class = 'notice-success fade', $echo = TRUE )
 	{
-		$html = sprintf( '<div id="message" class="%s notice is-dismissible"><p>%s</p></div>', $class, $notice );
-
-		if ( ! $echo )
-			return $html;
-
-		echo $html;
+		self::__dep( 'gPluginHTML::notice()' );
+		return gPluginHTML::notice( $notice, $class, $echo );
 	}
 
 	// FIXME: use new wp core function

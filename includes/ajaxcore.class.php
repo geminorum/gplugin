@@ -51,6 +51,6 @@ if ( ! class_exists( 'gPluginAjaxCore' ) ) { class gPluginAjaxCore extends gPlug
 
 	protected static function sendError( $message )
 	{
-		wp_send_json_error( gPluginWPHelper::notice( $message, 'error', FALSE ) );
+		wp_send_json_error( gPluginHTML::error( $message ) );
 	}
 } }

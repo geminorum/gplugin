@@ -146,6 +146,38 @@ if ( ! class_exists( 'gPluginHTML' ) ) { class gPluginHTML extends gPluginClassC
 		) )."\n";
 	}
 
+	// @REF: https://codex.wordpress.org/Plugin_API/Action_Reference/admin_notices
+	// CLASSES: notice-error, notice-warning, notice-success, notice-info, is-dismissible
+	public static function notice( $notice, $class = 'notice-success fade', $echo = TRUE )
+	{
+		$html = sprintf( '<div class="notice %s is-dismissible"><p>%s</p></div>', $class, $notice );
+
+		if ( ! $echo )
+			return $html;
+
+		echo $html;
+	}
+
+	public static function error( $message, $echo = FALSE )
+	{
+		return self::notice( $message, 'notice-error fade', $echo );
+	}
+
+	public static function success( $message, $echo = FALSE )
+	{
+		return self::notice( $message, 'notice-success fade', $echo );
+	}
+
+	public static function warning( $message, $echo = FALSE )
+	{
+		return self::notice( $message, 'notice-warning fade', $echo );
+	}
+
+	public static function info( $message, $echo = FALSE )
+	{
+		return self::notice( $message, 'notice-info fade', $echo );
+	}
+
 	public static function tableCode( $array, $reverse = FALSE, $caption = FALSE )
 	{
 		if ( $reverse )
