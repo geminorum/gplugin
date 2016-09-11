@@ -1,3 +1,19 @@
+### 35
+* all: dropping deprecated
+* networkcore: setting up settings after constants
+* classcore: log objects
+* componentcore: auto hook late settings
+* plugincore: discard draft
+* html: switch to html class for tag generation
+* html: switch to html class for linking stylesheets
+* html: notice api
+* utils: correct check for needle in the haystack!
+* settingscore: posttypes field
+* settingscore: avoiding default overrides
+* settingscore: check if no checkbox selected
+* wphelper: new posttypes helper
+* wphelper: check for cap before flush conditional
+
 ### 34
 * admincore: correct url for settings style
 * html: tag generator
