@@ -18,6 +18,7 @@ Requires PHP: 5.3
 
 define( 'GPLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GPLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'GPLUGIN_FILE', basename( GPLUGIN_DIR ).'/'.basename( __FILE__ ) );
 
 require( GPLUGIN_DIR.'/includes/load.php' );
 gplugin_init();
