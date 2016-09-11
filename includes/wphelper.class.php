@@ -176,14 +176,19 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		return gPluginHTML::notice( $notice, $class, $echo );
 	}
 
-	// FIXME: use new wp core function
-	public static function get_current_site_blog_id()
+	public static function getCurrentSiteBlogID()
 	{
 		if ( ! is_multisite() )
 			return get_current_blog_id();
 
-		global $current_site;
-		return absint( $current_site->blog_id );
+		return absint( get_current_site()->blog_id );
+	}
+
+	// FIXME: DEPRECATED
+	public static function get_current_site_blog_id()
+	{
+		self::__dep( 'gPluginWPHelper::get_attachment_path()');
+		return self::getCurrentSiteBlogID();
 	}
 
 	// http://kovshenin.com/2011/attachments-filename-and-directory-in-wordpress/
@@ -453,18 +458,30 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		return $url;
 	}
 
-	function redirect_whitelist( $request_uri = NULL )
+	public static function whiteListed( $request_uri = NULL )
 	{
 		if ( is_null( $request_uri ) )
 			$request_uri = $_SERVER['REQUEST_URI'];
 
 		return gPluginUtils::strposArray( $request_uri, array(
-			'wp-login.php',
-			'wp-signup.php',
-			'wp-activate.php',
-			'xmlrpc.php',
 			'wp-admin',
+			'wp-activate.php',
+			'wp-comments-post.php',
+			'wp-cron.php',
+			'wp-links-opml.php',
+			'wp-login.php',
+			'wp-mail.php',
+			'wp-signup.php',
+			'wp-trackback.php',
+			'xmlrpc.php',
 		) );
+	}
+
+	// FIXME: DEPRECATED
+	function redirect_whitelist( $request_uri = NULL )
+	{
+		self::__dep( 'gPluginWPHelper::whiteListed()' );
+		return self::whiteListed( $request_uri );
 	}
 
 	public static function isMinWPv( $minimum_version )
