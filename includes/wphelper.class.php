@@ -300,6 +300,21 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		return FALSE;
 	}
 
+	public static function isAJAX()
+	{
+		return defined( 'DOING_AJAX' ) && DOING_AJAX;
+	}
+
+	public static function isCRON()
+	{
+		return defined( 'DOING_CRON' ) && DOING_CRON;
+	}
+
+	public static function isCLI()
+	{
+		return defined( 'WP_CLI' ) && WP_CLI;
+	}
+
 	// FIXME: DEPRECATED
 	public static function is_debug()
 	{
