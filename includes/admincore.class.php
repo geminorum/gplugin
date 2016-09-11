@@ -93,11 +93,6 @@ class gPluginAdminCore extends gPluginClassCore
 			do_settings_sections( $this->args['domain'].'_'.$this->component.'_'.$sub );
 			submit_button();
 		echo '</form>';
-
-		// if ( gPluginWPHelper::isDev() ) {
-		// 	$options = $this->settings->get_options();
-		// 	gPluginUtils::dump( $options );
-		// }
 	}
 
 	// FIXME: DEPRECATED
