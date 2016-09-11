@@ -293,14 +293,10 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		return FALSE;
 	}
 
-	// TODO: use nonce
 	public static function isFlush()
 	{
 		if ( isset( $_GET['flush'] ) )
-			return TRUE;
-
-		if ( defined( 'GTHEME_FLUSH' ) && GTHEME_FLUSH )
-			return TRUE;
+			return did_action( 'init' ) && current_user_can( 'publish_posts' );
 
 		return FALSE;
 	}
