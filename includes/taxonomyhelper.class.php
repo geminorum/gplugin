@@ -171,16 +171,17 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper e
 		return '0';
 	}
 
-	public static function getTerms( $taxonomy = 'category', $post_id = FALSE, $object = FALSE, $key = 'term_id' )
+	public static function getTerms( $taxonomy = 'category', $post_id = FALSE, $object = FALSE, $key = 'term_id', $extra = array() )
 	{
 		$the_terms = array();
 
 		if ( FALSE === $post_id ) {
-			$terms = get_terms( $taxonomy, array(
-				'hide_emptzy' => FALSE,
-				'orderby'     => 'name',
-				'order'       => 'ASC'
-			) );
+			$terms = get_terms( array_merge( array(
+				'taxonomy'   => $taxonomy,
+				'hide_empty' => FALSE,
+				'orderby'    => 'name',
+				'order'      => 'ASC'
+			), $extra ) );
 		} else {
 			$terms = get_the_terms( $post_id, $taxonomy );
 		}
@@ -188,8 +189,8 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper e
 		if ( is_wp_error( $terms ) || FALSE === $terms )
 			return $the_terms;
 
-		$the_list = wp_list_pluck( $terms, $key );
-		$terms = array_combine( $the_list, $terms );
+		$list  = wp_list_pluck( $terms, $key );
+		$terms = array_combine( $list, $terms );
 
 		if ( $object )
 			return $terms;
