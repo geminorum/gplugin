@@ -488,13 +488,13 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		return ( version_compare( get_bloginfo( 'version' ), $minimum_version ) >= 0 );
 	}
 
-	public static function getUsers( $all_fields = FALSE, $network = FALSE )
+	public static function getUsers( $all_fields = FALSE, $network = FALSE, $extra = array() )
 	{
-		$users = get_users( array(
+		$users = get_users( array_merge( array(
 			'blog_id' => ( $network ? '' : $GLOBALS['blog_id'] ),
 			'orderby' => 'display_name',
 			'fields'  => ( $all_fields ? 'all_with_meta' : 'all' ),
-		) );
+		), $extra ) );
 
 		return gPluginUtils::reKey( $users, 'ID' );
 	}
