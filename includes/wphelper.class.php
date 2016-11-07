@@ -367,6 +367,25 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		return $roles;
 	}
 
+	public static function getFeaturedImageHTML( $post_id, $size = 'thumbnail', $link = TRUE )
+	{
+		if ( ! $post_thumbnail_id = get_post_thumbnail_id( $post_id ) )
+			return '';
+
+		if ( ! $post_thumbnail_img = wp_get_attachment_image_src( $post_thumbnail_id, $size ) )
+			return '';
+
+		$image = gPluginHTML::tag( 'img', array( 'src' => $post_thumbnail_img[0] ) );
+
+		if ( ! $link )
+			return $image;
+
+		return gPluginHTML::tag( 'a', array(
+			'href'   => wp_get_attachment_url( $post_thumbnail_id ),
+			'target' => '_blank',
+		), $image );
+	}
+
 	public static function getFeaturedImage( $post_id, $size = 'thumbnail', $default = FALSE )
 	{
 		if ( ! $post_thumbnail_id = get_post_thumbnail_id( $post_id ) )

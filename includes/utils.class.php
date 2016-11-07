@@ -118,6 +118,16 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils extends gPluginClas
 		return $parsed;
 	}
 
+	public static function range( $start, $end, $step = 1, $format = TRUE )
+	{
+		$array = array();
+
+		foreach ( range( $start, $end, $step ) as $number )
+			$array[$number] = $format ? number_format_i18n( $number ) : $number;
+
+		return $array;
+	}
+
 	public static function getKeys( $options, $if = TRUE )
 	{
 		$keys = array();
