@@ -8,7 +8,6 @@ interface gPluginClassCoreInterface
 	static function instance( $constants = array(), $args = array() );
 }
 
-// based on WP_Deregister_Users by John James Jacoby : http://wordpress.org/extend/plugins/deregister-users/
 class gPluginClassCore implements gPluginClassCoreInterface
 {
 	protected $data;

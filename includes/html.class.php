@@ -195,6 +195,9 @@ if ( ! class_exists( 'gPluginHTML' ) ) { class gPluginHTML extends gPluginClassC
 
 	public static function tableCode( $array, $reverse = FALSE, $caption = FALSE )
 	{
+		if ( ! $array )
+			return;
+
 		if ( $reverse )
 			$row = '<tr><td class="-val"><code>%1$s</code></td><td class="-var">%2$s</td></tr>';
 		else
