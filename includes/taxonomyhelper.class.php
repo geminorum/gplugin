@@ -177,10 +177,11 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper e
 
 		if ( FALSE === $post_id ) {
 			$terms = get_terms( array_merge( array(
-				'taxonomy'   => $taxonomy,
-				'hide_empty' => FALSE,
-				'orderby'    => 'name',
-				'order'      => 'ASC'
+				'taxonomy'               => $taxonomy,
+				'hide_empty'             => FALSE,
+				'orderby'                => 'name',
+				'order'                  => 'ASC',
+				'update_term_meta_cache' => FALSE,
 			), $extra ) );
 		} else {
 			$terms = get_the_terms( $post_id, $taxonomy );
