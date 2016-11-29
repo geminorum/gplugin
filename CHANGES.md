@@ -1,7 +1,7 @@
 ### 36
 * settings: :new: class
 * network: schedule events hook
-+ settingscore: moving up setting field generator
+* settingscore: moving up setting field generator
 * taxonomyhelper: extra args for get terms
 * taxonomyhelper: not updating term meta cache
 * wphelper: extra args for get users
