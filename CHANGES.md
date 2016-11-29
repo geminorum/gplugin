@@ -1,3 +1,11 @@
+### 36
+* settings: :new: class
+* network: schedule events hook
++ settingscore: moving up setting field generator
+* taxonomyhelper: extra args for get terms
+* taxonomyhelper: not updating term meta cache
+* wphelper: extra args for get users
+
 ### 35
 * all: dropping deprecated
 * networkcore: setting up settings after constants
