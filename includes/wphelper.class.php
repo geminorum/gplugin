@@ -18,7 +18,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		error_log( print_r( $log, TRUE ) );
 	}
 
-	// EDITED: 8/12/2016, 8:53:06 AM
+	// EDITED: 12/25/2016, 1:27:21 PM
 	public static function getPostTypes( $mod = 0, $args = array( 'public' => TRUE ) )
 	{
 		$list = array();
@@ -27,7 +27,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 
 			// label
 			if ( 0 === $mod )
-				$list[$post_type] = $post_type_obj->label;
+				$list[$post_type] = $post_type_obj->label ? $post_type_obj->label : $post_type_obj->name;
 
 			// plural
 			else if ( 1 === $mod )
