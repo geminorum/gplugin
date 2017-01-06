@@ -41,6 +41,7 @@ $GLOBALS['_gplugin'] = array( 36, __FILE__, array(
 	'gPluginHTTP',
 	'gPluginHTML',
 	'gPluginUtils',
+	'gPluginNumber',
 	'gPluginHashed',
 ) );
 

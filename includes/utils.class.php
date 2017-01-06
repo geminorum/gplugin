@@ -123,7 +123,7 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils extends gPluginClas
 		$array = array();
 
 		foreach ( range( $start, $end, $step ) as $number )
-			$array[$number] = $format ? number_format_i18n( $number ) : $number;
+			$array[$number] = $format ? gPluginNumber::format( $number ) : $number;
 
 		return $array;
 	}
