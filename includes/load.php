@@ -1,6 +1,6 @@
 <?php defined( 'ABSPATH' ) or die( 'Restricted access' );
 
-$GLOBALS['_gplugin'] = array( 36, __FILE__, array(
+$GLOBALS['_gplugin'] = array( 37, __FILE__, array(
 	'gPluginFactory',
 	'gPluginClassCore',
 

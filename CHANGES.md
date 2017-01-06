@@ -1,3 +1,12 @@
+### 37
+* all: using wp hash
+* classcore: internal methods updated
+* html: new helpers
+* number: :new: new class
+* settings: new field type for taxonomies
+* wphelper: check for posttype label
+* wphelper: static caching slug lookups
+
 ### 36
 * settings: :new: class
 * network: schedule events hook
