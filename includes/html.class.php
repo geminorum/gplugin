@@ -3,6 +3,21 @@
 if ( ! class_exists( 'gPluginHTML' ) ) { class gPluginHTML extends gPluginClassCore
 {
 
+	public static function link( $html, $link = '#', $target_blank = FALSE )
+	{
+		return self::tag( 'a', array( 'href' => $link, 'target' => ( $target_blank ? '_blank' : FALSE ) ), $html );
+	}
+
+	public static function inputHidden( $name, $value = '' )
+	{
+		echo '<input type="hidden" name="'.self::escapeAttr( $name ).'" value="'.self::escapeAttr( $value ).'" />';
+	}
+
+	public static function joined( $items, $before = '', $after = '', $sep = '|' )
+	{
+		return count( $items ) ? ( $before.join( $sep, $items ).$after ) : '';
+	}
+
 	public static function tag( $tag, $atts = array(), $content = FALSE, $sep = '' )
 	{
 		$tag = self::sanitizeTag( $tag );
@@ -28,10 +43,10 @@ if ( ! class_exists( 'gPluginHTML' ) ) { class gPluginHTML extends gPluginClassC
 		foreach ( func_get_args() as $arg )
 
 			if ( is_array( $arg ) )
-				$classes += $arg;
+				$classes = array_merge( $classes, $arg );
 
 			else if ( $arg )
-				$classes += explode( ' ', $arg );
+				$classes = array_merge( $classes, explode( ' ', $arg ) );
 
 		return array_unique( array_filter( $classes, 'trim' ) );
 	}
@@ -60,7 +75,7 @@ if ( ! class_exists( 'gPluginHTML' ) ) { class gPluginHTML extends gPluginClassC
 							continue;
 
 						else
-							$html .= ' data-'.$data_key.'="'.esc_attr( $data_val ).'"';
+							$html .= ' data-'.$data_key.'="'.self::escapeAttr( $data_val ).'"';
 					}
 
 					continue;
@@ -75,17 +90,8 @@ if ( ! class_exists( 'gPluginHTML' ) ) { class gPluginHTML extends gPluginClassC
 				$sanitized = TRUE;
 			}
 
-			if ( 'selected' == $key )
-				$att = ( $att ? 'selected' : FALSE );
-
-			if ( 'checked' == $key )
-				$att = ( $att ? 'checked' : FALSE );
-
-			if ( 'readonly' == $key )
-				$att = ( $att ? 'readonly' : FALSE );
-
-			if ( 'disabled' == $key )
-				$att = ( $att ? 'disabled' : FALSE );
+			if ( in_array( $key, array( 'selected', 'checked', 'readonly', 'disabled' ) ) )
+				$att = $att ? $key : FALSE;
 
 			if ( FALSE === $att )
 				continue;
@@ -103,7 +109,7 @@ if ( ! class_exists( 'gPluginHTML' ) ) { class gPluginHTML extends gPluginClassC
 				$att = self::escapeURL( $att );
 
 			else
-				$att = esc_attr( $att );
+				$att = self::escapeAttr( $att );
 
 			$html .= ' '.$key.'="'.trim( $att ).'"';
 		}
@@ -112,6 +118,16 @@ if ( ! class_exists( 'gPluginHTML' ) ) { class gPluginHTML extends gPluginClassC
 			return $html.' />';
 
 		return $html.'>';
+	}
+
+	// like WP core but without filter
+	// @SOURCE: `esc_attr()`
+	public static function escapeAttr( $text )
+	{
+		$safe_text = wp_check_invalid_utf8( $text );
+		$safe_text = _wp_specialchars( $safe_text, ENT_QUOTES );
+
+		return $safe_text;
 	}
 
 	public static function escapeURL( $url )
@@ -143,6 +159,19 @@ if ( ! class_exists( 'gPluginHTML' ) ) { class gPluginHTML extends gPluginClassC
 	public static function sanitizePhoneNumber( $number )
 	{
 		return self::escapeURL( 'tel:'.str_replace( array( '(', ')', '-', '.', '|', ' ' ), '', $number ) );
+	}
+
+	public static function getAtts( $string, $expecting = array() )
+	{
+		foreach ( $expecting as $attr => $default ) {
+
+			preg_match( "#".$attr."=\"(.*?)\"#s", $string, $matches );
+
+			if ( isset( $matches[1] ) )
+				$expecting[$attr] = trim( $matches[1] );
+		}
+
+		return $expecting;
 	}
 
 	public static function linkStyleSheet( $url, $version = NULL, $media = 'all' )
@@ -211,8 +240,19 @@ if ( ! class_exists( 'gPluginHTML' ) ) { class gPluginHTML extends gPluginClassC
 		echo '<tbody>';
 
 		foreach ( (array) $array as $key => $val )
-			printf( $row, $key, $val );
+			@printf( $row, $key, ( is_bool( $val ) ? ( $val ? 'TRUE' : 'FALSE' ) : $val ) );
 
 		echo '</tbody></table>';
+	}
+
+	// @REF: https://developer.wordpress.org/resource/dashicons/
+	public static function getDashicon( $icon = 'wordpress-alt', $tag = 'span' )
+	{
+		return self::tag( $tag, array(
+			'class' => array(
+				'dashicons',
+				'dashicons-'.$icon,
+			),
+		), NULL );
 	}
 } }
