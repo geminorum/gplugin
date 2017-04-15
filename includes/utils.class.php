@@ -3,39 +3,18 @@
 if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils extends gPluginClassCore
 {
 
+	// FIXME: DEPRECATED
 	public static function IP( $pad = FALSE )
 	{
-		$ip = '';
-
-		if ( getenv( 'HTTP_CLIENT_IP' ) )
-			$ip = getenv( 'HTTP_CLIENT_IP' );
-
-		else if ( getenv( 'HTTP_X_FORWARDED_FOR' ) )
-			$ip = getenv( 'HTTP_X_FORWARDED_FOR' );
-
-		else if ( getenv( 'HTTP_X_FORWARDED' ) )
-			$ip = getenv( 'HTTP_X_FORWARDED' );
-
-		else if ( getenv( 'HTTP_FORWARDED_FOR' ) )
-			$ip = getenv( 'HTTP_FORWARDED_FOR' );
-
-		else if ( getenv( 'HTTP_FORWARDED' ) )
-			$ip = getenv( 'HTTP_FORWARDED' );
-
-		else
-			$ip = getenv( 'REMOTE_ADDR' );
-
-		if ( $pad )
-			return str_pad( $ip, 15, ' ', STR_PAD_LEFT );
-
-		return $ip;
+		self::__dep( 'gPluginHTTP::IP()' );
+		return gPluginHTTP::IP( $pad );
 	}
 
 	// FIXME: DEPRECATED
 	public static function getIP()
 	{
-		self::__dep( 'gPluginUtils::IP()' );
-		return self::IP();
+		self::__dep( 'gPluginHTTP::IP()' );
+		return gPluginHTTP::IP();
 	}
 
 	// FIXME: DEPRECATED

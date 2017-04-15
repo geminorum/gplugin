@@ -11,7 +11,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		$log = array_merge( array(
 			'error'   => $error,
 			'time'    => current_time( 'mysql' ),
-			'ip'      => gPluginUtils::IP(),
+			'ip'      => gPluginHTTP::IP(),
 			'message' => ( is_null( $wp_error ) ? '{NO WP_Error Object}' : $wp_error->get_error_message() ),
 		), $data );
 
