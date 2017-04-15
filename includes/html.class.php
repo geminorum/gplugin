@@ -5,7 +5,32 @@ if ( ! class_exists( 'gPluginHTML' ) ) { class gPluginHTML extends gPluginClassC
 
 	public static function link( $html, $link = '#', $target_blank = FALSE )
 	{
-		return self::tag( 'a', array( 'href' => $link, 'target' => ( $target_blank ? '_blank' : FALSE ) ), $html );
+		return self::tag( 'a', array( 'href' => $link, 'class' => '-link', 'target' => ( $target_blank ? '_blank' : FALSE ) ), $html );
+	}
+
+	public static function mailto( $email, $title = NULL )
+	{
+		return '<a class="-mailto" href="mailto:'.trim( $email ).'">'.( $title ? $title : trim( $email ) ).'</a>';
+	}
+
+	public static function scroll( $html, $to )
+	{
+		return '<a class="scroll" href="#'.$to.'">'.$html.'</a>';
+	}
+
+	public static function h2( $html, $class = FALSE )
+	{
+		echo self::tag( 'h2', array( 'class' => $class ), $html );
+	}
+
+	public static function h3( $html, $class = FALSE )
+	{
+		echo self::tag( 'h3', array( 'class' => $class ), $html );
+	}
+
+	public static function desc( $html, $block = TRUE, $class = '' )
+	{
+		if ( $html ) echo $block ? '<p class="description '.$class.'">'.$html.'</p>' : '<span class="description '.$class.'">'.$html.'</span>';
 	}
 
 	public static function inputHidden( $name, $value = '' )
@@ -90,7 +115,7 @@ if ( ! class_exists( 'gPluginHTML' ) ) { class gPluginHTML extends gPluginClassC
 				$sanitized = TRUE;
 			}
 
-			if ( in_array( $key, array( 'selected', 'checked', 'readonly', 'disabled' ) ) )
+			if ( in_array( $key, array( 'selected', 'checked', 'readonly', 'disabled', 'default' ) ) )
 				$att = $att ? $key : FALSE;
 
 			if ( FALSE === $att )
@@ -228,9 +253,9 @@ if ( ! class_exists( 'gPluginHTML' ) ) { class gPluginHTML extends gPluginClassC
 			return;
 
 		if ( $reverse )
-			$row = '<tr><td class="-val"><code>%1$s</code></td><td class="-var">%2$s</td></tr>';
+			$row = '<tr><td class="-val"><code>%1$s</code></td><td class="-var" valign="top">%2$s</td></tr>';
 		else
-			$row = '<tr><td class="-var">%1$s</td><td class="-val"><code>%2$s</code></td></tr>';
+			$row = '<tr><td class="-var" valign="top">%1$s</td><td class="-val"><code>%2$s</code></td></tr>';
 
 		echo '<table class="base-table-code'.( $reverse ? ' -reverse' : '' ).'">';
 
@@ -239,8 +264,25 @@ if ( ! class_exists( 'gPluginHTML' ) ) { class gPluginHTML extends gPluginClassC
 
 		echo '<tbody>';
 
-		foreach ( (array) $array as $key => $val )
-			@printf( $row, $key, ( is_bool( $val ) ? ( $val ? 'TRUE' : 'FALSE' ) : $val ) );
+		foreach ( (array) $array as $key => $val ) {
+
+			if ( is_null( $val ) )
+				$val = 'NULL';
+
+			else if ( is_bool( $val ) )
+				$val = $val ? 'TRUE' : 'FALSE';
+
+			else if ( is_array( $val ) || is_object( $val ) )
+				$val = json_encode( $val );
+
+			else if ( empty( $val ) )
+				$val = 'EMPTY';
+
+			else
+				$val = nl2br( $val );
+
+			printf( $row, $key, $val );
+		}
 
 		echo '</tbody></table>';
 	}
