@@ -49,7 +49,7 @@ if ( ! class_exists( 'gPluginSettings' ) ) { class gPluginSettings extends gPlug
 	public static function fieldType( $atts = array(), &$scripts )
 	{
 		$args = self::atts( array(
-			'title'        => '',
+			'title'        => '&nbsp;',
 			'label_for'    => '',
 			'type'         => 'enabled',
 			'field'        => FALSE,
@@ -460,7 +460,7 @@ if ( ! class_exists( 'gPluginSettings' ) ) { class gPluginSettings extends gPlug
 					'exclude'     => implode( ',', $exclude ),
 					'sort_column' => 'menu_order',
 					'sort_order'  => 'asc',
-					'post_status' => 'publish,private,draft',
+					'post_status' => array( 'publish', 'future', 'draft' ),
 				), $args['extra'] );
 
 				$pages = get_pages( $query );

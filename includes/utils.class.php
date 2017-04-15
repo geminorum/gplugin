@@ -107,6 +107,7 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils extends gPluginClas
 		return $array;
 	}
 
+	// USE: `array_keys()` on posted checkboxes
 	public static function getKeys( $options, $if = TRUE )
 	{
 		$keys = array();

@@ -219,16 +219,20 @@ if ( ! class_exists( 'gPluginSettingsCore' ) ) { class gPluginSettingsCore exten
 				} else if ( isset( $input[$field] ) ) {
 
 					// callback
-					if ( isset( $field_args['filter'] ) && $field_args['filter'] && is_callable( $field_args['filter'] ) )
-						$output[$field] = call_user_func_array( $field_args['filter'], array( $input[$field] ) );
+					if ( isset( $field_args['filter'] )
+						&& $field_args['filter']
+						&& is_callable( $field_args['filter'] ) )
+							$output[$field] = call_user_func_array( $field_args['filter'], array( $input[$field] ) );
 
 					// disabled select
-					else if ( isset( $field_args['values'] ) && FALSE === $field_args['values'] )
-						$output[$field] = $field_args['default'];
+					else if ( isset( $field_args['values'] )
+						&& FALSE === $field_args['values'] )
+							$output[$field] = $field_args['default'];
 
 					// filled multiple checkboxes
 					else if ( is_array( $input[$field] ) )
-						$output[$field] = gPluginUtils::getKeys( $input[$field] );
+						// $output[$field] = gPluginUtils::getKeys( $input[$field] );
+						$output[$field] = array_keys( $input[$field] );
 
 					// default
 					else
