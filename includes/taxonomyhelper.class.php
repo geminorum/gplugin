@@ -171,11 +171,12 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper e
 		return '0';
 	}
 
-	public static function getTerms( $taxonomy = 'category', $post_id = FALSE, $object = FALSE, $key = 'term_id', $extra = array() )
+	public static function getTerms( $taxonomy = 'category', $post = FALSE, $object = FALSE, $key = 'term_id', $extra = array() )
 	{
-		$the_terms = array();
+		if ( FALSE !== $post )
+			$terms = get_the_terms( $post, $taxonomy );
 
-		if ( FALSE === $post_id ) {
+		else
 			$terms = get_terms( array_merge( array(
 				'taxonomy'               => $taxonomy,
 				'hide_empty'             => FALSE,
@@ -183,23 +184,13 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper e
 				'order'                  => 'ASC',
 				'update_term_meta_cache' => FALSE,
 			), $extra ) );
-		} else {
-			$terms = get_the_terms( $post_id, $taxonomy );
-		}
 
-		if ( is_wp_error( $terms ) || FALSE === $terms )
-			return $the_terms;
+		if ( ! $terms || is_wp_error( $terms ) )
+			return array();
 
-		$list  = wp_list_pluck( $terms, $key );
-		$terms = array_combine( $list, $terms );
+		$list = wp_list_pluck( $terms, $key );
 
-		if ( $object )
-			return $terms;
-
-		foreach ( $terms as $term )
-			$the_terms[] = $term->term_id;
-
-		return $the_terms;
+		return $object ? array_combine( $list, $terms ) : $list;
 	}
 
 ////////////////////////////////////////////////////////////////////////////////
