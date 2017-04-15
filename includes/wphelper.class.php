@@ -420,6 +420,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		return $roles;
 	}
 
+	// must add `add_thickbox()` for thickbox
 	public static function getFeaturedImageHTML( $post_id, $size = 'thumbnail', $link = TRUE )
 	{
 		if ( ! $post_thumbnail_id = get_post_thumbnail_id( $post_id ) )
@@ -435,6 +436,8 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 
 		return gPluginHTML::tag( 'a', array(
 			'href'   => wp_get_attachment_url( $post_thumbnail_id ),
+			'title'  => get_the_title( $post_thumbnail_id ),
+			'class'  => 'thickbox',
 			'target' => '_blank',
 		), $image );
 	}
