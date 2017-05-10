@@ -3,6 +3,18 @@
 if ( ! class_exists( 'gPluginHTTP' ) ) { class gPluginHTTP extends gPluginClassCore
 {
 
+	// if this is a POST request
+	public static function isPOST()
+	{
+		return (bool) ( 'POST' === strtoupper( $_SERVER['REQUEST_METHOD'] ) );
+	}
+
+	// if this is a GET request
+	public static function isGET()
+	{
+		return (bool) ( 'GET' === strtoupper( $_SERVER['REQUEST_METHOD'] ) );
+	}
+
 	public static function IP( $pad = FALSE )
 	{
 		$ip = '';

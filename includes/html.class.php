@@ -3,6 +3,11 @@
 if ( ! class_exists( 'gPluginHTML' ) ) { class gPluginHTML extends gPluginClassCore
 {
 
+	public static function rtl()
+	{
+		return function_exists( 'is_rtl' ) ? is_rtl() : FALSE;
+	}
+
 	public static function link( $html, $link = '#', $target_blank = FALSE )
 	{
 		return self::tag( 'a', array( 'href' => $link, 'class' => '-link', 'target' => ( $target_blank ? '_blank' : FALSE ) ), $html );
