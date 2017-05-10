@@ -679,7 +679,7 @@ if ( ! class_exists( 'gPluginSettings' ) ) { class gPluginSettings extends gPlug
 
 					echo '<p>'.gPluginHTML::tag( 'label', array(
 						'for' => $id.'-'.$value_name,
-					), $html.'&nbsp;'.esc_html( $value_title ) ).'</p>';
+					), $html.'&nbsp;'.esc_html( $value_title ) ).' &mdash; <code>'.$value_name.'</code>'.'</p>';
 				}
 
 			break;
@@ -707,7 +707,7 @@ if ( ! class_exists( 'gPluginSettings' ) ) { class gPluginSettings extends gPlug
 
 					echo '<p>'.gPluginHTML::tag( 'label', array(
 						'for' => $id.'-'.$value_name,
-					), $html.'&nbsp;'.esc_html( $value_title ) ).'</p>';
+					), $html.'&nbsp;'.esc_html( $value_title ) ).' &mdash; <code>'.$value_name.'</code>'.'</p>';
 				}
 
 			break;
