@@ -102,9 +102,15 @@ if ( ! class_exists( 'gPluginSettings' ) ) { class gPluginSettings extends gPlug
 		if ( ! $args['field'] )
 			return;
 
-		$html    = '';
-		$value   = $args['default'];
-		$exclude = $args['exclude'] && ! is_array( $args['exclude'] ) ? array_filter( explode( ',', $args['exclude'] ) ) : array();
+		$html  = '';
+		$value = $args['default'];
+
+		if ( is_array( $args['exclude'] ) )
+			$exclude = array_filter( $args['exclude'] );
+		else if ( $args['exclude'] )
+			$exclude = array_filter( explode( ',', $args['exclude'] ) );
+		else
+			$exclude = array();
 
 		if ( $args['id_name_cb'] ) {
 			list( $id, $name ) = call_user_func( $args['id_name_cb'], $args );
