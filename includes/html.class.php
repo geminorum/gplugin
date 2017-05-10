@@ -297,4 +297,63 @@ if ( ! class_exists( 'gPluginHTML' ) ) { class gPluginHTML extends gPluginClassC
 			),
 		), NULL );
 	}
+
+	public static function dropdown( $list, $atts = array() )
+	{
+		$args = self::atts( array(
+			'id'         => '',
+			'name'       => '',
+			'none_title' => NULL,
+			'none_value' => 0,
+			'class'      => FALSE,
+			'selected'   => 0,
+			'disabled'   => FALSE,
+			'dir'        => FALSE,
+			'prop'       => FALSE,
+			'value'      => FALSE,
+			'exclude'    => array(),
+		), $atts );
+
+		$html = '';
+
+		if ( FALSE === $list ) // alow hiding
+			return $html;
+
+		if ( ! is_null( $args['none_title'] ) )
+			$html .= self::tag( 'option', array(
+				'value'    => $args['none_value'],
+				'selected' => $args['selected'] == $args['none_value'],
+			), $args['none_title'] );
+
+		foreach ( $list as $offset => $value ) {
+
+			if ( $args['value'] )
+				$key = is_object( $value ) ? $value->{$args['value']} : $value[$args['value']];
+
+			else
+				$key = $offset;
+
+			if ( in_array( $key, (array) $args['exclude'] ) )
+				continue;
+
+			if ( $args['prop'] )
+				$title = is_object( $value ) ? $value->{$args['prop']} : $value[$args['prop']];
+
+			else
+				$title = $value;
+
+			$html .= self::tag( 'option', array(
+				'value'    => $key,
+				'selected' => $args['selected'] == $key,
+			), $title );
+		}
+
+		return self::tag( 'select', array(
+			'name'     => $args['name'],
+			'id'       => $args['id'],
+			'class'    => $args['class'],
+			'disabled' => $args['disabled'],
+			'dir'      => $args['dir'],
+		), $html );
+	}
 } }
