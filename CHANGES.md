@@ -1,3 +1,11 @@
+### 38
+* html: new dropdown helper
+* settings: correct check if exclude is an array
+* settings: cpt/tax names along with labels
+* taxonomyhelper: :up: get terms
+* texthelper: seperator in name reformatter
+* wphelper: thickbox for featured image
+
 ### 37
 * all: using wp hash
 * classcore: internal methods updated

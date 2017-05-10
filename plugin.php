@@ -4,7 +4,7 @@
 Plugin Name: gPlugin
 Plugin URI: http://geminorum.ir/wordpress/gplugin
 Description: Shade of a framework to help with WordPress development
-Version: 37
+Version: 38
 License: GPLv3+
 Author: geminorum
 Author URI: http://geminorum.ir/
