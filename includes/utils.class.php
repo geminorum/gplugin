@@ -35,7 +35,7 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils extends gPluginClas
 	{
 		$rounded = array();
 
-		foreach( (array) $array as $key => $value )
+		foreach ( (array) $array as $key => $value )
 			$rounded[$key] = round( (float) $value, $precision, $mode );
 
 		return $rounded;
