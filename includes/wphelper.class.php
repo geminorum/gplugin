@@ -606,6 +606,6 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 
 	public static function getRequestURI()
 	{
-		return stripslashes_deep( $_SERVER['REQUEST_URI'] );
+		return gPluginUtils::unslash( $_SERVER['REQUEST_URI'] );
 	}
 } }

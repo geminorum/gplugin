@@ -237,8 +237,8 @@ if ( ! class_exists( 'gPluginTaxonomyHelper' ) ) { class gPluginTaxonomyHelper e
 			if ( empty($value) )
 				return FALSE;
 		} else if ( 'name' == $field ) {
-			// Assume already escaped
-			$value = wp_unslash( $value );
+			// assume already escaped
+			$value = gPluginUtils::unslash( $value );
 			$field = 't.name';
 		} else {
 			$term = get_term( (int) $value, $taxonomy, $output, $filter );
