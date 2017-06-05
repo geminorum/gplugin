@@ -139,11 +139,12 @@ if ( ! class_exists( 'gPluginUtils' ) ) { class gPluginUtils extends gPluginClas
 		return $list;
 	}
 
+	// OR: `array_combine( $array, $array );`
 	public static function sameKey( $old )
 	{
 		$same = array();
 
-		foreach ( $old as $key => $value )
+		foreach ( (array) $old as $key => $value )
 			if ( FALSE !== $value && NULL !== $value )
 				$same[$value] = $value;
 
