@@ -55,7 +55,7 @@ if ( ! class_exists( 'gPluginHTTP' ) ) { class gPluginHTTP extends gPluginClassC
 
 	public static function normalizeIP( $ip )
 	{
-		return trim( preg_replace( '/[^0-9., ]/', '', stripslashes( $ip ) ) );
+		return trim( preg_replace( '/[^0-9a-fA-F:., ]/', '', stripslashes( $ip ) ) );
 	}
 
 	public static function headers( $array )
