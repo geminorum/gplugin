@@ -1,3 +1,9 @@
+### 39
+* http: more checks on ip
+* utils: unslash rethinking
+* utils: make sure data is an array on same key
+* network: static settings subs moved
+
 ### 38
 * html: new dropdown helper
 * settings: correct check if exclude is an array
