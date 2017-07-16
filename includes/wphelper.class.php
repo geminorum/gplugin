@@ -430,7 +430,7 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 			return '';
 
 		$image = gPluginHTML::tag( 'img', array(
-			'src'   => $term_thumbnail_img[0],
+			'src'   => $post_thumbnail_img[0],
 			'class' => '-featured',
 			'alt'   => '',
 			'data'  => array(
