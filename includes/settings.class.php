@@ -430,7 +430,7 @@ if ( ! class_exists( 'gPluginSettings' ) ) { class gPluginSettings extends gPlug
 			case 'textarea-quicktags':
 
 				if ( ! $args['field_class'] )
-					$args['field_class'] = 'large-text';
+					$args['field_class'] = 'regular-text';
 
 				if ( 'textarea-quicktags' == $args['type'] ) {
 
