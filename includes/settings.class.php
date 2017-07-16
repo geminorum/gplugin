@@ -251,6 +251,28 @@ if ( ! class_exists( 'gPluginSettings' ) ) { class gPluginSettings extends gPlug
 				) );
 
 			break;
+			case 'email':
+
+				if ( ! $args['field_class'] )
+					$args['field_class'] = array( 'regular-text', 'email-text' );
+
+				if ( ! $args['dir'] )
+					$args['dir'] = 'ltr';
+
+				echo gPluginHTML::tag( 'input', array(
+					'type'        => 'email',
+					'id'          => $id,
+					'name'        => $name,
+					'value'       => $value,
+					'class'       => $args['field_class'],
+					'placeholder' => $args['placeholder'],
+					'disabled'    => $args['disabled'],
+					'readonly'    => $args['readonly'],
+					'dir'         => $args['dir'],
+					'data'        => $args['data'],
+				) );
+
+			break;
 			case 'checkbox':
 
 				if ( count( $args['values'] ) ) {
