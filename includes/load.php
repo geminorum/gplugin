@@ -23,7 +23,7 @@ $GLOBALS['_gplugin'] = array( 39, __FILE__, array(
 	'gPluginImportCore',
 
 	'gPluginSettings',
-	'gPluginSession',
+	// 'gPluginSession', // FIXME: ADD CONSTANT TO ENABLE
 
 	'gPluginWPHelper',
 	'gPluginWPRemote', // FIXME: DEPRECATED
