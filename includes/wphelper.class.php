@@ -229,12 +229,11 @@ if ( ! class_exists( 'gPluginWPHelper' ) ) { class gPluginWPHelper extends gPlug
 		return gPluginHTML::notice( $notice, $class, $echo );
 	}
 
+	// FIXME: DEPRECATED
 	public static function getCurrentSiteBlogID()
 	{
-		if ( ! is_multisite() )
-			return get_current_blog_id();
-
-		return absint( get_current_site()->blog_id );
+		// self::__dep( 'get_main_site_id()'); // since WP 4.9
+		return is_multisite() ? absint( get_current_site()->blog_id ) : get_current_blog_id();
 	}
 
 	// FIXME: DEPRECATED

@@ -39,14 +39,14 @@ if ( ! class_exists( 'gPluginHTML' ) ) { class gPluginHTML extends gPluginClassC
 		return '<img src="'.$src.'" class="'.$class.'" alt="'.$alt.'" />';
 	}
 
-	public static function h2( $html, $class = FALSE )
+	public static function h2( $html, $class = FALSE, $link = FALSE )
 	{
-		echo self::tag( 'h2', array( 'class' => $class ), $html );
+		echo self::tag( 'h2', array( 'class' => $class ), ( $link ? self::link( $html, $link ) : $html ) );
 	}
 
-	public static function h3( $html, $class = FALSE )
+	public static function h3( $html, $class = FALSE, $link = FALSE )
 	{
-		echo self::tag( 'h3', array( 'class' => $class ), $html );
+		echo self::tag( 'h3', array( 'class' => $class ), ( $link ? self::link( $html, $link ) : $html ) );
 	}
 
 	public static function desc( $html, $block = TRUE, $class = '', $nl2br = TRUE )
@@ -310,29 +310,29 @@ if ( ! class_exists( 'gPluginHTML' ) ) { class gPluginHTML extends gPluginClassC
 
 	// @REF: https://codex.wordpress.org/Plugin_API/Action_Reference/admin_notices
 	// CLASSES: notice-error, notice-warning, notice-success, notice-info, is-dismissible
-	public static function notice( $notice, $class = 'notice-success fade', $dismissible = TRUE )
+	public static function notice( $notice, $class = 'notice-success fade inline', $dismissible = TRUE )
 	{
-		return sprintf( '<div class="notice %s%s">%s</div>', $class, ( $dismissible ? ' is-dismissible' : '' ), gPluginTextHelper::autoP( $notice ) );
+		return sprintf( '<div class="notice %s%s -notice">%s</div>', $class, ( $dismissible ? ' is-dismissible' : '' ), gPluginTextHelper::autoP( $notice ) );
 	}
 
 	public static function error( $notice, $dismissible = TRUE )
 	{
-		return self::notice( $notice, 'notice-error fade', $dismissible );
+		return self::notice( $notice, 'notice-error fade inline', $dismissible );
 	}
 
 	public static function success( $notice, $dismissible = TRUE )
 	{
-		return self::notice( $notice, 'notice-success fade', $dismissible );
+		return self::notice( $notice, 'notice-success fade inline', $dismissible );
 	}
 
 	public static function warning( $notice, $dismissible = TRUE )
 	{
-		return self::notice( $notice, 'notice-warning fade', $dismissible );
+		return self::notice( $notice, 'notice-warning fade inline', $dismissible );
 	}
 
 	public static function info( $notice, $dismissible = TRUE )
 	{
-		return self::notice( $notice, 'notice-info fade', $dismissible );
+		return self::notice( $notice, 'notice-info fade inline', $dismissible );
 	}
 
 	public static function tableCode( $array, $reverse = FALSE, $caption = FALSE )
