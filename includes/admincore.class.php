@@ -44,7 +44,7 @@ class gPluginAdminCore extends gPluginClassCore
 			( isset( $titles['title'] ) ? $titles['title'] : $this->args['title'] ),
 			( isset( $titles['menu'] ) ? $titles['menu'] : $this->args['title'] ),
 			'manage_options',
-			$this->args['domain'],
+			$this->args['domain'].'-'.$this->component,
 			array( $this, 'admin_settings' )
 		);
 
@@ -54,7 +54,7 @@ class gPluginAdminCore extends gPluginClassCore
 
 	public function admin_settings()
 	{
-		$uri = 'options-general.php?page='.$this->args['domain'];
+		$uri = 'options-general.php?page='.$this->args['domain'].'-'.$this->component;
 		$sub = isset( $_GET['sub'] ) ? trim( $_GET['sub'] ) : 'general';
 
 		$subs     = $this->getFilters( $this->component.'_settings_subs', array() );
