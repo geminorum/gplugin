@@ -471,6 +471,9 @@ if ( ! class_exists( 'gPluginSettings' ) ) { class gPluginSettings extends gPlug
 
 					$args['field_class'] = gPluginHTML::attrClass( $args['field_class'], 'textarea-quicktags', 'code' );
 
+					if ( ! $args['dir'] && gPluginHTML::rtl() )
+						$args['field_class'][] = 'quicktags-rtl';
+
 					if ( ! $args['values'] )
 						$args['values'] = array(
 							'link',
