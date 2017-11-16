@@ -29,6 +29,11 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper extends g
 	// @SEE: https://stackoverflow.com/a/7409591/4864081
 	public static function autoP( $string )
 	{
+		$string = (string) $string;
+
+		if ( 0 === strlen( $string ) )
+			return '';
+
 		// standardize newline characters to "\n"
 		$string = str_replace( array( "\r\n", "\r" ), "\n", $string );
 
