@@ -1,3 +1,13 @@
+### 40
+* admincore: append component to page slug
+* session: disabled
+* settings: :new: email setting type
+* settings: default regular textareas
+* settings: support multiple text fields
+* settings: rtl class for quicktags
+* taxonomyhelper: using term cache for post objects
+* wphelper: :warning: fixed notice
+
 ### 39
 * http: more checks on ip
 * utils: unslash rethinking
