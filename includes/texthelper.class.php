@@ -25,8 +25,8 @@ if ( ! class_exists( 'gPluginTextHelper' ) ) { class gPluginTextHelper extends g
 	}
 
 	// simpler version of `wpautop()`
-	// @REF: https://stackoverflow.com/a/5240825/4864081
-	// @SEE: https://stackoverflow.com/a/7409591/4864081
+	// @REF: https://stackoverflow.com/a/5240825
+	// @SEE: https://stackoverflow.com/a/7409591
 	public static function autoP( $string )
 	{
 		$string = (string) $string;
