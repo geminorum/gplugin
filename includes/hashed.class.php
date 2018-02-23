@@ -53,7 +53,7 @@ if ( ! class_exists( 'gPluginHashed' ) ) { class gPluginHashed extends gPluginCl
 		for ( $i=0; $i < $max; $i++ ) {
 			$d = rand( 1,30 ) % 2;
 			$char = $d ? chr( rand( 65, 90 ) ) : chr( rand( 48, 57 ) );
-			$string .= $char;
+			$string.= $char;
 		}
 
 		return $string;

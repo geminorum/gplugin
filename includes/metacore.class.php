@@ -63,7 +63,7 @@ class gPluginMetaCore extends gPluginClassCore
 				$desc = get_term_field( 'description', $term->term_id, $term->taxonomy );
 				//$desc = is_wp_error( $desc ) ? '' : wpautop( $desc, FALSE );
 				$desc = is_wp_error( $desc ) ? '' : strip_tags( $desc );
-				$html .= '<a href="'.get_term_link( $term, $taxonomy ).'" title="'.esc_attr( $desc ).'" class="'.$args['class'].'" >'.$term->name.'</a>'.$args['sep'];
+				$html.= '<a href="'.get_term_link( $term, $taxonomy ).'" title="'.esc_attr( $desc ).'" class="'.$args['class'].'" >'.$term->name.'</a>'.$args['sep'];
 			}
 			if ( ! empty( $html ) ) {
 				if ( isset( $args['echo'] ) && $args['echo'] ) {

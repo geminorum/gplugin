@@ -59,6 +59,7 @@ if ( ! class_exists( 'gPluginHTTP' ) ) { class gPluginHTTP extends gPluginClassC
 				100 => 'Continue',
 				101 => 'Switching Protocols',
 				102 => 'Processing',
+				103 => 'Early Hints',
 
 				// 2×× Success
 				200 => 'OK',
