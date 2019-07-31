@@ -1,4 +1,12 @@
 * text eol=lf
 
-*.txt text eol=crlf
-*.css text eol=crlf
+*.png binary
+*.jpg binary
+*.gif binary
+
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+
+*.mo binary

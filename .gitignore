@@ -1,6 +1,19 @@
-/assets/vendor
+.build
+.idea
+.sass-cache
+.gulp
+.imdone
+.temp
+
 /assets/bin
+/assets/vendor
+
 /node_modules
-.env
 
 composer.lock
+npm-debug.log
+yarn-error.log
+
+environment.yml
+.env
+.ftpconfig
