@@ -13,7 +13,7 @@ TextDomain: gplugin
 DomainPath : /languages
 GitHub Plugin URI: https://github.com/geminorum/gplugin
 Requires WP: 4.4
-Requires PHP: 5.6
+Requires PHP: 5.6.20
 */
 
 define( 'GPLUGIN_DIR', plugin_dir_path( __FILE__ ) );
