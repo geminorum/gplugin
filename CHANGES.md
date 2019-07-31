@@ -1,3 +1,6 @@
+### 41
+* networkcore: setup network before hooks
+
 ### 40
 * admincore: append component to page slug
 * session: disabled
